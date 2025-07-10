@@ -5,14 +5,17 @@ import {
   createHospital,
   updateHospital,
   deleteHospital,
+  uploadImage,
 } from "../../../api/api";
 import "./HospitalArea.css";
 
 const HospitalArea = () => {
   const { hospitalTypeId } = useParams();
   const navigate = useNavigate();
+
   const [hospitals, setHospitals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingImage, setLoadingImage] = useState(false);
   const [error, setError] = useState(null);
 
   const [hospitalData, setHospitalData] = useState({
@@ -28,7 +31,6 @@ const HospitalArea = () => {
   const [editHospitalId, setEditHospitalId] = useState(null);
 
   useEffect(() => {
-    console.log(hospitalTypeId);
     const fetchHospitals = async () => {
       try {
         setLoading(true);
@@ -47,6 +49,26 @@ const HospitalArea = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setHospitalData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const form = new FormData();
+    form.append("image", file);
+
+    try {
+      setLoadingImage(true);
+      const res = await uploadImage(form);
+      const imageUrl = res.data.imageUrl;
+      setHospitalData((prev) => ({ ...prev, imageUrl }));
+    } catch (err) {
+      alert("Image upload failed");
+      console.error("Upload error:", err);
+    } finally {
+      setLoadingImage(false);
+    }
   };
 
   const handleAddHospital = () => {
@@ -88,7 +110,6 @@ const HospitalArea = () => {
         response = await createHospital(hospitalData);
       }
 
-      // Refresh the hospital list
       const updatedResponse = await getHospitalsByType(hospitalTypeId);
       setHospitals(updatedResponse.data.resultData);
       setShowForm(false);
@@ -116,22 +137,19 @@ const HospitalArea = () => {
     <div className="hospital-area-wrapper">
       <h1 className="hospital-page-title">HOSPITALS</h1>
 
-      <button
-        className="hospital-btn hospital-btn-add"
-        onClick={handleAddHospital}
-      >
+      <button className="hospital-btn hospital-btn-add" onClick={handleAddHospital}>
         + Add Hospital
       </button>
 
       <div className="hospital-list-wrapper">
         {hospitals.length > 0 ? (
           hospitals.map((hospital) => (
-            <div key={hospital.id} className="hospital-card-container">
+            <div key={hospital.id} className="hospital-card-containern ">
               {hospital.imageUrl && (
                 <img
                   src={hospital.imageUrl}
                   alt={hospital.name}
-                  className="hospital-image"
+                  className="hospital-image h-50 w-75"
                 />
               )}
 
@@ -202,14 +220,19 @@ const HospitalArea = () => {
               </div>
 
               <div className="form-group">
-                <label>Image URL</label>
-                <input
-                  type="url"
-                  name="imageUrl"
-                  value={hospitalData.imageUrl}
-                  onChange={handleInputChange}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <label>Upload Image</label>
+                <input type="file" accept="image/*" onChange={handleImageUpload} />
+                {loadingImage ? (
+                  <p>Uploading...</p>
+                ) : (
+                  hospitalData.imageUrl && (
+                    <img
+                      src={hospitalData.imageUrl}
+                      alt="Preview"
+                      style={{ width: "80px", marginTop: "10px" }}
+                    />
+                  )
+                )}
               </div>
 
               <div className="form-group">

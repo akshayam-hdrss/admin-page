@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   getDoctorById,
   updateDoctor,
@@ -16,6 +16,9 @@ export default function DoctorDetails() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
+  const [loadingImage, setLoadingImage] = useState(false);
+  const [loadingGallery, setLoadingGallery] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchDoctor();
@@ -53,6 +56,9 @@ export default function DoctorDetails() {
     form.append('image', file);
 
     try {
+      if (type === 'profile') setLoadingImage(true);
+      else setLoadingGallery(true);
+
       const res = await uploadImage(form);
       const imageUrl = res.data.imageUrl;
 
@@ -67,6 +73,9 @@ export default function DoctorDetails() {
       }
     } catch (err) {
       console.error('Image upload failed:', err);
+    } finally {
+      setLoadingImage(false);
+      setLoadingGallery(false);
     }
   };
 
@@ -85,15 +94,18 @@ export default function DoctorDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setSaving(true);
       const updatedData = {
         ...formData,
-        gallery: JSON.stringify(formData.gallery || []),
+        gallery: [JSON.stringify(formData.gallery || [])],
       };
       await updateDoctor(doctorId, updatedData);
       setShowForm(false);
       fetchDoctor();
     } catch (err) {
       console.error('Failed to update doctor:', err);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -101,7 +113,7 @@ export default function DoctorDetails() {
     if (window.confirm('Are you sure you want to delete this doctor?')) {
       try {
         await deleteDoctor(doctorId);
-        navigate('/hospital'); // or wherever your doctor list is
+        navigate('/hospital');
       } catch (err) {
         console.error('Failed to delete doctor:', err);
       }
@@ -124,6 +136,7 @@ export default function DoctorDetails() {
         <img src={doctor.imageUrl || 'https://via.placeholder.com/150'} alt={doctor.doctorName} className="doctor-image-custom" />
         <div className="info-custom">
           <h2>{doctor.doctorName}</h2>
+          <p><strong>Business Name:</strong> {doctor.businessName}</p>
           <div className="rating-custom">
             {renderStars(doctor.rating)}
             <span className="rating-num-custom">{parseFloat(doctor.rating).toFixed(1)}</span>
@@ -138,57 +151,44 @@ export default function DoctorDetails() {
           <p><strong>YouTube:</strong> <a href={doctor.youtubeLink} target="_blank" rel="noreferrer">Watch</a></p>
           <p><strong>About:</strong> {doctor.about}</p>
         </div>
-        {doctor.gallery?.length > 0 && (
-  <div id="galleryCarousel" className="carousel slide mt-4" data-bs-ride="carousel">
-    <div className="carousel-inner">
-      {doctor.gallery.map((imgUrl, index) => (
-        <div
-          className={`carousel-item ${index === 0 ? "active" : ""}`}
-          key={index}
-        >
-          <img
-            src={imgUrl}
-            className="d-block w-100"
-            alt={`Gallery ${index + 1}`}
-            style={{ maxHeight: "400px", objectFit: "cover", borderRadius: "10px" }}
-          />
-        </div>
-      ))}
-    </div>
-    {doctor.gallery.length > 1 && (
-      <>
-        <button
-          className="carousel-control-prev"
-          type="button"
-          data-bs-target="#galleryCarousel"
-          data-bs-slide="prev"
-        >
-          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span className="visually-hidden">Previous</span>
-        </button>
-        <button
-          className="carousel-control-next"
-          type="button"
-          data-bs-target="#galleryCarousel"
-          data-bs-slide="next"
-        >
-          <span className="carousel-control-next-icon" aria-hidden="true"></span>
-          <span className="visually-hidden">Next</span>
-        </button>
-      </>
-    )}
-  </div>
-)}
 
+        {doctor.gallery?.length > 0 && (
+          <div id="galleryCarousel" className="carousel slide mt-4" data-bs-ride="carousel">
+            <div className="carousel-inner">
+              {doctor.gallery.map((imgUrl, index) => (
+                <div className={`carousel-item ${index === 0 ? "active" : ""}`} key={index}>
+                  <img
+                    src={imgUrl}
+                    className="d-block w-100"
+                    alt={`Gallery ${index + 1}`}
+                    style={{ maxHeight: "400px", objectFit: "cover", borderRadius: "10px" }}
+                  />
+                </div>
+              ))}
+            </div>
+            {doctor.gallery.length > 1 && (
+              <>
+                <button className="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+                  <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Previous</span>
+                </button>
+                <button className="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+                  <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span className="visually-hidden">Next</span>
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Edit Form Modal */}
       {showForm && (
         <div className="form-overlay-custom">
           <form className="form-container-custom" onSubmit={handleSubmit}>
             <h2>Edit Doctor</h2>
             {[
               { label: 'Name *', name: 'doctorName' },
+              { label: 'Business Name', name: 'businessName' },
               { label: 'Experience', name: 'experience' },
               { label: 'Phone', name: 'phone' },
               { label: 'WhatsApp', name: 'whatsapp' },
@@ -212,12 +212,14 @@ export default function DoctorDetails() {
             <div className="form-group-custom">
               <label>Profile Image</label>
               <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'profile')} />
-              {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+              {loadingImage ? <p>Uploading...</p> :
+                imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
             </div>
 
             <div className="form-group-custom">
               <label>Gallery</label>
               <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'gallery')} />
+              {loadingGallery && <p>Uploading...</p>}
               <div className="gallery-preview">
                 {formData.gallery?.map((img, idx) => (
                   <div key={idx} style={{ position: 'relative', display: 'inline-block', marginRight: '10px' }}>
@@ -247,17 +249,15 @@ export default function DoctorDetails() {
 
             <div className="form-actions-custom">
               <button type="button" className="btn-custom btn-cancel-custom" onClick={() => setShowForm(false)}>Cancel</button>
-              <button type="submit" className="btn-custom btn-save-custom">Save</button>
+              <button type="submit" className="btn-custom btn-save-custom" disabled={saving}>
+                {saving ? 'Saving...' : 'Save'}
+              </button>
             </div>
           </form>
         </div>
       )}
 
-      {/* <Link to="/hospital" className="back-link-custom">← Back</Link> */}
-      <button className="back-link-custom" onClick={() => navigate(-1)}>
-  ← Back
-</button>
-
+      <button className="back-link-custom" onClick={() => navigate(-1)}>← Back</button>
     </div>
   );
 }
