@@ -1,0 +1,269 @@
+/* General Styles */
+.hospital-area-wrapper {
+  padding: 3rem 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 10px;
+}
+
+.hospital-page-title {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Button Styles */
+.hospital-btn {
+  padding: 0.8rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.hospital-btn-add {
+  background-color: #28a745;
+  color: #fff;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.hospital-btn-add:hover {
+  background-color: #218838;
+}
+
+/* Hospital Cards List */
+.hospital-list-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.hospital-card-container {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  padding: 1.8rem;
+  transition: all 0.3s ease;
+}
+
+.hospital-card-container:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hospital-card-header {
+  margin-bottom: 1rem;
+}
+
+.hospital-name {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.hospital-area {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 5px 0;
+}
+
+.hospital-contact {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  margin: 5px 0;
+}
+
+.hospital-rating-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.hospital-star {
+  font-size: 1.4rem;
+  margin-right: 0.2rem;
+  color: #ccc;
+}
+
+.hospital-star.full {
+  color: #f1c40f;
+}
+
+.hospital-rating-number {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+}
+
+/* Hospital Card Actions */
+.hospital-card-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.hospital-btn-action {
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.hospital-btn-details {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.hospital-btn-details:hover {
+  background-color: #138496;
+}
+
+.hospital-btn-edit {
+  background-color: #ffc107;
+  color: white;
+}
+
+.hospital-btn-edit:hover {
+  background-color: #e0a800;
+}
+
+.hospital-btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.hospital-btn-delete:hover {
+  background-color: #c82333;
+}
+
+/* Form Modal */
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.form-container {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.btn-save,
+.btn-cancel {
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-save {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-save:hover {
+  background-color: #0056b3;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+/* Back Link */
+.back-link {
+  display: inline-block;
+  margin-top: 2rem;
+  color: #2980b9;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #21618c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hospital-list-wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hospital-btn {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .hospital-list-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .hospital-btn {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .hospital-card-container {
+    padding: 1rem;
+  }
+
+  .hospital-name {
+    font-size: 1.3rem;
+  }
+}

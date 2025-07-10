@@ -1,0 +1,117 @@
+/* ------------ Base sidebar styling ------------ */
+.sidebar {
+  width: 240px;
+  background-color: #e42323;
+  color: #fff;
+  position: fixed;
+  height: 100%;
+  padding-top: 20px;
+  transition: transform 0.3s ease;
+  transform: translateX(-240px); /* hidden by default */
+  z-index: 100; /* sit above page content */
+}
+
+.sidebar.open {
+  transform: translateX(0); /* show sidebar when open */
+}
+
+/* ------------ Header & Links ------------ */
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 12px 20px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background-color: #5b5b5b;
+}
+
+/* ------------ Overlay ------------ */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+}
+
+/* ------------ Hamburger button ------------ */
+.sidebar-toggle-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 200; /* above sidebar and overlay */
+  font-size: 24px;
+  border: none;
+  background: #fff; /* white bg for contrast */
+  color: #e42323; /* red icon */
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 4px;
+}
+
+/* ------------ Responsive breakpoints ------------ */
+
+/* Always show sidebar on tablets+ */
+@media (min-width: 768px) {
+  .sidebar {
+    transform: translateX(0); /* Sidebar is always visible */
+  }
+
+  .sidebar-toggle-btn {
+    display: none; /* Hide the hamburger button */
+  }
+}
+
+/* Show sidebar-toggle-btn between 700px and 800px */
+@media (min-width: 700px) and (max-width: 800px) {
+  .sidebar {
+    transform: translateX(-240px); /* Sidebar hidden by default */
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Show sidebar when open */
+  }
+
+  .sidebar-link {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  .sidebar-toggle-btn {
+    display: block; /* Show the hamburger button */
+  }
+}
+
+/* Only show sidebar-toggle-btn on <700px */
+@media (max-width: 699px) {
+  .sidebar {
+    width: 200px; /* You can shrink on mobile if you like */
+  }
+
+  .sidebar-link {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Open the sidebar when toggled */
+  }
+
+  .sidebar-toggle-btn {
+    display: block; /* Show the hamburger button */
+  }
+}
