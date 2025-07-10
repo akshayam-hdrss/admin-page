@@ -37,6 +37,7 @@ export default function DoctorName() {
     about: "",
     gallery: [],
     youtubeLink: "",
+    bannerUrl: "",
   });
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export default function DoctorName() {
       about: "",
       gallery: [],
       youtubeLink: "",
+      bannerUrl: "",
     });
     setImagePreview(null);
     setEditingId(null);
@@ -95,6 +97,7 @@ export default function DoctorName() {
       about: doc.about || "",
       gallery: Array.isArray(doc.gallery) ? [...doc.gallery] : [],
       youtubeLink: doc.youtubeLink || "",
+      bannerUrl: doc.bannerUrl || "",
     });
     setImagePreview(doc.imageUrl || null);
     setEditingId(doc.id);
@@ -115,30 +118,35 @@ export default function DoctorName() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  
+
   const handleFileChange = async (e, type) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const file = e.target.files[0];
+  if (!file) return;
 
-    const form = new FormData();
-    form.append("image", file);
+  const form = new FormData();
+  form.append("image", file);
 
-    setIsImageUploading(true);
-    try {
-      const res = await uploadImage(form);
-      const imageUrl = res.data.imageUrl;
+  setIsImageUploading(true);
+  try {
+    const res = await uploadImage(form);
+    const imageUrl = res.data.imageUrl;
 
-      if (type === "profile") {
-        setFormData((prev) => ({ ...prev, imageUrl }));
-        setImagePreview(imageUrl);
-      } else if (type === "gallery") {
-        setFormData((prev) => ({ ...prev, gallery: [...prev.gallery, imageUrl] }));
-      }
-    } catch (err) {
-      console.error("Image upload failed:", err);
-    } finally {
-      setIsImageUploading(false);
+    if (type === "profile") {
+      setFormData((prev) => ({ ...prev, imageUrl }));
+      setImagePreview(imageUrl);
+    } else if (type === "gallery") {
+      setFormData((prev) => ({ ...prev, gallery: [...prev.gallery, imageUrl] }));
+    } else if (type === "banner") {
+      setFormData((prev) => ({ ...prev, bannerUrl: imageUrl }));
     }
-  };
+  } catch (err) {
+    console.error("Image upload failed:", err);
+  } finally {
+    setIsImageUploading(false);
+  }
+};
+
 
   const handleGalleryDelete = (imgUrl) => {
     setFormData((prev) => ({
@@ -168,6 +176,7 @@ export default function DoctorName() {
         about: formData.about,
         youtubeLink: formData.youtubeLink,
         gallery: [...formData.gallery],
+        bannerUrl: formData.bannerUrl,
       };
 
       if (editingId) {
@@ -244,6 +253,16 @@ export default function DoctorName() {
 
             <label>About</label>
             <textarea name="about" value={formData.about} onChange={handleChange}></textarea>
+
+            <div className="form-group-custom">
+              <label>Banner Image</label>
+              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'banner')} />
+              {isImageUploading && <span className="loading-spinner">Uploading...</span>}
+              {formData.bannerUrl && !isImageUploading && (
+                <img src={formData.bannerUrl} alt="Banner Preview" className="image-preview" />
+              )}
+            </div>
+
 
             <div className="form-group-custom">
               <label>Profile Image</label>

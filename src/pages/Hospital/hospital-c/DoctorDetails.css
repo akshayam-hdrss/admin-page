@@ -222,3 +222,18 @@ textarea{
   100% { transform: rotate(360deg); }
 }
 
+.banner-container-custom {
+  width: 100%;
+  max-height: 250px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.doctor-banner-custom {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+

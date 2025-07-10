@@ -31,7 +31,11 @@ export default function DoctorDetails() {
         const d = res.data.resultData;
         d.gallery = Array.isArray(d.gallery?.[0]) ? d.gallery[0] : d.gallery || [];
         setDoctor(d);
-        setFormData(d);
+        setFormData({
+          ...d,
+          bannerUrl: d.bannerUrl || '',
+          gallery: d.gallery,
+        });
         setImagePreview(d.imageUrl);
       }
     } catch (err) {
@@ -56,7 +60,7 @@ export default function DoctorDetails() {
     form.append('image', file);
 
     try {
-      if (type === 'profile') setLoadingImage(true);
+      if (type === 'profile' || type === 'banner') setLoadingImage(true);
       else setLoadingGallery(true);
 
       const res = await uploadImage(form);
@@ -70,6 +74,8 @@ export default function DoctorDetails() {
           ...prev,
           gallery: [...(prev.gallery || []), imageUrl],
         }));
+      } else if (type === 'banner') {
+        setFormData((prev) => ({ ...prev, bannerUrl: imageUrl }));
       }
     } catch (err) {
       console.error('Image upload failed:', err);
@@ -98,6 +104,7 @@ export default function DoctorDetails() {
       const updatedData = {
         ...formData,
         gallery: [JSON.stringify(formData.gallery || [])],
+        bannerUrl: formData.bannerUrl || '',
       };
       await updateDoctor(doctorId, updatedData);
       setShowForm(false);
@@ -124,6 +131,14 @@ export default function DoctorDetails() {
 
   return (
     <div className="doctor-details-page-custom">
+
+      {/* Banner Section */}
+      {doctor.bannerUrl && (
+        <div className="banner-container-custom">
+          <img src={doctor.bannerUrl} alt="Banner" className="doctor-banner-custom" />
+        </div>
+      )}
+
       <div className="header-row-custom">
         <h1>Doctor Details</h1>
         <div className="actions-custom">
@@ -214,6 +229,13 @@ export default function DoctorDetails() {
               <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'profile')} />
               {loadingImage ? <p>Uploading...</p> :
                 imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+            </div>
+
+            <div className="form-group-custom">
+              <label>Banner Image</label>
+              <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'banner')} />
+              {loadingImage ? <p>Uploading...</p> :
+                formData.bannerUrl && <img src={formData.bannerUrl} alt="Banner Preview" className="image-preview" />}
             </div>
 
             <div className="form-group-custom">
