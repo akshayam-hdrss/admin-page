@@ -1,13 +1,13 @@
-// DoctorsName.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './HospitalDoctors.css';
-import profile from '../../../assets/Doctors_img.webp'
+import profile from '../../../assets/Doctors_img.webp';
 
 export default function HospitalDoctors() {
   const { hospitalId, categoryName } = useParams();
-  
-  // Updated initialDoctors with imageUrl
+  const [loading, setLoading] = useState(true); // ✅ Loading state
+
+  // Simulated doctor data
   const initialDoctors = [
     { id: 1, name: 'Dr. John Doe', experience: '10 years', hospital: 'City General Hospital', rating: 4.2, imageUrl: 'https://via.placeholder.com/50' },
     { id: 2, name: 'Dr. Anna Jones', experience: '5 years', hospital: 'Sunrise Health Clinic', rating: 3.8, imageUrl: 'https://via.placeholder.com/50' },
@@ -17,10 +17,23 @@ export default function HospitalDoctors() {
   const [doctors, setDoctors] = useState(initialDoctors);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ name: '', experience: '', hospital: '', rating: '', imageUrl: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    experience: '',
+    hospital: '',
+    rating: '',
+    imageUrl: ''
+  });
 
-  // Render stars for a rating
-  const renderStars = rating => {
+  // ✅ Show spinner for 1.2s on load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const renderStars = (rating) => {
     const full = Math.floor(rating);
     const half = rating - full >= 0.5;
     const stars = [];
@@ -31,45 +44,72 @@ export default function HospitalDoctors() {
     return stars;
   };
 
-  // Open form for add or edit
   const handleAdd = () => {
     setFormData({ name: '', experience: '', hospital: '', rating: '', imageUrl: '' });
     setEditingId(null);
     setShowForm(true);
   };
 
-  const handleEdit = doc => {
-    setFormData({ name: doc.name, experience: doc.experience, hospital: doc.hospital, rating: doc.rating.toString(), imageUrl: doc.imageUrl });
+  const handleEdit = (doc) => {
+    setFormData({
+      name: doc.name,
+      experience: doc.experience,
+      hospital: doc.hospital,
+      rating: doc.rating.toString(),
+      imageUrl: doc.imageUrl
+    });
     setEditingId(doc.id);
     setShowForm(true);
   };
 
-  // Delete operations
-  const handleDelete = id => setDoctors(prev => prev.filter(d => d.id !== id));
-  const handleDeleteAll = () => setDoctors([]);
+  const handleDelete = (id) => {
+    setDoctors(prev => prev.filter(d => d.id !== id));
+  };
 
-  // Form change
-  const handleChange = e => {
+  const handleDeleteAll = () => {
+    setDoctors([]);
+  };
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Submit form
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const { name, experience, hospital, rating, imageUrl } = formData;
-    if (!name || !experience || !hospital) return; // required fields
+    if (!name || !experience || !hospital) return;
+
     const numericRating = parseFloat(rating) || 0;
     if (editingId) {
       setDoctors(prev => prev.map(d =>
         d.id === editingId ? { ...d, name, experience, hospital, rating: numericRating, imageUrl } : d
       ));
     } else {
-      const newDoc = { id: Date.now(), name, experience, hospital, rating: numericRating, imageUrl };
+      const newDoc = {
+        id: Date.now(),
+        name,
+        experience,
+        hospital,
+        rating: numericRating,
+        imageUrl
+      };
       setDoctors(prev => [...prev, newDoc]);
     }
     setShowForm(false);
   };
+
+  // ✅ Show loading spinner
+   if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p style={{ textAlign: 'center', color: 'red', marginTop: '10px' }}>
+          {/* Loading Categories... */}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="hospital-doctors-page">
@@ -81,7 +121,6 @@ export default function HospitalDoctors() {
         </div>
       </div>
 
-      {/* Form Modal */}
       {showForm && (
         <div className="form-overlay">
           <form className="form-container" onSubmit={handleSubmit}>
@@ -107,7 +146,6 @@ export default function HospitalDoctors() {
       <div className="doctors-list">
         {doctors.map(doc => (
           <div key={doc.id} className="doctor-row">
-          {/* <div className="col name">{doc.id}</div> */}
             <div className="col image">
               <img src={profile} alt={doc.name} className="doctor-image" />
             </div>
@@ -127,6 +165,6 @@ export default function HospitalDoctors() {
       </div>
 
       <Link to={`/HosptialArea`} className='back-link'>← Back to Categories</Link>
-    </div>
-  );
+    </div>
+  );
 }

@@ -127,7 +127,14 @@ export default function DoctorDetails() {
     }
   };
 
-  if (!doctor) return <p>Loading...</p>;
+  if (!doctor) return(
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p style={{ textAlign: 'center', color: 'red', marginTop: '10px' }}>
+          {/* Loading Categories... */}
+        </p>
+      </div>
+    );;
 
   return (
     <div className="doctor-details-page-custom">

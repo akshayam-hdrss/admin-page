@@ -1,269 +1,246 @@
-/* General Styles */
-.hospital-area-wrapper {
-  padding: 3rem 1.5rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  border-radius: 10px;
+/* Base Reset */
+img {
+  max-width: 100%;
+  height: auto;
 }
 
-.hospital-page-title {
-  font-size: 2.5rem;
+/* Container */
+.ha-container {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: auto;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Title */
+.ha-title {
+  font-size: 2.4rem;
+  font-weight: 700;
   color: #2c3e50;
   text-align: center;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
+  margin-bottom: 2rem;
 }
 
-/* Button Styles */
-.hospital-btn {
-  padding: 0.8rem 1.4rem;
+/* Buttons */
+.ha-btn {
+  padding: 0.75rem 1.4rem;
   font-size: 1rem;
+  font-weight: 600;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  font-weight: 600;
+  transition: 0.3s ease;
 }
 
-.hospital-btn-add {
+.ha-btn-add {
   background-color: #28a745;
   color: #fff;
-  margin: 0 auto;
   display: block;
-  margin-bottom: 1.5rem;
+  margin: 0 auto 2rem auto;
 }
 
-.hospital-btn-add:hover {
+.ha-btn-add:hover {
   background-color: #218838;
 }
 
-/* Hospital Cards List */
-.hospital-list-wrapper {
+/* Card Grid */
+.ha-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
-.hospital-card-container {
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  padding: 1.8rem;
-  transition: all 0.3s ease;
+/* Card */
+.ha-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.hospital-card-container:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.ha-card:hover {
+  transform: translateY(-6px);
+  transition: 0.3s ease;
 }
 
-.hospital-card-header {
+/* Card Content */
+.ha-card img {
+  border-radius: 8px;
+  max-height: 160px;
+  object-fit: cover;
   margin-bottom: 1rem;
 }
 
-.hospital-name {
-  font-size: 1.6rem;
+.ha-name {
+  font-size: 1.3rem;
   font-weight: 600;
   color: #34495e;
+  margin-bottom: 0.5rem;
 }
 
-.hospital-area {
+.ha-info {
+  font-size: 0.95rem;
   color: #7f8c8d;
-  font-size: 1.1rem;
-  margin: 5px 0;
+  margin: 2px 0;
 }
 
-.hospital-contact {
-  color: #7f8c8d;
-  font-size: 1.1rem;
-  margin: 5px 0;
+.ha-map-link {
+  margin-top: 8px;
+  color: #007bff;
+  font-size: 0.9rem;
+  text-decoration: underline;
 }
 
-.hospital-rating-wrapper {
+/* Actions */
+.ha-actions {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.hospital-star {
-  font-size: 1.4rem;
-  margin-right: 0.2rem;
-  color: #ccc;
-}
-
-.hospital-star.full {
-  color: #f1c40f;
-}
-
-.hospital-rating-number {
-  font-size: 1.1rem;
-  color: #7f8c8d;
-}
-
-/* Hospital Card Actions */
-.hospital-card-actions {
+  gap: 0.5rem;
   margin-top: 1rem;
-  display: flex;
-  gap: 1rem;
 }
 
-.hospital-btn-action {
-  padding: 0.6rem 1.4rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-  font-weight: 600;
-}
-
-.hospital-btn-details {
+.ha-btn-view {
   background-color: #17a2b8;
-  color: white;
+  color: #fff;
 }
 
-.hospital-btn-details:hover {
+.ha-btn-view:hover {
   background-color: #138496;
 }
 
-.hospital-btn-edit {
+.ha-btn-edit {
   background-color: #ffc107;
-  color: white;
+  color: #fff;
 }
 
-.hospital-btn-edit:hover {
+.ha-btn-edit:hover {
   background-color: #e0a800;
 }
 
-.hospital-btn-delete {
+.ha-btn-delete {
   background-color: #dc3545;
-  color: white;
+  color: #fff;
 }
 
-.hospital-btn-delete:hover {
+.ha-btn-delete:hover {
   background-color: #c82333;
 }
 
-/* Form Modal */
-.form-overlay {
+/* Modal Overlay */
+.ha-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.form-container {
+/* Form Modal */
+.ha-modal {
   background: #fff;
-  padding: 2.5rem;
   border-radius: 12px;
-  width: 100%;
+  padding: 2rem;
+  width: 95%;
   max-width: 500px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.form-container h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #2c3e50;
-  font-weight: 700;
-}
-
-.input-group {
+.ha-modal h2 {
   margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: #2c3e50;
 }
 
-.input-group input {
+/* Form Fields */
+.ha-field {
+  margin-bottom: 1rem;
+}
+
+.ha-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.ha-field input {
   width: 100%;
-  padding: 0.9rem;
+  padding: 0.8rem;
   font-size: 1rem;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  transition: all 0.3s ease;
+  border-radius: 6px;
 }
 
-.input-group input:focus {
+.ha-field input:focus {
   border-color: #007bff;
   outline: none;
 }
 
-.form-actions {
+/* Form Buttons */
+.ha-form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
-.btn-save,
-.btn-cancel {
-  padding: 0.9rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-}
-
-.btn-save {
+.ha-btn-save {
   background-color: #007bff;
-  color: white;
+  color: #fff;
 }
 
-.btn-save:hover {
+.ha-btn-save:hover {
   background-color: #0056b3;
 }
 
-.btn-cancel {
+.ha-btn-cancel {
   background-color: #6c757d;
   color: white;
 }
 
-.btn-cancel:hover {
+.ha-btn-cancel:hover {
   background-color: #5a6268;
 }
 
 /* Back Link */
-.back-link {
-  display: inline-block;
+.ha-back {
+  display: block;
   margin-top: 2rem;
+  text-align: center;
   color: #2980b9;
-  font-size: 1.1rem;
-  text-decoration: none;
+  font-size: 1rem;
 }
 
-.back-link:hover {
+.ha-back:hover {
   color: #21618c;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-  .hospital-list-wrapper {
+  .ha-list {
     grid-template-columns: 1fr 1fr;
   }
 
-  .hospital-btn {
-    font-size: 0.9rem;
+  .ha-btn {
+    font-size: 0.95rem;
   }
 }
 
-@media (max-width: 600px) {
-  .hospital-list-wrapper {
+@media (max-width: 480px) {
+  .ha-list {
     grid-template-columns: 1fr;
   }
 
-  .hospital-btn {
-    font-size: 1rem;
-    padding: 1rem;
+  .ha-btn {
+    width: 100%;
   }
 
-  .hospital-card-container {
-    padding: 1rem;
-  }
-
-  .hospital-name {
-    font-size: 1.3rem;
+  .ha-actions {
+    flex-direction: column;
   }
 }

@@ -93,23 +93,17 @@ const HospitalArea = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!hospitalData.name) {
       alert("Hospital name is required!");
       return;
     }
 
     try {
-      let response;
       if (editHospitalId) {
-        response = await updateHospital({
-          id: editHospitalId,
-          ...hospitalData,
-        });
+        await updateHospital({ id: editHospitalId, ...hospitalData });
       } else {
-        response = await createHospital(hospitalData);
+        await createHospital(hospitalData);
       }
-
       const updatedResponse = await getHospitalsByType(hospitalTypeId);
       setHospitals(updatedResponse.data.resultData);
       setShowForm(false);
@@ -130,155 +124,102 @@ const HospitalArea = () => {
     }
   };
 
-  if (loading) return <div className="loading">Loading hospitals...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+   // ✅ Show loading spinner before content
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p style={{ textAlign: 'center', color: 'red', marginTop: '10px' }}>
+          {/* Loading Categories... */}
+        </p>
+      </div>
+    );
+  }
+  if (error) return <div className="ha-error">Error: {error}</div>;
 
   return (
-    <div className="hospital-area-wrapper">
-      <h1 className="hospital-page-title">HOSPITALS</h1>
+    <div className="ha-container">
+      <h1 className="ha-title">HOSPITALS</h1>
 
-      <button className="hospital-btn hospital-btn-add" onClick={handleAddHospital}>
+      <button className="ha-btn ha-btn-add" onClick={handleAddHospital}>
         + Add Hospital
       </button>
 
-      <div className="hospital-list-wrapper">
+      <div className="ha-list">
         {hospitals.length > 0 ? (
           hospitals.map((hospital) => (
-            <div key={hospital.id} className="hospital-card-containern ">
+            <div key={hospital.id} className="ha-card">
               {hospital.imageUrl && (
-                <img
-                  src={hospital.imageUrl}
-                  alt={hospital.name}
-                  className="hospital-image h-50 w-75"
-                />
+                <img src={hospital.imageUrl} alt={hospital.name} />
               )}
-
-              <div className="hospital-card-header">
-                <h3 className="hospital-name">{hospital.name}</h3>
-              </div>
-
-              <p className="hospital-area">
-                <strong>Area:</strong> {hospital.area}
-              </p>
-              <p className="hospital-contact">
-                <strong>Phone:</strong> {hospital.phone}
-              </p>
+              <h3 className="ha-name">{hospital.name}</h3>
+              <p className="ha-info"><strong>Area:</strong> {hospital.area}</p>
+              <p className="ha-info"><strong>Phone:</strong> {hospital.phone}</p>
 
               {hospital.mapLink && (
-                <a
-                  href={hospital.mapLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hospital-map-link"
-                >
+                <a href={hospital.mapLink} target="_blank" rel="noopener noreferrer" className="ha-map-link">
                   View on Map
                 </a>
               )}
 
-              <div className="hospital-card-actions">
-                <Link
-                  to={`/hospital/${hospitalTypeId}/${hospital.id}`}
-                  className="hospital-btn hospital-btn-details"
-                >
+              <div className="ha-actions">
+                <Link to={`/hospital/${hospitalTypeId}/${hospital.id}`} className="ha-btn ha-btn-view">
                   View Doctors
                 </Link>
-
-                <button
-                  className="hospital-btn hospital-btn-edit"
-                  onClick={() => handleEditHospital(hospital.id)}
-                >
+                <button className="ha-btn ha-btn-edit" onClick={() => handleEditHospital(hospital.id)}>
                   Edit
                 </button>
-                <button
-                  className="hospital-btn hospital-btn-delete"
-                  onClick={() => handleDeleteHospital(hospital.id)}
-                >
+                <button className="ha-btn ha-btn-delete" onClick={() => handleDeleteHospital(hospital.id)}>
                   Delete
                 </button>
               </div>
             </div>
           ))
         ) : (
-          <p className="no-hospitals">No hospitals found for this type.</p>
+          <p className="ha-info">No hospitals found for this type.</p>
         )}
       </div>
 
       {showForm && (
-        <div className="form-overlay">
-          <div className="form-container">
+        <div className="ha-modal-overlay">
+          <div className="ha-modal">
             <h2>{editHospitalId ? "Edit Hospital" : "Add Hospital"}</h2>
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
+              <div className="ha-field">
                 <label>Name *</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={hospitalData.name}
-                  onChange={handleInputChange}
-                  required
-                />
+                <input type="text" name="name" value={hospitalData.name} onChange={handleInputChange} required />
               </div>
 
-              <div className="form-group">
+              <div className="ha-field">
                 <label>Upload Image</label>
                 <input type="file" accept="image/*" onChange={handleImageUpload} />
                 {loadingImage ? (
                   <p>Uploading...</p>
                 ) : (
-                  hospitalData.imageUrl && (
-                    <img
-                      src={hospitalData.imageUrl}
-                      alt="Preview"
-                      style={{ width: "80px", marginTop: "10px" }}
-                    />
-                  )
+                  hospitalData.imageUrl && <img src={hospitalData.imageUrl} alt="Preview" style={{ width: "80px", marginTop: "10px" }} />
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="ha-field">
                 <label>Area</label>
-                <input
-                  type="text"
-                  name="area"
-                  value={hospitalData.area}
-                  onChange={handleInputChange}
-                />
+                <input type="text" name="area" value={hospitalData.area} onChange={handleInputChange} />
               </div>
 
-              <div className="form-group">
+              <div className="ha-field">
                 <label>Map Link</label>
-                <input
-                  type="url"
-                  name="mapLink"
-                  value={hospitalData.mapLink}
-                  onChange={handleInputChange}
-                  placeholder="https://maps.google.com/..."
-                />
+                <input type="url" name="mapLink" value={hospitalData.mapLink} onChange={handleInputChange} placeholder="https://maps.google.com/..." />
               </div>
 
-              <div className="form-group">
+              <div className="ha-field">
                 <label>Phone</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={hospitalData.phone}
-                  onChange={handleInputChange}
-                  placeholder="+971-123456789"
-                />
+                <input type="tel" name="phone" value={hospitalData.phone} onChange={handleInputChange} placeholder="+971-123456789" />
               </div>
 
-              <div className="form-actions">
-                <button
-                  type="button"
-                  className="hospital-btn hospital-btn-cancel"
-                  onClick={() => setShowForm(false)}
-                >
+              <div className="ha-form-actions">
+                <button type="button" className="ha-btn ha-btn-cancel" onClick={() => setShowForm(false)}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="hospital-btn hospital-btn-save"
-                >
+                <button type="submit" className="ha-btn ha-btn-save">
                   {editHospitalId ? "Save Changes" : "Add Hospital"}
                 </button>
               </div>
@@ -287,9 +228,7 @@ const HospitalArea = () => {
         </div>
       )}
 
-      <Link to={`/hospital`} className="back-link">
-        ← Back to Categories
-      </Link>
+      <Link to="/hospital" className="ha-back">← Back to Categories</Link>
     </div>
   );
 };

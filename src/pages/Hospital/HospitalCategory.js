@@ -1,83 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HospitalCategory.css';
-import hospital from '../../assets/hospital-img.jpg'; // Placeholder image
-import { getHospitalTypes, createHospitalType, updateHospitalType, deleteHospitalType, uploadImage } from '../../api/api'; // Import API functions
+import hospital from '../../assets/hospital-img.jpg';
+import {
+  getHospitalTypes,
+  createHospitalType,
+  updateHospitalType,
+  deleteHospitalType,
+  uploadImage,
+} from '../../api/api';
 
 export default function HospitalCategory() {
   const navigate = useNavigate();
 
-  const [categories, setCategories] = useState([]); // Categories fetched from the backend
+  const [categories, setCategories] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newCategory, setNewCategory] = useState('');
-  const [newCategoryImage, setNewCategoryImage] = useState(''); // This will hold the final image URL
-  const [editIndex, setEditIndex] = useState(null); // To keep track of the category being edited
-  const [imagePreview, setImagePreview] = useState(null); // Store image preview for uploaded image
+  const [newCategoryImage, setNewCategoryImage] = useState('');
+  const [editIndex, setEditIndex] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ Loading state
 
-  // Fetch categories from API when the component mounts
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getHospitalTypes(); // Fetch from API
-        setCategories(response.data.resultData); // Update state with fetched categories
+        setLoading(true);
+        const response = await getHospitalTypes();
+        setCategories(response.data.resultData);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching categories:', error);
+        setLoading(false);
       }
     };
     fetchCategories();
-  }, []); // Run only once when the component mounts
+  }, []);
 
-  // Handle opening the form to add a new category
   const handleAddCategory = () => {
-    setEditIndex(null); // Clear edit index when adding a new category
+    setEditIndex(null);
     setIsFormOpen(true);
   };
 
-  // Handle category input change
   const handleCategoryChange = (e) => {
     setNewCategory(e.target.value);
   };
 
-  // Handle file input change (image upload)
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); // Set image preview (base64)
+        setImagePreview(reader.result);
       };
-      reader.readAsDataURL(file); // Read file as base64
+      reader.readAsDataURL(file);
 
       try {
-        // Upload image to the server
         const formData = new FormData();
-        formData.append('image', file); // Append the selected image to form data
-        const response = await uploadImage(formData); // API call to upload image
-        setNewCategoryImage(response.data.imageUrl); // Set the image URL returned by the backend
+        formData.append('image', file);
+        const response = await uploadImage(formData);
+        setNewCategoryImage(response.data.imageUrl);
       } catch (error) {
         console.error('Error uploading image:', error);
       }
     }
   };
 
-  // Save the new category (Add or Update)
   const handleSaveCategory = async () => {
     if (newCategory.trim() && newCategoryImage) {
       const categoryData = { name: newCategory, imageUrl: newCategoryImage };
       try {
         if (editIndex !== null) {
-          // If we're editing, update the existing category
           const categoryId = categories[editIndex].id;
           await updateHospitalType({ id: categoryId, ...categoryData });
         } else {
-          // If we're adding, add a new category
           await createHospitalType(categoryData);
         }
+
         setNewCategory('');
         setNewCategoryImage('');
-        setImagePreview(null); // Clear image preview
+        setImagePreview(null);
         setIsFormOpen(false);
-        // Refresh categories after adding/editing
+
         const response = await getHospitalTypes();
         setCategories(response.data.resultData);
       } catch (error) {
@@ -86,21 +89,18 @@ export default function HospitalCategory() {
     }
   };
 
-  // Cancel adding or editing a category
   const handleCancelAdd = () => {
     setNewCategory('');
     setNewCategoryImage('');
-    setImagePreview(null); // Clear image preview
+    setImagePreview(null);
     setIsFormOpen(false);
   };
 
-  // Delete category
   const handleDeleteCategory = async (index) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       const categoryId = categories[index].id;
       try {
         await deleteHospitalType({ id: categoryId });
-        // Refresh categories after deletion
         const response = await getHospitalTypes();
         setCategories(response.data.resultData);
       } catch (error) {
@@ -109,17 +109,14 @@ export default function HospitalCategory() {
     }
   };
 
-  // Delete all categories
   const handleDeleteAll = async () => {
     if (window.confirm('Are you sure you want to delete all categories?')) {
       try {
-        // Delete all categories (you may want to implement batch delete or delete one by one)
         await Promise.all(
           categories.map(async (category) => {
             await deleteHospitalType({ id: category.id });
           })
         );
-        // Refresh categories after deletion
         const response = await getHospitalTypes();
         setCategories(response.data.resultData);
       } catch (error) {
@@ -128,19 +125,29 @@ export default function HospitalCategory() {
     }
   };
 
-  // Edit category
   const handleEditCategory = (index) => {
     setEditIndex(index);
     setNewCategory(categories[index].name);
     setNewCategoryImage(categories[index].imageUrl);
-    setImagePreview(categories[index].imageUrl); // Set preview with existing image
+    setImagePreview(categories[index].imageUrl);
     setIsFormOpen(true);
   };
 
-  // Navigate to the category details page
   const handleCategoryClick = (id) => {
     navigate(`/hospital/${id}`);
   };
+
+  // ✅ Show loading spinner before content
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p style={{ textAlign: 'center', color: 'red', marginTop: '10px' }}>
+          {/* Loading Categories... */}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="category-page">
@@ -156,7 +163,6 @@ export default function HospitalCategory() {
         </div>
       </div>
 
-      {/* Form to Add or Edit Category */}
       {isFormOpen && (
         <div className="form-overlay">
           <div className="form-container">
@@ -167,7 +173,6 @@ export default function HospitalCategory() {
               onChange={handleCategoryChange}
               placeholder="Enter category name"
             />
-            {/* Image Upload */}
             <div className="image-upload">
               <input
                 type="file"
@@ -175,7 +180,13 @@ export default function HospitalCategory() {
                 onChange={handleFileChange}
                 className="input-field file-input"
               />
-              {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="image-preview"
+                />
+              )}
             </div>
             <div className="form-actions">
               <button className="btn btn-cancel" onClick={handleCancelAdd}>
@@ -189,7 +200,6 @@ export default function HospitalCategory() {
         </div>
       )}
 
-      {/* Category List */}
       <ul className="category-list">
         {categories.map((category, index) => (
           <li key={index} className="category-item">
@@ -198,9 +208,8 @@ export default function HospitalCategory() {
               onClick={() => handleCategoryClick(category.id)}
             >
               <div className="category-images">
-                {/* Display the uploaded image */}
                 <img
-                  src={category.imageUrl || hospital} // Fallback to placeholder if no image
+                  src={category.imageUrl || hospital}
                   alt={category.name}
                   className="category-image"
                 />

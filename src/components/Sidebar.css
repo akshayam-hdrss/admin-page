@@ -61,25 +61,26 @@
   height: 40px;
   padding: 0;
   border-radius: 4px;
+  display: none !important; /* Ensure it is hidden by default */
 }
 
 /* ------------ Responsive breakpoints ------------ */
 
-/* Always show sidebar on tablets+ */
-@media (min-width: 768px) {
+/* Always show sidebar on tablets and larger */
+@media (min-width: 769px) {
   .sidebar {
-    transform: translateX(0); /* Sidebar is always visible */
+    transform: translateX(0); 
   }
 
   .sidebar-toggle-btn {
-    display: none; /* Hide the hamburger button */
+    display: none !important; /* Hide the hamburger button */
   }
 }
 
-/* Show sidebar-toggle-btn between 700px and 800px */
-@media (min-width: 700px) and (max-width: 800px) {
+/* Show hamburger button between 576px and 767px */
+@media (min-width: 576px) and (max-width: 768px) {
   .sidebar {
-    transform: translateX(-240px); /* Sidebar hidden by default */
+    width: 200px; /* You can shrink on mobile if you like */
   }
 
   .sidebar.open {
@@ -92,12 +93,12 @@
   }
 
   .sidebar-toggle-btn {
-    display: block; /* Show the hamburger button */
+    display: block !important; /* Force display between 576px and 767px */
   }
 }
 
-/* Only show sidebar-toggle-btn on <700px */
-@media (max-width: 699px) {
+/* Only show sidebar-toggle-btn on <576px */
+@media (max-width: 575px) {
   .sidebar {
     width: 200px; /* You can shrink on mobile if you like */
   }
@@ -112,6 +113,6 @@
   }
 
   .sidebar-toggle-btn {
-    display: block; /* Show the hamburger button */
+    display: block !important; /* Show the hamburger button */
   }
 }

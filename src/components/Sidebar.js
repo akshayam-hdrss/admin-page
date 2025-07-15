@@ -17,7 +17,7 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Hamburger button only visible between 700px and 800px */}
+      {/* Hamburger button only visible between 600px and 800px */}
       <Button
         className="sidebar-toggle-btn d-block d-sm-none"
         onClick={toggleSidebar}
