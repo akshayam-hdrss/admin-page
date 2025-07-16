@@ -184,3 +184,67 @@ export const deleteProduct = (id) => {
 };
 
 
+
+// Services (Available Services)
+export const getAvailableServices = () => {
+  return axios.get(`${BASE_URL}/services/available-services`);
+};
+
+export const createAvailableService = (payload) => {
+  return axios.post(`${BASE_URL}/services/available-services`, payload);
+};
+
+export const updateAvailableService = (id, payload) => {
+  return axios.put(`${BASE_URL}/services/available-services/${id}`, payload);
+};
+
+export const deleteAvailableService = (id) => {
+  return axios.delete(`${BASE_URL}/services/available-services/${id}`);
+};
+
+// Service Types (related to Available Services)
+export const getServiceTypesByAvailableService = (availableServiceId) => {
+  return axios.get(`${BASE_URL}/services/service-types/${availableServiceId}`);
+};
+
+export const createServiceType = (payload) => {
+  return axios.post(`${BASE_URL}/services/service-types`, payload);
+};
+
+export const updateServiceType = (payload) => {
+  const { id, ...data } = payload;
+  return axios.put(`${BASE_URL}/services/service-types/${id}`, data);
+};
+
+export const deleteServiceType = (id) => {
+  return axios.delete(`${BASE_URL}/services/service-types/${id}`);
+};
+
+
+
+// ➕ Add Service
+export const createService = (payload) => {
+  return axios.post(`${BASE_URL}/services/service`, payload);
+};
+
+// 📥 Get Service by ID
+export const getServiceById = (id) => {
+  return axios.get(`${BASE_URL}/services/service/${id}`);
+};
+
+// 📋 Get All Services by ServiceTypeId
+export const getServicesByType = (serviceTypeId) => {
+  return axios.get(`${BASE_URL}/services/services-by-type/${serviceTypeId}`);
+};
+
+// ✏️ Update Service
+export const updateService = (payload) => {
+  const { id, ...data } = payload;
+  return axios.put(`${BASE_URL}/services/service/${id}`, data);
+};
+
+// ❌ Delete Service
+export const deleteService = (id) => {
+  return axios.delete(`${BASE_URL}/services/service/${id}`);
+};
+

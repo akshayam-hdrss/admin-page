@@ -10,6 +10,7 @@ const links = [
   { to: '/hospital', label: 'Hospital' },
   { to: '/doctor', label: 'Doctor' },
   { to: '/product', label: 'Product' },
+  { to: '/service', label: 'Service' },
 ];
 
 export default function Sidebar() {
