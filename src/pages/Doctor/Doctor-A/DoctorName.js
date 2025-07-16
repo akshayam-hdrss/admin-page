@@ -8,6 +8,9 @@ import {
   updateDoctor,
   deleteDoctor,
   uploadImage,
+  createCategory,
+  updateCategory,
+  deleteCategory,
 } from "../../../api/api";
 
 export default function DoctorName() {
@@ -19,6 +22,9 @@ export default function DoctorName() {
   const [imagePreview, setImagePreview] = useState(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [editingCategoryText, setEditingCategoryText] = useState("");
+
 
   const [formData, setFormData] = useState({
     doctorName: "",
@@ -39,20 +45,100 @@ export default function DoctorName() {
     youtubeLink: "",
     bannerUrl: "",
   });
+  const [categories, setCategories] = useState([]);
+  const [newCategoryText, setNewCategoryText] = useState("");
+  const [showCategoryInput, setShowCategoryInput] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+
+
+  // useEffect(() => {
+  //   fetchDoctors();
+  // }, [hospitalId]);
 
   useEffect(() => {
     fetchDoctors();
   }, [hospitalId]);
 
-  const fetchDoctors = async () => {
-    try {
-      const res = await getDoctors({ hospitalId, doctorTypeId });
-      setDoctors(res.data.resultData || []);
-    } catch (err) {
-      console.error("Failed to fetch doctors:", err);
-      setDoctors([]);
+// const handleCreateCategory = async () => {
+//   if (!newCategoryText) return;
+//   try {
+//     await createCategory({ text: newCategoryText.trim(), hospitalId: Number(hospitalId) });
+//     setNewCategoryText("");
+//     setShowCategoryInput(false);
+//     // fetchCategories();
+//     fetchDoctors();
+//   } catch (err) {
+//     console.error("Failed to add category:", err);
+//   }
+// };
+
+const handleCreateCategory = async () => {
+  if (!newCategoryText.trim()) return;
+
+  try {
+    if (editingCategoryId) {
+      await updateCategory(editingCategoryId, {
+        text: newCategoryText.trim(),
+        hospitalId: Number(hospitalId),
+      });
+    } else {
+      await createCategory({ text: newCategoryText.trim(), hospitalId: Number(hospitalId) });
     }
-  };
+
+    setNewCategoryText("");
+    setEditingCategoryId(null);
+    setShowCategoryInput(false);
+    fetchDoctors(); // This also refreshes the categories
+  } catch (err) {
+    console.error("Failed to save category:", err);
+  }
+};
+
+const handleEditCategory = (cat) => {
+  setShowCategoryInput(true);
+  setNewCategoryText(cat.text);
+  setEditingCategoryId(cat.id);
+};
+
+const handleDeleteCategory = async (catId) => {
+  try {
+    await deleteCategory(catId);
+    fetchDoctors(); // Refresh categories after deletion
+  } catch (err) {
+    console.error("Failed to delete category:", err);
+  }
+};
+
+
+  const fetchDoctors = async () => {
+  try {
+    const res = await getDoctors({ hospitalId, doctorTypeId });
+    setDoctors(res.data.resultData || []);
+    setCategories(res.data.category || []);
+  } catch (err) {
+    console.error("Failed to fetch doctors:", err);
+    setDoctors([]);
+    setCategories([]);
+  }
+};
+const groupDoctorsByCategory = () => {
+  const grouped = {};
+
+  doctors.forEach((doc) => {
+    const doctorCategory = doc.businessName?.trim();
+    const isValidCategory = categories.some(cat => cat.text.trim() === doctorCategory);
+    const categoryKey = isValidCategory ? doctorCategory : "Other";
+    console.log(categories, doctorCategory );
+
+    if (!grouped[categoryKey]) grouped[categoryKey] = [];
+    grouped[categoryKey].push(doc);
+  });
+
+  return grouped;
+};
+
+
 
   const handleAdd = () => {
     setFormData({
@@ -209,12 +295,135 @@ export default function DoctorName() {
 
   return (
     <div className="hospital-doctors-page">
-      <div className="header-row">
-        <h1>Doctors Name</h1>
-        <div className="actions">
-          <button className="btn btn-add" onClick={handleAdd}>+ Create New</button>
-        </div>
+     <div
+  className="header-row"
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+  }}
+>
+  <h1>Doctors Name</h1>
+
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      flexWrap: "wrap",
+    }}
+  >
+    {hospitalId && (
+  <div className="d-flex flex-column gap-2 w-100">
+
+    {/* Custom Dropdown */}
+    <div className="dropdown">
+      <button
+        className="btn btn-light border dropdown-toggle text-start w-100"
+        type="button"
+        id="categoryDropdown"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        {selectedCategory || "Select Category"}
+      </button>
+      <ul className="dropdown-menu w-100" aria-labelledby="categoryDropdown" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+        {categories.map((cat) => (
+          <li
+            key={cat.id}
+            className="dropdown-item d-flex justify-content-between align-items-center"
+            onClick={() => setSelectedCategory(cat.text)}
+          >
+            <span>{cat.text}</span>
+            <span>
+              <button
+                className="btn btn-sm btn-outline-primary me-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditCategory(cat);
+                  const dropdownEl = document.getElementById("categoryDropdown");
+if (dropdownEl && window.bootstrap) {
+  const dropdown = window.bootstrap.Dropdown.getInstance(dropdownEl);
+  if (dropdown) dropdown.hide();
+}
+
+                }}
+                
+              >
+                ✏️
+              </button>
+              <button
+                className="btn btn-sm btn-outline-danger"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteCategory(cat.id);
+                }}
+              >
+                🗑
+              </button>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {/* Add / Edit Input */}
+    {showCategoryInput && (
+      <div className="d-flex gap-2 align-items-center mt-2">
+        <input
+          type="text"
+          value={newCategoryText}
+          onChange={(e) => setNewCategoryText(e.target.value)}
+          placeholder="New Category"
+          className="form-control"
+        />
+        <button
+          className="btn btn-success"
+          type="button"
+          onClick={handleCreateCategory}
+        >
+          {editingCategoryId ? "Update" : "Add"}
+        </button>
+        <button
+          className="btn btn-secondary"
+          type="button"
+          onClick={() => {
+            setShowCategoryInput(false);
+            setNewCategoryText("");
+            setEditingCategoryId(null);
+          }}
+        >
+          Cancel
+        </button>
       </div>
+    )}
+
+    {!showCategoryInput && (
+      <button
+        className="btn btn-sm btn-outline-secondary mt-2"
+        type="button"
+        onClick={() => {
+          setShowCategoryInput(true);
+          setNewCategoryText("");
+          setEditingCategoryId(null);
+        }}
+      >
+        + Add Category
+      </button>
+    )}
+  </div>
+)}
+
+
+
+    <button className="btn btn-primary" onClick={handleAdd}>
+      + Create Doctor
+    </button>
+  </div>
+</div>
+
+
 
       {showForm && (
         <div className="form-overlay">
@@ -227,8 +436,53 @@ export default function DoctorName() {
             <label>Experience *</label>
             <input name="experience" value={formData.experience} onChange={handleChange} required />
 
-            <label>Hospital *</label>
-            <input name="hospital" value={formData.hospital} onChange={handleChange} required />
+{hospitalId ? (
+  <>
+    <label>Category *</label>
+    <select
+      name="hospital"
+      value={formData.hospital}
+      onChange={handleChange}
+      required
+    >
+      <option value="">Select Category</option>
+      {categories.map((cat) => (
+        <option key={cat.id} value={cat.text}>{cat.text}</option>
+      ))}
+    </select>
+
+    {showCategoryInput ? (
+      <div style={{ display: "flex", marginTop: "5px" }}>
+        <input
+          type="text"
+          value={newCategoryText}
+          onChange={(e) => setNewCategoryText(e.target.value)}
+          placeholder="New Category"
+        />
+        <button type="button" onClick={handleCreateCategory}>Add</button>
+      </div>
+    ) : (
+      <button
+        type="button"
+        className="btn btn-sm btn-secondary"
+        onClick={() => setShowCategoryInput(true)}
+      >
+        + Add Category
+      </button>
+    )}
+  </>
+) : doctorTypeId ? (
+  <>
+    <label>Business Name *</label>
+    <input
+      name="hospital"
+      value={formData.hospital}
+      onChange={handleChange}
+      required
+    />
+  </>
+) : null}
+
 
             <label>Phone</label>
             <input name="phone" value={formData.phone} onChange={handleChange} />
@@ -314,8 +568,37 @@ export default function DoctorName() {
         </div>
       )}
 
-      <div className="doctors-list">
-        {doctors.map((doc) => (
+      {doctorTypeId ? (
+  // Show flat list if doctorTypeId is present
+  <div className="doctors-list">
+    {doctors.map((doc) => (
+      <div key={doc.id} className="doctor-row">
+        <div className="col image">
+          <img src={doc.imageUrl || profile} alt={doc.doctorName} className="doctor-image" />
+        </div>
+        <div className="col name"><strong>{doc.doctorName}</strong></div>
+        <div className="col experience">{doc.experience}</div>
+        <div className="col hospital">{doc.businessName}</div>
+        <div className="col rating">
+          <div className="stars">
+            {renderStars(parseFloat(doc.rating))}
+            <span className="rating-num">{isNaN(parseFloat(doc.rating)) ? "0.0" : parseFloat(doc.rating).toFixed(1)}</span>
+          </div>
+        </div>
+        <div className="col actions-col">
+          <Link to={`/doctordetails/${doc.id}`} className="btn btn-details">Details</Link>
+          <button className="btn btn-delete" onClick={() => handleDelete(doc.id)}>🗑</button>
+        </div>
+      </div>
+    ))}
+  </div>
+) : hospitalId ? (
+  // Show grouped list if hospitalId is present
+  <div className="doctors-list">
+    {Object.entries(groupDoctorsByCategory()).map(([category, docs]) => (
+      <div key={category} className="category-group">
+        <h2 className="category-title">{category}</h2>
+        {docs.map((doc) => (
           <div key={doc.id} className="doctor-row">
             <div className="col image">
               <img src={doc.imageUrl || profile} alt={doc.doctorName} className="doctor-image" />
@@ -336,6 +619,14 @@ export default function DoctorName() {
           </div>
         ))}
       </div>
+    ))}
+  </div>
+) : (
+  // Fallback message or nothing
+  <div>No doctors to display</div>
+)}
+
+
 
       <Link
         to={hospitalId ? `/hospital/${hospitalTypeId}` : doctorTypeId ? `/doctor` : '/'}
@@ -346,3 +637,4 @@ export default function DoctorName() {
     </div>
   );
 }
+

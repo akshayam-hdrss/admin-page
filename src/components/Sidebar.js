@@ -9,6 +9,7 @@ const links = [
   { to: '/blogs', label: 'Blogs' },
   { to: '/hospital', label: 'Hospital' },
   { to: '/doctor', label: 'Doctor' },
+  { to: '/product', label: 'Product' },
 ];
 
 export default function Sidebar() {

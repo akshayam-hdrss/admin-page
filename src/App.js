@@ -12,6 +12,10 @@ import Doctor from './pages/Doctor/Doctor';
 import NotFound from './pages/NotFound/NotFound';
 import HospitalArea from './pages/Hospital/hospital-A/HospitalArea';
 import DoctorName from './pages/Doctor/Doctor-A/DoctorName';
+import ProductPage1 from './pages/Products/Products1/ProductPage1';
+import Productpage2 from './pages/Products/Products2/Productpage2';
+import Productpage3 from './pages/Products/Products3/ProductPage3';
+import ProductPage4 from './pages/Products/Products4/ProductPage4';
 
 function App() {
   return (
@@ -32,6 +36,10 @@ function App() {
           <Route path='/hospital/:hospitalTypeId/:hospitalId' element={<DoctorName />} />
           <Route path="/doctor/:doctorTypeId" element={<DoctorName />} />
           <Route path="/doctordetails/:doctorId" element={<DoctorDetails />} />
+          <Route path="/product" element={<ProductPage1 />} />
+          <Route path="/product/:productId" element={<Productpage2 />} />
+          <Route path="/product/:productId/:productTypeId" element={<Productpage3 />} />
+          <Route path="/productdetails/:productId" element={<ProductPage4 />} />
 
         </Routes>
       </div>
