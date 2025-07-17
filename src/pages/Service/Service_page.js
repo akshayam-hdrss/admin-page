@@ -119,23 +119,22 @@ export default function ServicePage() {
   };
 
   return (
-    <div className="category-page">
-      <div className="category-header">
+    <div className="service-page">
+      <div className="service-header">
         <h1>Service Management</h1>
         <div>
-          <button className="btn btn-add" onClick={() => setIsFormOpen(true)}>
+          <button className="service-btn service-btn-add" onClick={() => setIsFormOpen(true)}>
             + Add Service
           </button>
-          <button className="btn btn-delete-all" onClick={handleDeleteAll}>
+          <button className="service-btn service-btn-delete-all" onClick={handleDeleteAll}>
             Delete All
           </button>
         </div>
       </div>
 
-      {/* Modal Form */}
       {isFormOpen && (
-        <div className="form-overlay">
-          <div className="form-container">
+        <div className="service-form-overlay">
+          <div className="service-form-container">
             <h2>{isEditing ? "Edit Service" : "Add New Service"}</h2>
             <form onSubmit={handleSubmit}>
               <input
@@ -146,7 +145,7 @@ export default function ServicePage() {
                 placeholder="Enter service name"
                 required
               />
-              <div className="image-upload">
+              <div className="service-image-upload">
                 <input
                   type="file"
                   accept="image/*"
@@ -157,19 +156,19 @@ export default function ServicePage() {
                   <img
                     src={imagePreview}
                     alt="Preview"
-                    className="image-preview"
+                    className="service-image-preview"
                   />
                 )}
               </div>
-              <div className="form-actions">
+              <div className="service-form-actions">
                 <button
                   type="button"
-                  className="btn btn-cancel"
+                  className="service-btn service-btn-cancel"
                   onClick={resetForm}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-save">
+                <button type="submit" className="service-btn service-btn-save">
                   {isEditing ? "Update" : "Save"}
                 </button>
               </div>
@@ -178,32 +177,32 @@ export default function ServicePage() {
         </div>
       )}
 
-      <ul className="category-list">
+      <ul className="service-list">
         {services.map((service) => (
-          <li key={service.id} className="category-item">
-            <div className="category-card" onClick={() => handleCategoryClick(service.id)}>
+          <li key={service.id} className="service-item">
+            <div className="service-card" onClick={() => handleCategoryClick(service.id)}>
               {service.imageUrl && (
-                <div className="category-images">
+                <div className="service-images">
                   <img
                     src={service.imageUrl}
                     alt={service.name}
-                    className="category-image"
+                    className="service-image"
                   />
                 </div>
               )}
-              <div className="category-details">
+              <div className="service-details">
                 <h3>{service.name}</h3>
               </div>
             </div>
-            <div className="category-actions">
+            <div className="service-actions">
               <button
-                className="btn btn-edit"
+                className="service-btn service-btn-edit"
                 onClick={() => handleEdit(service)}
               >
                 Edit
               </button>
               <button
-                className="btn btn-delete"
+                className="service-btn service-btn-delete"
                 onClick={() => handleDelete(service.id)}
               >
                 Delete
