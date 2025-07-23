@@ -594,6 +594,7 @@ if (dropdownEl && window.bootstrap) {
         </div>
         <div className="col actions-col">
           <Link to={`/doctordetails/${doc.id}`} className="btn btn-details">Details</Link>
+          <button className="btn btn-edit" onClick={() => handleEdit(doc)}>✏️</button>
           <button className="btn btn-delete" onClick={() => handleDelete(doc.id)}>🗑</button>
         </div>
       </div>
