@@ -158,6 +158,7 @@ export default function DoctorDetails() {
         <img src={doctor.imageUrl || 'https://via.placeholder.com/150'} alt={doctor.doctorName} className="doctor-image-custom" />
         <div className="info-custom">
           <h2>{doctor.doctorName}</h2>
+          <p><strong>Specialty:</strong> {doctor.degree}</p>
           <p><strong>Business Name:</strong> {doctor.businessName}</p>
           <div className="rating-custom">
             {renderStars(doctor.rating)}
@@ -210,6 +211,7 @@ export default function DoctorDetails() {
             <h2>Edit Doctor</h2>
             {[
               { label: 'Name *', name: 'doctorName' },
+              { label: 'Degree', name: 'degree' },
               { label: 'Business Name', name: 'businessName' },
               { label: 'Experience', name: 'experience' },
               { label: 'Phone', name: 'phone' },

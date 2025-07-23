@@ -44,6 +44,7 @@ export default function DoctorName() {
     gallery: [],
     youtubeLink: "",
     bannerUrl: "",
+    degree: "",
   });
   const [categories, setCategories] = useState([]);
   const [newCategoryText, setNewCategoryText] = useState("");
@@ -184,6 +185,7 @@ const groupDoctorsByCategory = () => {
       gallery: Array.isArray(doc.gallery) ? [...doc.gallery] : [],
       youtubeLink: doc.youtubeLink || "",
       bannerUrl: doc.bannerUrl || "",
+      degree: doc.degree || "",
     });
     setImagePreview(doc.imageUrl || null);
     setEditingId(doc.id);
@@ -263,6 +265,7 @@ const groupDoctorsByCategory = () => {
         youtubeLink: formData.youtubeLink,
         gallery: [...formData.gallery],
         bannerUrl: formData.bannerUrl,
+        degree: formData.degree
       };
 
       if (editingId) {
@@ -435,6 +438,9 @@ if (dropdownEl && window.bootstrap) {
 
             <label>Experience *</label>
             <input name="experience" value={formData.experience} onChange={handleChange} required />
+            <label>Degree</label>
+            <input name="degree" value={formData.degree} onChange={handleChange} />
+
 
 {hospitalId ? (
   <>
@@ -577,6 +583,7 @@ if (dropdownEl && window.bootstrap) {
           <img src={doc.imageUrl || profile} alt={doc.doctorName} className="doctor-image" />
         </div>
         <div className="col name"><strong>{doc.doctorName}</strong></div>
+        <div className="col degree">{doc.degree}</div>
         <div className="col experience">{doc.experience}</div>
         <div className="col hospital">{doc.businessName}</div>
         <div className="col rating">
@@ -604,6 +611,7 @@ if (dropdownEl && window.bootstrap) {
               <img src={doc.imageUrl || profile} alt={doc.doctorName} className="doctor-image" />
             </div>
             <div className="col name"><strong>{doc.doctorName}</strong></div>
+            <div className="col degree">{doc.degree}</div>
             <div className="col experience">{doc.experience}</div>
             <div className="col hospital">{doc.businessName}</div>
             <div className="col rating">
@@ -614,6 +622,7 @@ if (dropdownEl && window.bootstrap) {
             </div>
             <div className="col actions-col">
               <Link to={`/doctordetails/${doc.id}`} className="btn btn-details">Details</Link>
+              <button className="btn btn-edit" onClick={() => handleEdit(doc)}>✏️</button>
               <button className="btn btn-delete" onClick={() => handleDelete(doc.id)}>🗑</button>
             </div>
           </div>
