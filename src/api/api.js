@@ -248,3 +248,24 @@ export const deleteService = (id) => {
   return axios.delete(`${BASE_URL}/services/service/${id}`);
 };
 
+// blogs api 
+export const getBlogs = () => {
+  return axios.get(`${BASE_URL}/blog`)
+}
+
+export const createBlog = (payload) => {
+  return axios.post(`${BASE_URL}/blog`, payload)
+}
+
+export const deleteBlog = (id) => {
+  return axios.delete(`${BASE_URL}/blog/${id}`);
+};
+
+export const updateBlog = (id, payload) => {
+  return axios.put(`${BASE_URL}/blog/${id}`, payload);
+};
+
+//top Stars
+export const topdoctors = () => {
+  return axios.get(`${BASE_URL}/doctor/topdoctors`)
+}

@@ -1,53 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Topstars.css';
-import doctors from '../../assets/Doctors_img.webp'
-// Example data for top doctors (you can fetch this data from an API)
-const topDoctors = [
-  {
-    id: 1,
-    name: 'Dr. John Doe',
-    specialty: 'Cardiology',
-    rating: 4.9,
-    image: doctors,
-    achievements: '10+ years of experience, Over 500 successful surgeries',
-  },
-  {
-    id: 2,
-    name: 'Dr. Jane Smith',
-    specialty: 'Neurology',
-    rating: 4.8,
-    image: doctors,
-    achievements: 'Innovative treatments in neurocare, Published 10+ research papers',
-  },
-  {
-    id: 3,
-    name: 'Dr. Emily Clark',
-    specialty: 'Orthopedics',
-    rating: 4.7,
-    image: doctors,
-    achievements: 'Pioneering orthopedic surgeries, Founder of local health awareness programs',
-  },
-  // Add more doctors as needed
-];
+import { topdoctors } from '../../api/api';
 
 export default function Topstars() {
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      setLoading(true);
+      try {
+        const response = await topdoctors();
+        if (response.data.result === 'Success') {
+          setDoctors(response.data.resultData);
+        } else {
+          setError('Failed to fetch doctors');
+        }
+      } catch (err) {
+        setError('Network error while fetching top doctors.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
+  const renderStars = (rating) => {
+    const roundedRating = Math.round(Number(rating));
+    return Array.from({ length: 5 }, (_, index) => (
+      <span
+        key={index}
+        className={index < roundedRating ? 'star filled' : 'star'}
+      >
+        ★
+      </span>
+    ));
+  };
+
   return (
     <div className="topstars-container">
       <h1 className="topstars-title">Top Doctors</h1>
+
+      {loading && <p>Loading top doctors...</p>}
+      {error && <p className="text-danger">{error}</p>}
+
       <div className="doctor-list">
-        {topDoctors.map((doctor) => (
+        {doctors.map((doctor) => (
           <div key={doctor.id} className="doctor-card">
-            <img src={doctor.image} alt={doctor.name} className="doctor-image" />
+            <img
+              src={doctor.imageUrl}
+              alt={doctor.doctorName}
+              className="doctor-images"
+            />
             <div className="doctor-info">
-              <h2 className="doctor-name">{doctor.name}</h2>
-              <p className="doctor-specialty">{doctor.specialty}</p>
+              <h2 className="doctor-name">{doctor.doctorName}</h2>
+              <p className="doctor-degree">{doctor.degree}</p>
+              <p className="doctor-specialty">{doctor.businessName}</p>
+              <p className="doctor-location">{doctor.location}</p>
               <div className="doctor-rating">
-                {Array.from({ length: 5 }, (_, index) => (
-                  <span key={index} className={index < doctor.rating ? 'star filled' : 'star'}>★</span>
-                ))}
+                {renderStars(doctor.rating)}
                 <span className="rating-number">({doctor.rating})</span>
               </div>
-              <p className="doctor-achievements">{doctor.achievements}</p>
+              <p className="doctor-phone">📞 {doctor.phone}</p>
+              {doctor.whatsapp && (
+                <p className="doctor-whatsapp">💬 WhatsApp: {doctor.whatsapp}</p>
+              )}
             </div>
           </div>
         ))}

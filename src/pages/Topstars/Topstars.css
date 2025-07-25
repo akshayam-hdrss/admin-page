@@ -31,11 +31,11 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.doctor-image {
-  width: 100%;
+.doctor-images {
+  width: 50%;
   height: 200px;
   object-fit: cover;
-  border-bottom: 2px solid #eee;
+  /* border-bottom: 2px solid #eee; */
 }
 
 .doctor-info {
@@ -93,6 +93,6 @@
   }
 
   .doctor-rating {
-    justify-content: center;
-  }
+    justify-content: center;
+}
 }
