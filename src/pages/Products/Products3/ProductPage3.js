@@ -5,6 +5,7 @@ import {
   getProductsByProductType,
   createProduct,
   deleteProduct,
+  updateProduct,
 } from "../../../api/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -29,6 +30,8 @@ export default function Productpage3() {
     experience: "",
     addressLine1: "",
     addressLine2: "",
+    district: "",      // <-- added
+    pincode: "",       // <-- added
     mapLink: "",
     about: "",
     youtubeLink: "",
@@ -109,12 +112,14 @@ export default function Productpage3() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = { ...form,  gallery: JSON.stringify(form.gallery) };
-      
+      const payload = { ...form, gallery: JSON.stringify(form.gallery) };
+
       if (editingId) {
         payload.id = editingId;
+        await updateProduct(payload); // <-- use updateProduct for edit
+      } else {
+        await createProduct(payload);
       }
-      await createProduct(payload);
       setForm(initialForm);
       setEditingId(null);
       setImagePreview(null);
@@ -205,6 +210,8 @@ export default function Productpage3() {
                       "experience",
                       "addressLine1",
                       "addressLine2",
+                      "district",      // <-- added
+                      "pincode",       // <-- added
                       "mapLink",
                       "youtubeLink",
                     ].map((field) => (
@@ -216,6 +223,7 @@ export default function Productpage3() {
                           onChange={handleInputChange}
                           placeholder={field}
                           required={["productName", "price"].includes(field)}
+                          type={field === "pincode" ? "number" : "text"}
                         />
                       </div>
                     ))}

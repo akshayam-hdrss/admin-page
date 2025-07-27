@@ -30,6 +30,8 @@ export default function ServicePage() {
     experience: "",
     addressLine1: "",
     addressLine2: "",
+    district: "",        // <-- added
+    pincode: "",         // <-- added
     mapLink: "",
     about: "",
     youtubeLink: "",
@@ -207,6 +209,8 @@ export default function ServicePage() {
                       "experience",
                       "addressLine1",
                       "addressLine2",
+                      "district",        // <-- added
+                      "pincode",         // <-- added
                       "mapLink",
                       "youtubeLink",
                     ].map((field) => (
