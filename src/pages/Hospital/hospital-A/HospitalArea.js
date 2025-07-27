@@ -25,6 +25,10 @@ const HospitalArea = () => {
     mapLink: "",
     phone: "",
     hospitalTypeId: hospitalTypeId,
+    address1: "",
+    address2: "",
+    district: "",
+    pincode: "",
   });
 
   const [showForm, setShowForm] = useState(false);
@@ -81,6 +85,10 @@ const HospitalArea = () => {
       mapLink: "",
       phone: "",
       hospitalTypeId: hospitalTypeId,
+      address1: "",
+      address2: "",
+      district: "",
+      pincode: "",
     });
   };
 
@@ -213,6 +221,26 @@ const HospitalArea = () => {
               <div className="ha-field">
                 <label>Phone</label>
                 <input type="tel" name="phone" value={hospitalData.phone} onChange={handleInputChange} placeholder="+971-123456789" />
+              </div>
+
+              <div className="ha-field">
+                <label>Address Line 1</label>
+                <input type="text" name="address1" value={hospitalData.address1} onChange={handleInputChange} />
+              </div>
+
+              <div className="ha-field">
+                <label>Address Line 2</label>
+                <input type="text" name="address2" value={hospitalData.address2} onChange={handleInputChange} />
+              </div>
+
+              <div className="ha-field">
+                <label>District</label>
+                <input type="text" name="district" value={hospitalData.district} onChange={handleInputChange} />
+              </div>
+
+              <div className="ha-field">
+                <label>Pincode</label>
+                <input type="text" name="pincode" value={hospitalData.pincode} onChange={handleInputChange} />
               </div>
 
               <div className="ha-form-actions">

@@ -138,7 +138,9 @@ img {
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding-top: 40px; /* Add space at the top */
+  padding-bottom: 40px; /* Optional: space at the bottom */
+  overflow-y: auto; /* Allow overlay to scroll if needed */
   z-index: 1000;
 }
 
@@ -149,6 +151,9 @@ img {
   padding: 2rem;
   width: 95%;
   max-width: 500px;
+  max-height: 90vh; /* Limit modal height */
+  overflow-y: auto; /* Make modal content scrollable */
+  box-sizing: border-box;
 }
 
 .ha-modal h2 {
