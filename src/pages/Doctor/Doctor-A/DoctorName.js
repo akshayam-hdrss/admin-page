@@ -45,6 +45,8 @@ export default function DoctorName() {
     youtubeLink: "",
     bannerUrl: "",
     degree: "",
+    district: "",      // <-- Added
+    pincode: "",       // <-- Added
   });
   const [categories, setCategories] = useState([]);
   const [newCategoryText, setNewCategoryText] = useState("");
@@ -160,6 +162,9 @@ const groupDoctorsByCategory = () => {
       gallery: [],
       youtubeLink: "",
       bannerUrl: "",
+      degree: "",
+      district: "",    // <-- Added
+      pincode: "",     // <-- Added
     });
     setImagePreview(null);
     setEditingId(null);
@@ -186,6 +191,8 @@ const groupDoctorsByCategory = () => {
       youtubeLink: doc.youtubeLink || "",
       bannerUrl: doc.bannerUrl || "",
       degree: doc.degree || "",
+      district: doc.district || "",    // <-- Added
+      pincode: doc.pincode || "",      // <-- Added
     });
     setImagePreview(doc.imageUrl || null);
     setEditingId(doc.id);
@@ -265,7 +272,9 @@ const groupDoctorsByCategory = () => {
         youtubeLink: formData.youtubeLink,
         gallery: [...formData.gallery],
         bannerUrl: formData.bannerUrl,
-        degree: formData.degree
+        degree: formData.degree,
+        district: formData.district,    // <-- Added
+        pincode: formData.pincode,      // <-- Added
       };
 
       if (editingId) {
@@ -440,6 +449,12 @@ if (dropdownEl && window.bootstrap) {
             <input name="experience" value={formData.experience} onChange={handleChange} required />
             <label>Degree</label>
             <input name="degree" value={formData.degree} onChange={handleChange} />
+
+            <label>District</label> {/* <-- Added */}
+            <input name="district" value={formData.district} onChange={handleChange} />
+
+            <label>Pincode</label> {/* <-- Added */}
+            <input name="pincode" value={formData.pincode} onChange={handleChange} />
 
 
 {hospitalId ? (
