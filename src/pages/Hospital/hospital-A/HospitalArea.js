@@ -177,9 +177,9 @@ const HospitalArea = () => {
                 <button className="ha-btn ha-btn-edit" onClick={() => handleEditHospital(hospital.id)}>
                   Edit
                 </button>
-                {/* <button className="ha-btn ha-btn-delete" onClick={() => handleDeleteHospital(hospital.id)}>
+                <button className="ha-btn ha-btn-delete" onClick={() => handleDeleteHospital(hospital.id)}>
                   Delete
-                </button> */}
+                </button>
               </div>
             </div>
           ))

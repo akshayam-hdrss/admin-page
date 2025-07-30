@@ -20,6 +20,7 @@ import ServicePage from './pages/Service/Service_page';
 import ServicePage1 from './pages/Service/ServicePage1';
 import ServicePage2 from './pages/Service/ServicePage2';
 import ServicePage3 from './pages/Service/ServicePage3';
+import BlogTopic from './pages/blogs/BlogTopic';
 
 function App() {
   return (
@@ -29,7 +30,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/topstars" element={<Topstars />} />
-          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs" element={<BlogTopic />} />
+          <Route path="/blog/:blogId" element={<Blogs />} />
           <Route path="/hospital" element={<Hospital />} />
            <Route path="hospital/:hospitalTypeId/categories/:categoryName/doctors" element={<HospitalDoctors />} />
            <Route path="/hospitals/:hospitalId/categories/:categoryName/doctors/:doctorId" element={<DoctorDetails />} />

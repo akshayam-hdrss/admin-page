@@ -126,9 +126,9 @@ export default function ServicePage() {
           <button className="service-btn service-btn-add" onClick={() => setIsFormOpen(true)}>
             + Add Service
           </button>
-          <button className="service-btn service-btn-delete-all" onClick={handleDeleteAll}>
+          {/* <button className="service-btn service-btn-delete-all" onClick={handleDeleteAll}>
             Delete All
-          </button>
+          </button> */}
         </div>
       </div>
 

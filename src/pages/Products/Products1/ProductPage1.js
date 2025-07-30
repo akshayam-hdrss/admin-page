@@ -122,9 +122,9 @@ export default function ProductPage1() {
           <button className="product-btn-add" onClick={() => setIsFormOpen(true)}>
             + Add Product
           </button>
-          <button className="product-btn-delete-all" onClick={handleDeleteAll}>
+          {/* <button className="product-btn-delete-all" onClick={handleDeleteAll}>
             Delete All
-          </button>
+          </button> */}
         </div>
       </div>
 

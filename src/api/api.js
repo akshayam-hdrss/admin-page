@@ -252,6 +252,9 @@ export const deleteService = (id) => {
 export const getBlogs = () => {
   return axios.get(`${BASE_URL}/blog`)
 }
+export const getBlogById = (id) => {
+  return axios.get(`${BASE_URL}/blog/${id}`)
+}
 
 export const createBlog = (payload) => {
   return axios.post(`${BASE_URL}/blog`, payload)
@@ -265,7 +268,13 @@ export const updateBlog = (id, payload) => {
   return axios.put(`${BASE_URL}/blog/${id}`, payload);
 };
 
+//blogs tittle
+export const getBlogTopics = () => { return axios.get(`${BASE_URL}/blog/topic`); };
+export const createBlogTopic = (data) => axios.post(`${BASE_URL}/blog/topic`, data);
+export const updateBlogTopic = (id, data) => axios.put(`${BASE_URL}/blog/topic/${id}`, data);
+export const deleteBlogTopic = (id) => axios.delete(`${BASE_URL}/blog/topic/${id}`);
+
 //top Stars
 export const topdoctors = () => {
   return axios.get(`${BASE_URL}/doctor/topdoctors`)
-}
+};

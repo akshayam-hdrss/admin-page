@@ -157,9 +157,9 @@ export default function HospitalCategory() {
           <button className="btn btn-add" onClick={handleAddCategory}>
             + Add Category
           </button>
-          <button className="btn btn-delete-all" onClick={handleDeleteAll}>
+          {/* <button className="btn btn-delete-all" onClick={handleDeleteAll}>
             Delete All
-          </button>
+          </button> */}
         </div>
       </div>
 
