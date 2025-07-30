@@ -105,6 +105,10 @@ const HospitalArea = () => {
       alert("Hospital name is required!");
       return;
     }
+    if (!hospitalData.hospitalTypeId){
+      alert("Hospital Type ID is required!");
+      return;
+    }
 
     try {
       if (editHospitalId) {
@@ -242,6 +246,11 @@ const HospitalArea = () => {
                 <label>Pincode</label>
                 <input type="text" name="pincode" value={hospitalData.pincode} onChange={handleInputChange} />
               </div>
+              <div className="ha-field">
+                <label>Hospital Type ID</label>
+                <input type="text" name="hospitalTypeId" value={hospitalData.hospitalTypeId} onChange={handleInputChange} />
+              </div>
+
 
               <div className="ha-form-actions">
                 <button type="button" className="ha-btn ha-btn-cancel" onClick={() => setShowForm(false)}>

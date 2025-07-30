@@ -24,12 +24,13 @@ export default function DoctorName() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [editingCategoryText, setEditingCategoryText] = useState("");
+  const [newCategoryOrderNo, setNewCategoryOrderNo] = useState("");
 
 
   const [formData, setFormData] = useState({
     doctorName: "",
     experience: "",
-    hospital: "",
+    businessName: "",
     rating: 0,
     imageUrl: "",
     location: "",
@@ -45,8 +46,8 @@ export default function DoctorName() {
     youtubeLink: "",
     bannerUrl: "",
     degree: "",
-    district: "",      // <-- Added
-    pincode: "",       // <-- Added
+    district: "",
+    pincode: "",
   });
   const [categories, setCategories] = useState([]);
   const [newCategoryText, setNewCategoryText] = useState("");
@@ -83,16 +84,18 @@ const handleCreateCategory = async () => {
     if (editingCategoryId) {
       await updateCategory(editingCategoryId, {
         text: newCategoryText.trim(),
+        number: parseInt(newCategoryOrderNo) || 1,
         hospitalId: Number(hospitalId),
       });
     } else {
-      await createCategory({ text: newCategoryText.trim(), hospitalId: Number(hospitalId) });
+      await createCategory({ text: newCategoryText.trim(), number: parseInt(newCategoryOrderNo) || 1, hospitalId: Number(hospitalId) });
     }
 
     setNewCategoryText("");
+    setNewCategoryOrderNo("");
     setEditingCategoryId(null);
     setShowCategoryInput(false);
-    fetchDoctors(); // This also refreshes the categories
+    fetchDoctors();
   } catch (err) {
     console.error("Failed to save category:", err);
   }
@@ -101,13 +104,14 @@ const handleCreateCategory = async () => {
 const handleEditCategory = (cat) => {
   setShowCategoryInput(true);
   setNewCategoryText(cat.text);
+  setNewCategoryOrderNo(cat.number || "");
   setEditingCategoryId(cat.id);
 };
 
 const handleDeleteCategory = async (catId) => {
   try {
     await deleteCategory(catId);
-    fetchDoctors(); // Refresh categories after deletion
+    fetchDoctors();
   } catch (err) {
     console.error("Failed to delete category:", err);
   }
@@ -129,7 +133,7 @@ const groupDoctorsByCategory = () => {
   const grouped = {};
 
   doctors.forEach((doc) => {
-    const doctorCategory = doc.businessName?.trim();
+    const doctorCategory = doc.category?.trim();
     const isValidCategory = categories.some(cat => cat.text.trim() === doctorCategory);
     const categoryKey = isValidCategory ? doctorCategory : "Other";
     console.log(categories, doctorCategory );
@@ -147,7 +151,7 @@ const groupDoctorsByCategory = () => {
     setFormData({
       doctorName: "",
       experience: "",
-      hospital: "",
+      businessName: "",
       rating: 0,
       imageUrl: "",
       location: "",
@@ -163,8 +167,10 @@ const groupDoctorsByCategory = () => {
       youtubeLink: "",
       bannerUrl: "",
       degree: "",
-      district: "",    // <-- Added
-      pincode: "",     // <-- Added
+      district: "",
+      pincode: "",
+      designation: "",
+      category: "",
     });
     setImagePreview(null);
     setEditingId(null);
@@ -175,7 +181,7 @@ const groupDoctorsByCategory = () => {
     setFormData({
       doctorName: doc.doctorName,
       experience: doc.experience || "",
-      hospital: doc.businessName,
+      businessName: doc.businessName,
       rating: 0,
       imageUrl: doc.imageUrl,
       location: doc.location,
@@ -191,8 +197,10 @@ const groupDoctorsByCategory = () => {
       youtubeLink: doc.youtubeLink || "",
       bannerUrl: doc.bannerUrl || "",
       degree: doc.degree || "",
-      district: doc.district || "",    // <-- Added
-      pincode: doc.pincode || "",      // <-- Added
+      district: doc.district || "",
+      pincode: doc.pincode || "",
+      designation: "",
+      category: "",
     });
     setImagePreview(doc.imageUrl || null);
     setEditingId(doc.id);
@@ -273,8 +281,10 @@ const groupDoctorsByCategory = () => {
         gallery: [...formData.gallery],
         bannerUrl: formData.bannerUrl,
         degree: formData.degree,
-        district: formData.district,    // <-- Added
-        pincode: formData.pincode,      // <-- Added
+        district: formData.district,
+        pincode: formData.pincode,
+        designation: formData.designation,
+        category: formData.category,
       };
 
       if (editingId) {
@@ -355,10 +365,10 @@ const groupDoctorsByCategory = () => {
                   e.stopPropagation();
                   handleEditCategory(cat);
                   const dropdownEl = document.getElementById("categoryDropdown");
-if (dropdownEl && window.bootstrap) {
-  const dropdown = window.bootstrap.Dropdown.getInstance(dropdownEl);
-  if (dropdown) dropdown.hide();
-}
+                  if (dropdownEl && window.bootstrap) {
+                    const dropdown = window.bootstrap.Dropdown.getInstance(dropdownEl);
+                    if (dropdown) dropdown.hide();
+                  }
 
                 }}
                 
@@ -390,6 +400,14 @@ if (dropdownEl && window.bootstrap) {
           placeholder="New Category"
           className="form-control"
         />
+        <input
+      type="number"
+      value={newCategoryOrderNo}
+      onChange={(e) => setNewCategoryOrderNo(e.target.value)}
+      placeholder="Order No"
+      className="form-control"
+      style={{ width: "100px" }}
+    />
         <button
           className="btn btn-success"
           type="button"
@@ -450,10 +468,16 @@ if (dropdownEl && window.bootstrap) {
             <label>Degree</label>
             <input name="degree" value={formData.degree} onChange={handleChange} />
 
-            <label>District</label> {/* <-- Added */}
+            <label>Designation</label> 
+            <input name="designation" value={formData.designation} onChange={handleChange} />
+
+            <label>Business Name</label>
+            <input name="businessName" value={formData.businessName} onChange={handleChange} required />
+
+            <label>District</label> 
             <input name="district" value={formData.district} onChange={handleChange} />
 
-            <label>Pincode</label> {/* <-- Added */}
+            <label>Pincode</label> 
             <input name="pincode" value={formData.pincode} onChange={handleChange} />
 
 
@@ -461,8 +485,8 @@ if (dropdownEl && window.bootstrap) {
   <>
     <label>Category *</label>
     <select
-      name="hospital"
-      value={formData.hospital}
+      name="category"
+      value={formData.category}
       onChange={handleChange}
       required
     >
@@ -491,16 +515,6 @@ if (dropdownEl && window.bootstrap) {
         + Add Category
       </button>
     )}
-  </>
-) : doctorTypeId ? (
-  <>
-    <label>Business Name *</label>
-    <input
-      name="hospital"
-      value={formData.hospital}
-      onChange={handleChange}
-      required
-    />
   </>
 ) : null}
 
@@ -647,7 +661,6 @@ if (dropdownEl && window.bootstrap) {
     ))}
   </div>
 ) : (
-  // Fallback message or nothing
   <div>No doctors to display</div>
 )}
 

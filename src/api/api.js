@@ -278,3 +278,23 @@ export const deleteBlogTopic = (id) => axios.delete(`${BASE_URL}/blog/topic/${id
 export const topdoctors = () => {
   return axios.get(`${BASE_URL}/doctor/topdoctors`)
 };
+
+
+// 🆕 Ads API
+
+export const getAds = () => {
+  return axios.get(`${BASE_URL}/ads/correctGallery/default`);
+};
+
+export const createAd = (payload) => {
+  return axios.post(`${BASE_URL}/ads/gallery`, payload);
+};
+
+
+export const updateAd = (id, payload) => {
+  return axios.put(`${BASE_URL}/ads/gallery/${id}`, payload);
+};
+
+export const deleteAd = (id) => {
+  return axios.delete(`${BASE_URL}/ads/gallery/${id}`);
+};
