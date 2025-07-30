@@ -12,9 +12,11 @@ import {
   updateCategory,
   deleteCategory,
 } from "../../../api/api";
+import AdManagement from "../../../components/AdManagement/AdManagement";
 
 export default function DoctorName() {
   const { hospitalTypeId, hospitalId, doctorTypeId } = useParams();
+
 
   const [doctors, setDoctors] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -53,6 +55,9 @@ export default function DoctorName() {
   const [newCategoryText, setNewCategoryText] = useState("");
   const [showCategoryInput, setShowCategoryInput] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [adcategory, setAdCategory] = useState("doctor");
+  const [adTypeId, setAdTypeId] = useState(null);
+  const [adItemId, setAdItemId] = useState(null);
 
 
 
@@ -62,6 +67,17 @@ export default function DoctorName() {
 
   useEffect(() => {
     fetchDoctors();
+    if (hospitalId) {
+      setAdCategory("hospital");
+      setAdTypeId(hospitalTypeId);
+      setAdItemId(hospitalId);
+    }
+    else if (doctorTypeId) {
+      setAdCategory("doctor");
+      setAdTypeId(doctorTypeId);
+      setAdItemId(null);
+    }
+
   }, [hospitalId]);
 
 // const handleCreateCategory = async () => {
@@ -315,7 +331,8 @@ const groupDoctorsByCategory = () => {
     return stars;
   };
 
-  return (
+  return ( <>
+    <AdManagement category={adcategory} typeId={adTypeId} itemId={adItemId} />
     <div className="hospital-doctors-page">
      <div
   className="header-row"
@@ -673,6 +690,7 @@ const groupDoctorsByCategory = () => {
         ← Back
       </Link>
     </div>
+    </>
   );
 }
 

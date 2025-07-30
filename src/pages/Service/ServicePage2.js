@@ -9,6 +9,7 @@ import {
   getServiceById,
 } from "../../api/api";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AdManagement from "../../components/AdManagement/AdManagement";
 
 export default function ServicePage() {
   const { serviceTypeId } = useParams();
@@ -136,6 +137,9 @@ export default function ServicePage() {
   };
 
   return (
+  <>
+ 
+
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>Services</h2>
@@ -321,5 +325,6 @@ export default function ServicePage() {
         </div>
       )}
     </div>
+    </>
   );
 }

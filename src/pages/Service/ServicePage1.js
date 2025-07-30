@@ -9,6 +9,7 @@ import {
   getServiceTypesByAvailableService,
 } from "../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
+import AdManagement from "../../components/AdManagement/AdManagement";
 
 export default function ServicePage1() {
   const [services, setServices] = useState([]);
@@ -128,6 +129,8 @@ const handleSubmit = async (e) => {
   };
 
   return (
+    <>
+     <AdManagement category="services" typeId={null} itemId={null} />
     <div className="category-page">
       <div className="category-header">
         <h1>Service Management</h1>
@@ -220,5 +223,6 @@ const handleSubmit = async (e) => {
         ))}
       </ul>
     </div>
+    </>
   );
 }

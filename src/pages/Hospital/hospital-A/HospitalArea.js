@@ -8,6 +8,7 @@ import {
   uploadImage,
 } from "../../../api/api";
 import "./HospitalArea.css";
+import AdManagement from "../../../components/AdManagement/AdManagement";
 
 const HospitalArea = () => {
   const { hospitalTypeId } = useParams();
@@ -150,7 +151,10 @@ const HospitalArea = () => {
   if (error) return <div className="ha-error">Error: {error}</div>;
 
   return (
+    <div className="ha-wrapper">
+      <AdManagement category="hosptial" typeId={hospitalTypeId} itemId={null} />
     <div className="ha-container">
+
       <h1 className="ha-title">HOSPITALS</h1>
 
       <button className="ha-btn ha-btn-add" onClick={handleAddHospital}>
@@ -266,6 +270,7 @@ const HospitalArea = () => {
       )}
 
       <Link to="/hospital" className="ha-back">← Back to Categories</Link>
+    </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Doctor.css';
 import { getDoctorTypes, createDoctorType, updateDoctorType, deleteDoctorType, uploadImage } from '../../api/api.js'; // Import API functions
+import AdManagement from '../../components/AdManagement/AdManagement.js';
 
 const Doctor = () => {
   const [categories, setCategories] = useState([]); // Categories fetched from the backend
@@ -101,7 +102,9 @@ const Doctor = () => {
   };
 
   return (
-    <div className="doctor-container">
+  <>
+      <AdManagement category="doctor" typeId={null} itemId={null} />
+      <div className="doctor-container">
       <div className="doctor-header">
         <h1 className="doctor-title">Doctor Categories</h1>
         <button className="doctor-add-btn" onClick={openAddForm}>Add Category</button>
@@ -160,7 +163,9 @@ const Doctor = () => {
         ))}
       </div>
     </div>
+    </>
+
   );
 };
 
-export default Doctor;
+export default Doctor;

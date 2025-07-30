@@ -282,7 +282,7 @@ export const topdoctors = () => {
 
 // 🆕 Ads API
 
-export const getAds = () => {
+export const getAd = () => {
   return axios.get(`${BASE_URL}/ads/correctGallery/default`);
 };
 
@@ -297,4 +297,8 @@ export const updateAd = (id, payload) => {
 
 export const deleteAd = (id) => {
   return axios.delete(`${BASE_URL}/ads/gallery/${id}`);
+};
+
+export const getAds = (category, typeId, itemId) => {
+  return axios.get(`${BASE_URL}/ads/correctGallery/${category}?typeId=${typeId}&itemId=${itemId}`);
 };

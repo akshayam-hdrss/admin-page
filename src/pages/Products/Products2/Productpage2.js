@@ -8,6 +8,7 @@ import {
   deleteProductType
 } from "../../../api/api"; // ensure you add these functions to your api.js
 import "../Products1/ProductPage1.css";
+import AdManagement from "../../../components/AdManagement/AdManagement";
 
 function Productpage2() {
   const { productId } = useParams();
@@ -107,6 +108,9 @@ function Productpage2() {
   };
 
   return (
+  <>
+  <AdManagement category="products" typeId={null} itemId={null} />
+  
     <div className="product-page">
       <div className="product-header">
         <h2>Product Types</h2>
@@ -181,6 +185,7 @@ function Productpage2() {
         ))}
       </ul>
     </div>
+    </>
   );
 }
 

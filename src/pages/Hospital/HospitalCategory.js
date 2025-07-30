@@ -9,6 +9,7 @@ import {
   deleteHospitalType,
   uploadImage,
 } from '../../api/api';
+import AdManagement from '../../components/AdManagement/AdManagement';
 
 export default function HospitalCategory() {
   const navigate = useNavigate();
@@ -150,6 +151,8 @@ export default function HospitalCategory() {
   }
 
   return (
+    <>
+    <AdManagement category="hospital" typeId={null} itemId={null} />
     <div className="category-page">
       <div className="category-header">
         <h1>Hospital Categories</h1>
@@ -236,5 +239,6 @@ export default function HospitalCategory() {
         ))}
       </ul>
     </div>
+    </>
   );
 }
