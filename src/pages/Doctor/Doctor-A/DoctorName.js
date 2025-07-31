@@ -32,6 +32,8 @@ export default function DoctorName() {
   const [formData, setFormData] = useState({
     doctorName: "",
     experience: "",
+    designation: "",
+    category: "",
     businessName: "",
     rating: 0,
     imageUrl: "",
@@ -215,8 +217,8 @@ const groupDoctorsByCategory = () => {
       degree: doc.degree || "",
       district: doc.district || "",
       pincode: doc.pincode || "",
-      designation: "",
-      category: "",
+      designation: doc.designation || "",
+      category: doc.category || "",
     });
     setImagePreview(doc.imageUrl || null);
     setEditingId(doc.id);
