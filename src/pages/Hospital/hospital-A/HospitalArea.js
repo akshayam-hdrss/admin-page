@@ -252,7 +252,7 @@ const HospitalArea = () => {
               </div>
               <div className="ha-field">
                 <label>Hospital Type ID</label>
-                <input type="text" name="hospitalTypeId" value={hospitalData.hospitalTypeId} onChange={handleInputChange} />
+                <input type="text" name="hospitalTypeId" value={hospitalData.hospitalTypeId} readOnly />
               </div>
 
 

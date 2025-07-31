@@ -302,3 +302,24 @@ export const deleteAd = (id) => {
 export const getAds = (category, typeId, itemId) => {
   return axios.get(`${BASE_URL}/ads/correctGallery/${category}?typeId=${typeId}&itemId=${itemId}`);
 };
+
+export const getCharities = () => {
+  return axios.get(`${BASE_URL}/charities`);
+};
+
+export const getCharityById = (id) => {
+  return axios.get(`${BASE_URL}/charities/${id}`);
+};
+
+export const createCharity = (payload) => {
+  return axios.post(`${BASE_URL}/charities`, payload);
+};
+
+export const updateCharity = (payload) => {
+  const { id, ...data } = payload;
+  return axios.put(`${BASE_URL}/charities/${id}`, data);
+};
+
+export const deleteCharity = (id) => {
+  return axios.delete(`${BASE_URL}/charities/${id}`);
+};

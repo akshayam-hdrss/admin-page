@@ -197,7 +197,7 @@ const groupDoctorsByCategory = () => {
     setFormData({
       doctorName: doc.doctorName,
       experience: doc.experience || "",
-      businessName: doc.businessName,
+      businessName: doc.businessName || "",
       rating: 0,
       imageUrl: doc.imageUrl,
       location: doc.location,
@@ -483,13 +483,13 @@ const groupDoctorsByCategory = () => {
             <label>Experience *</label>
             <input name="experience" value={formData.experience} onChange={handleChange} required />
             <label>Degree</label>
-            <input name="degree" value={formData.degree} onChange={handleChange} />
+            <input name="degree" value={formData.degree} onChange={handleChange} required/>
 
             <label>Designation</label> 
             <input name="designation" value={formData.designation} onChange={handleChange} />
 
             <label>Business Name</label>
-            <input name="businessName" value={formData.businessName} onChange={handleChange} required />
+            <input name="businessName" value={formData.businessName} onChange={handleChange}  />
 
             <label>District</label> 
             <input name="district" value={formData.district} onChange={handleChange} />
