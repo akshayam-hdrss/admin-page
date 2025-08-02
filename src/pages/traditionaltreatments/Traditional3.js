@@ -104,10 +104,10 @@ const handleCreateCategory = async () => {
       await updateCategory(editingCategoryId, {
         text: newCategoryText.trim(),
         number: parseInt(newCategoryOrderNo) || 1,
-        hospitalId: Number(hospitalId),
+        traditionalId: Number(hospitalId),
       });
     } else {
-      await createCategory({ text: newCategoryText.trim(), number: parseInt(newCategoryOrderNo) || 1, hospitalId: Number(hospitalId) });
+      await createCategory({ text: newCategoryText.trim(), number: parseInt(newCategoryOrderNo) || 1, traditionalId: Number(hospitalId) });
     }
 
     setNewCategoryText("");
@@ -292,7 +292,7 @@ const groupDoctorsByCategory = () => {
         phone: formData.phone,
         whatsapp: formData.whatsapp,
         doctorTypeId: formData.doctorTypeId,
-        traditionalId: formData.hospitalId,
+        traditionalId: formData.traditionalId,
         addressLine1: formData.addressLine1,
         addressLine2: formData.addressLine2,
         mapLink: formData.mapLink,
