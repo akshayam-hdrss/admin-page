@@ -5,12 +5,16 @@ import { Button } from 'react-bootstrap';
 
 const links = [
   { to: '/', label: 'Dashboard' },
+  { to: '/primecareicon', label: 'Primecare Icon' },
   { to: '/topstars', label: 'Topstars' },
   { to: '/blogs', label: 'Blogs' },
   { to: '/hospital', label: 'Hospital' },
   { to: '/doctor', label: 'Doctor' },
+  { to: '/traditional', label: 'Traditional Treatments' },
   { to: '/product', label: 'Product' },
   { to: '/service', label: 'Service' },
+  { to: '/charities', label: 'Charities' },
+
 ];
 
 export default function Sidebar() {

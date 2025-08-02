@@ -10,6 +10,8 @@ const Doctor = () => {
   const [newCategory, setNewCategory] = useState({ name: '', imageUrl: '', path: '' });
   const [editIndex, setEditIndex] = useState(null); // Store index of category being edited (for edit mode)
   const [imagePreview, setImagePreview] = useState(null); // Store image preview for the uploaded file
+  const [uploading, setUploading] = useState(false); // Track image upload
+
 
   // Fetch categories from the backend when the component mounts
   const fetchCategories = async () => {
@@ -41,26 +43,32 @@ const Doctor = () => {
   };
 
   // Handle file change (for image upload)
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result); // Set image preview (base64)
-      };
-      reader.readAsDataURL(file); // Read file as base64
+ const handleFileChange = async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result); // Show preview
+    };
+    reader.readAsDataURL(file);
 
-      try {
-        // Upload image to the server
-        const formData = new FormData();
-        formData.append('image', file); // Append the selected image to form data
-        const response = await uploadImage(formData); // API call to upload image
-        setNewCategory({ ...newCategory, imageUrl: response.data.imageUrl }); // Set the image URL from the backend
-      } catch (error) {
-        console.error('Error uploading image:', error);
-      }
+    try {
+      setUploading(true); // Start loading
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await uploadImage(formData);
+      setNewCategory({ ...newCategory, imageUrl: response.data.imageUrl });
+
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+      setUploading(false); // Stop loading
     }
-  };
+  }
+};
+
 
   // Handle form submission (both add and edit)
   const handleFormSubmit = async () => {
@@ -130,6 +138,8 @@ const Doctor = () => {
               required
             />
             {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+            {uploading && <p className="uploading-text">Uploading image...</p>}
+
           </div>
           <div className="form-buttons">
             <button className="submit-btn" onClick={handleFormSubmit}>

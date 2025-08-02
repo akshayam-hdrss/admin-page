@@ -220,3 +220,23 @@
     width: 100%;
   }
 }
+.uploading-text {
+  color: #007bff;
+  margin-top: 10px;
+}
+
+.spinner {
+  margin-top: 10px;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ccc;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

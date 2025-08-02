@@ -21,6 +21,11 @@ import ServicePage1 from './pages/Service/ServicePage1';
 import ServicePage2 from './pages/Service/ServicePage2';
 import ServicePage3 from './pages/Service/ServicePage3';
 import BlogTopic from './pages/blogs/BlogTopic';
+import CharityList from './pages/Charity/CharityList';
+import PrimecareIcon from './pages/PrimecareIcon/PrimecareIcon';
+import Traditional3 from './pages/traditionaltreatments/Traditional3';
+import Traditional2 from './pages/traditionaltreatments/Traditional2';
+import Traditional1 from './pages/traditionaltreatments/Traditional1';
 
 function App() {
   return (
@@ -32,6 +37,9 @@ function App() {
           <Route path="/topstars" element={<Topstars />} />
           <Route path="/blogs" element={<BlogTopic />} />
           <Route path="/blog/:blogId" element={<Blogs />} />
+          <Route path="/Charities" element={<CharityList />} />
+          <Route path="/primecareicon" element={<PrimecareIcon />} />
+
           <Route path="/hospital" element={<Hospital />} />
            <Route path="hospital/:hospitalTypeId/categories/:categoryName/doctors" element={<HospitalDoctors />} />
            <Route path="/hospitals/:hospitalId/categories/:categoryName/doctors/:doctorId" element={<DoctorDetails />} />
@@ -52,6 +60,10 @@ function App() {
           <Route path='/service/:availableServiceId' element={<ServicePage1 />} />
           <Route path='/service/:availableServiceId/:serviceTypeId' element={<ServicePage2 />} />
           <Route path='/servicedetails/:serviceId' element={<ServicePage3 />} />
+
+          <Route path="/traditional" element={<Traditional1 />} />
+          <Route path="/traditional/:hospitalTypeId" element={<Traditional2 />} />
+          <Route path="/traditional/:hospitalTypeId/:hospitalId" element={<Traditional3 />} />
 
 
         </Routes>

@@ -52,6 +52,47 @@ export const deleteHospital = (id) => {
   return axios.delete(`${BASE_URL}/hospital/${id}`);
 };
 
+// Traditional Types
+
+export const getTraditionalType = () => {
+  return axios.get(`${BASE_URL}/traditionalType`);
+};
+
+export const createTraditionalType = (payload) => {
+  return axios.post(`${BASE_URL}/traditionalType`, payload);
+};
+
+export const updateTraditionalType = (payload) => {
+  const { id, ...data } = payload;
+  return axios.put(`${BASE_URL}/traditionalType/${id}`, data);
+};
+
+export const deleteTraditionalType = (payload) => {
+  return axios.delete(`${BASE_URL}/traditionalType/${payload.id}`);
+};
+
+// Traditional Hospitals
+
+export const getAllTraditional = () => {
+  return axios.get(`${BASE_URL}/traditional`);
+};
+
+export const getTraditionalByType = (hospitalTypeId) => {
+  return axios.get(`${BASE_URL}/traditional/${hospitalTypeId}`);
+};
+
+export const createTraditional = (payload) => {
+  return axios.post(`${BASE_URL}/traditional`, payload);
+};
+
+export const updateTraditional = (payload) => {
+  const { id, ...data } = payload;
+  return axios.put(`${BASE_URL}/traditional/${id}`, data);
+};
+
+export const deleteTraditional = (id) => {
+  return axios.delete(`${BASE_URL}/traditional/${id}`);
+};
 
 
 // GET all doctor types
@@ -303,23 +344,32 @@ export const getAds = (category, typeId, itemId) => {
   return axios.get(`${BASE_URL}/ads/correctGallery/${category}?typeId=${typeId}&itemId=${itemId}`);
 };
 
-export const getCharities = () => {
-  return axios.get(`${BASE_URL}/charities`);
-};
-
-export const getCharityById = (id) => {
-  return axios.get(`${BASE_URL}/charities/${id}`);
-};
-
-export const createCharity = (payload) => {
-  return axios.post(`${BASE_URL}/charities`, payload);
-};
-
+export const getCharities = () => axios.get(`${BASE_URL}/charities`);
+export const getCharityById = (id) => axios.get(`${BASE_URL}/charities/${id}`);
+export const createCharity = (payload) => axios.post(`${BASE_URL}/charities`, payload);
 export const updateCharity = (payload) => {
   const { id, ...data } = payload;
   return axios.put(`${BASE_URL}/charities/${id}`, data);
 };
+export const deleteCharity = (id) => axios.delete(`${BASE_URL}/charities/${id}`);
 
-export const deleteCharity = (id) => {
-  return axios.delete(`${BASE_URL}/charities/${id}`);
+
+// Create new icon
+export const createPrimecareIcon = (payload) => {
+  return axios.post(`${BASE_URL}/primecareicon`, payload);
+};
+
+// Get all icons
+export const getPrimecareIcons = () => {
+  return axios.get(`${BASE_URL}/primecareicon`);
+};
+
+// Update icon by ID
+export const updatePrimecareIcon = (id, payload) => {
+  return axios.put(`${BASE_URL}/primecareicon/${id}`, payload);
+};
+
+// Delete icon by ID
+export const deletePrimecareIcon = (id) => {
+  return axios.delete(`${BASE_URL}/primecareicon/${id}`);
 };

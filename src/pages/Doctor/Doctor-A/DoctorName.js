@@ -493,13 +493,7 @@ const groupDoctorsByCategory = () => {
             <label>Business Name</label>
             <input name="businessName" value={formData.businessName} onChange={handleChange}  />
 
-            <label>District</label> 
-            <input name="district" value={formData.district} onChange={handleChange} />
-
-            <label>Pincode</label> 
-            <input name="pincode" value={formData.pincode} onChange={handleChange} />
-
-
+            
 {hospitalId ? (
   <>
     <label>Category *</label>
@@ -544,14 +538,22 @@ const groupDoctorsByCategory = () => {
             <label>WhatsApp</label>
             <input name="whatsapp" value={formData.whatsapp} onChange={handleChange} />
 
-            <label>Location</label>
-            <input name="location" value={formData.location} onChange={handleChange} />
+            
 
             <label>Address Line 1</label>
             <input name="addressLine1" value={formData.addressLine1} onChange={handleChange} />
 
             <label>Address Line 2</label>
             <input name="addressLine2" value={formData.addressLine2} onChange={handleChange} />
+
+            <label>Area</label>
+            <input name="location" value={formData.location} onChange={handleChange} />
+
+            <label>District</label> 
+            <input name="district" value={formData.district} onChange={handleChange} />
+
+            <label>Pincode</label> 
+            <input name="pincode" value={formData.pincode} onChange={handleChange} />
 
             <label>Map Link</label>
             <input name="mapLink" value={formData.mapLink} onChange={handleChange} />
