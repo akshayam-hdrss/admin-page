@@ -179,7 +179,7 @@ const Traditional2 = () => {
               )}
 
               <div className="ha-actions">
-                <Link to={`/traditional/${hospitalTypeId}/${hospital.id}`} className="ha-btn ha-btn-view"> ddff
+                <Link to={`/traditional/${hospitalTypeId}/${hospital.id}`} className="ha-btn ha-btn-view">
                   View Doctors
                 </Link>
                 <button className="ha-btn ha-btn-edit" onClick={() => handleEditHospital(hospital.id)}>

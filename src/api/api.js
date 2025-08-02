@@ -125,6 +125,10 @@ export const getDoctors = ({ hospitalId, doctorTypeId }) => {
   return axios.get(`${BASE_URL}/doctor`, { params });
 };
 
+export const getDoctorsByTraditionalId = (hospitalId) => {
+  return axios.get(`${BASE_URL}/doctor?traditionalId=${hospitalId}`);
+}
+
 
 // ✅ Get single doctor by ID
 export const getDoctorById = (id) => {
