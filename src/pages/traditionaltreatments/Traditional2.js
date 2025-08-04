@@ -25,7 +25,7 @@ const Traditional2 = () => {
     area: "",
     mapLink: "",
     phone: "",
-    hospitalTypeId: hospitalTypeId,
+    traditionalTypeId: hospitalTypeId,
     address1: "",
     address2: "",
     district: "",
@@ -85,7 +85,7 @@ const Traditional2 = () => {
       area: "",
       mapLink: "",
       phone: "",
-      hospitalTypeId: hospitalTypeId,
+      traditionalTypeId: hospitalTypeId,
       address1: "",
       address2: "",
       district: "",
@@ -252,7 +252,7 @@ const Traditional2 = () => {
               </div>
               <div className="ha-field">
                 <label>Hospital Type ID</label>
-                <input type="text" name="hospitalTypeId" value={hospitalData.hospitalTypeId} readOnly />
+                <input type="text" name="hospitalTypeId" value={hospitalData.traditionalTypeId} readOnly />
               </div>
 
 
