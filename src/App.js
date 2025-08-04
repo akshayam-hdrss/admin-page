@@ -26,6 +26,8 @@ import PrimecareIcon from './pages/PrimecareIcon/PrimecareIcon';
 import Traditional3 from './pages/traditionaltreatments/Traditional3';
 import Traditional2 from './pages/traditionaltreatments/Traditional2';
 import Traditional1 from './pages/traditionaltreatments/Traditional1';
+import Events from './pages/Events/Events';
+import OffersPage from './pages/Offers/Offers';
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
           <Route path="/blog/:blogId" element={<Blogs />} />
           <Route path="/Charities" element={<CharityList />} />
           <Route path="/primecareicon" element={<PrimecareIcon />} />
+          <Route path="/event" element={<Events />} />
+          <Route path="/offers" element={<OffersPage />} />
 
           <Route path="/hospital" element={<Hospital />} />
            <Route path="hospital/:hospitalTypeId/categories/:categoryName/doctors" element={<HospitalDoctors />} />

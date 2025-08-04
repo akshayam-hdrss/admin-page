@@ -377,3 +377,39 @@ export const updatePrimecareIcon = (id, payload) => {
 export const deletePrimecareIcon = (id) => {
   return axios.delete(`${BASE_URL}/primecareicon/${id}`);
 };
+
+
+// Event API functions
+export const getEvents = () => {
+  return axios.get(`${BASE_URL}/event`);
+};
+
+export const createEvent = (event) => {
+  return axios.post(`${BASE_URL}/event`, event);
+};
+
+export const updateEvent = (id, event) => {
+  return axios.put(`${BASE_URL}/event/${id}`, event);
+};
+
+export const deleteEvent = (id) => {
+  return axios.delete(`${BASE_URL}/event/${id}`);
+};
+
+
+// Offers API functions
+export const createOffer = (payload) => {
+  return axios.post(`${BASE_URL}/offers`, payload);
+};
+
+export const getOffers = () => {
+  return axios.get(`${BASE_URL}/offers`);
+};
+
+export const updateOffer = (id, payload) => {
+  return axios.put(`${BASE_URL}/offers/${id}`, payload);
+};
+
+export const deleteOffer = (id) => {
+  return axios.delete(`${BASE_URL}/offers/${id}`);
+};
