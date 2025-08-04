@@ -130,7 +130,7 @@ const handleSubmit = async (e) => {
 
   return (
     <>
-     <AdManagement category="services" typeId={null} itemId={null} />
+     <AdManagement category="services" typeId={availableServiceId} itemId={null} />
     <div className="category-page">
       <div className="category-header">
         <h1>Service Management</h1>
