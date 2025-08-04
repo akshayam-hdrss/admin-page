@@ -106,10 +106,10 @@ const Traditional2 = () => {
       alert("Hospital name is required!");
       return;
     }
-    if (!hospitalData.hospitalTypeId){
-      alert("Hospital Type ID is required!");
-      return;
-    }
+    // if (!hospitalData.hospitalTypeId){
+    //   alert("Hospital Type ID is required!");
+    //   return;
+    // }
 
     try {
       if (editHospitalId) {
