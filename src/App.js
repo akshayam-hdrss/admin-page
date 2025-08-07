@@ -28,6 +28,8 @@ import Traditional2 from './pages/traditionaltreatments/Traditional2';
 import Traditional1 from './pages/traditionaltreatments/Traditional1';
 import Events from './pages/Events/Events';
 import OffersPage from './pages/Offers/Offers';
+import BlogTopics from './pages/blogs/Blogs';
+import BlogManagement from './pages/blogs/BlogTopic';
 
 function App() {
   return (
@@ -37,8 +39,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/topstars" element={<Topstars />} />
-          <Route path="/blogs" element={<BlogTopic />} />
-          <Route path="/blog/:blogId" element={<Blogs />} />
+          {/* <Route path="/blogs" element={<BlogTopic />} />
+          <Route path="/blog/:blogId" element={<Blogs />} /> */}
+          <Route path="/blogs" element={<BlogTopics />} />
+          <Route path="/blogs/:id" element={<BlogManagement />} />
           <Route path="/Charities" element={<CharityList />} />
           <Route path="/primecareicon" element={<PrimecareIcon />} />
           <Route path="/event" element={<Events />} />
