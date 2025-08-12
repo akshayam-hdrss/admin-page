@@ -11,7 +11,7 @@ import "../Products1/ProductPage1.css";
 import AdManagement from "../../../components/AdManagement/AdManagement";
 
 function Productpage2() {
-  const { productId } = useParams();
+  const { productTypeId, productId } = useParams();
   const [types, setTypes] = useState([]);
   const [form, setForm] = useState({ name: "", imageUrl: "" });
   const [imagePreview, setImagePreview] = useState(null);
@@ -104,7 +104,7 @@ function Productpage2() {
   };
 
   const handleCategoryClick = (id) => {
-    navigate(`/product/${productId}/${id}`);
+    navigate(`/product/${productTypeId}/${productId}/${id}`);
   };
 
   return (

@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "./ServicePage.css";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  getAvailableServices,
+  createAvailableService,
+  updateAvailableService,
+  deleteAvailableService,
+} from "../../api/api";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 export default function ServicePage() {
   const [services, setServices] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", imageUrl: "" });
+  const [form, setForm] = useState({ name: "", imageUrl: "", order_no: "" });
   const [imagePreview, setImagePreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
-
-  const API =
-    "https://medbook-backend-1.onrender.com/api/services/available-services";
+  const { availableServiceTypeId } = useParams();
 
   useEffect(() => {
     fetchServices();
@@ -22,7 +26,7 @@ export default function ServicePage() {
 
   const fetchServices = async () => {
     try {
-      const res = await axios.get(API);
+      const res = await getAvailableServices(availableServiceTypeId);
       setServices(res.data.resultData || []);
     } catch (err) {
       alert("Failed to fetch services");
@@ -61,11 +65,17 @@ export default function ServicePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const payload = {
+      ...form,
+      availableServicetypeId: availableServiceTypeId,
+    };
+
     try {
       if (isEditing) {
-        await axios.put(`${API}/${editId}`, form);
+        await updateAvailableService(editId, payload);
       } else {
-        await axios.post(API, form);
+        await createAvailableService(payload);
       }
       resetForm();
       fetchServices();
@@ -75,11 +85,11 @@ export default function ServicePage() {
   };
 
   const handleCategoryClick = (id) => {
-    navigate(`/service/${id}`);
+    navigate(`/service/${availableServiceTypeId}/${id}`);
   };
 
   const resetForm = () => {
-    setForm({ name: "", imageUrl: "" });
+    setForm({ name: "", imageUrl: "", order_no: "" });
     setImagePreview(null);
     setIsEditing(false);
     setEditId(null);
@@ -87,7 +97,11 @@ export default function ServicePage() {
   };
 
   const handleEdit = (service) => {
-    setForm({ name: service.name, imageUrl: service.imageUrl });
+    setForm({
+      name: service.name,
+      imageUrl: service.imageUrl,
+      order_no: service.order_no || "",
+    });
     setImagePreview(service.imageUrl);
     setIsEditing(true);
     setEditId(service.id);
@@ -95,26 +109,12 @@ export default function ServicePage() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this service?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this service?")) return;
     try {
-      await axios.delete(`${API}/${id}`);
+      await deleteAvailableService(id);
       fetchServices();
     } catch {
       alert("Failed to delete service");
-    }
-  };
-
-  const handleDeleteAll = async () => {
-    if (!window.confirm("Are you sure you want to delete all services?"))
-      return;
-    try {
-      await Promise.all(
-        services.map((service) => axios.delete(`${API}/${service.id}`))
-      );
-      fetchServices();
-    } catch {
-      alert("Failed to delete all");
     }
   };
 
@@ -123,12 +123,12 @@ export default function ServicePage() {
       <div className="service-header">
         <h1>Service Management</h1>
         <div>
-          <button className="service-btn service-btn-add" onClick={() => setIsFormOpen(true)}>
+          <button
+            className="service-btn service-btn-add"
+            onClick={() => setIsFormOpen(true)}
+          >
             + Add Service
           </button>
-          {/* <button className="service-btn service-btn-delete-all" onClick={handleDeleteAll}>
-            Delete All
-          </button> */}
         </div>
       </div>
 
@@ -144,6 +144,13 @@ export default function ServicePage() {
                 onChange={handleInputChange}
                 placeholder="Enter service name"
                 required
+              />
+              <input
+                type="number"
+                name="order_no"
+                value={form.order_no}
+                onChange={handleInputChange}
+                placeholder="Order Number"
               />
               <div className="service-image-upload">
                 <input
@@ -180,7 +187,10 @@ export default function ServicePage() {
       <ul className="service-list">
         {services.map((service) => (
           <li key={service.id} className="service-item">
-            <div className="service-card" onClick={() => handleCategoryClick(service.id)}>
+            <div
+              className="service-card"
+              onClick={() => handleCategoryClick(service.id)}
+            >
               {service.imageUrl && (
                 <div className="service-images">
                   <img
@@ -192,6 +202,7 @@ export default function ServicePage() {
               )}
               <div className="service-details">
                 <h3>{service.name}</h3>
+                {service.order_no && <p>Order: {service.order_no}</p>}
               </div>
             </div>
             <div className="service-actions">

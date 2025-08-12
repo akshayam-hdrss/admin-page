@@ -21,7 +21,7 @@ export default function ServicePage1() {
   const [uploading, setUploading] = useState(false);
 
   const navigate = useNavigate();
-  const { availableServiceId } = useParams();
+  const { availableServiceTypeId, availableServiceId } = useParams();
 
   useEffect(() => {
     fetchServices();
@@ -189,7 +189,7 @@ const handleSubmit = async (e) => {
       <ul className="category-list">
         {services.map((service) => (
           <li key={service.id} className="category-item">
-            <div className="category-card"  onClick={() => navigate(`/service/${availableServiceId}/${service.id}`)}>
+            <div className="category-card"  onClick={() => navigate(`/service/${availableServiceTypeId}/${availableServiceId}/${service.id}`)}>
               {service.imageUrl && (
                 <div className="category-images">
                   <img

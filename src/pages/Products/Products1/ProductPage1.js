@@ -7,26 +7,27 @@ import {
   deleteAllAvailableProducts,
   uploadImage
 } from "../../../api/api"; // ✅ imported from api.js
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./ProductPage1.css";
 
 export default function ProductPage1() {
   const [products, setProducts] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", imageUrl: "" });
+  const [form, setForm] = useState({ name: "", imageUrl: "", order_no: "" });
   const [imagePreview, setImagePreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
+  const { productTypeId } = useParams();
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(productTypeId);
   }, []);
 
   const fetchProducts = async () => {
     try {
-      const res = await getAvailableProducts();
+      const res = await getAvailableProducts(productTypeId);
       setProducts(res.data.resultData || []);
     } catch {
       alert("Failed to fetch products");
@@ -59,23 +60,45 @@ export default function ProductPage1() {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     if (isEditing) {
+  //       await updateAvailableProduct({ id: editId, ...form });
+  //     } else {
+  //       await createAvailableProduct(form);
+  //     }
+  //     resetForm();
+  //     fetchProducts();
+  //   } catch {
+  //     alert("Failed to save product");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (isEditing) {
-        await updateAvailableProduct({ id: editId, ...form });
-      } else {
-        await createAvailableProduct(form);
-      }
-      resetForm();
-      fetchProducts();
-    } catch {
-      alert("Failed to save product");
+  e.preventDefault();
+  try {
+    const payload = {
+      ...form,
+      availableProductTypeId: parseInt(productTypeId, 10) 
+    };
+
+    if (isEditing) {
+      await updateAvailableProduct({ id: editId, ...payload });
+    } else {
+      await createAvailableProduct(payload);
     }
-  };
+
+    resetForm();
+    fetchProducts();
+  } catch {
+    alert("Failed to save product");
+  }
+};
+
 
   const resetForm = () => {
-    setForm({ name: "", imageUrl: "" });
+    setForm({ name: "", imageUrl: "", order_no: "" });
     setImagePreview(null);
     setIsEditing(false);
     setEditId(null);
@@ -83,7 +106,7 @@ export default function ProductPage1() {
   };
 
   const handleEdit = (item) => {
-    setForm({ name: item.name, imageUrl: item.imageUrl });
+    setForm({ name: item.name, imageUrl: item.imageUrl, order_no: item.order_no });
     setImagePreview(item.imageUrl);
     setEditId(item.id);
     setIsEditing(true);
@@ -111,7 +134,7 @@ export default function ProductPage1() {
   };
 
   const handleCategoryClick = (id) => {
-    navigate(`/product/${id}`);
+    navigate(`/product/${productTypeId}/${id}`);
   };
 
   return (
@@ -141,6 +164,14 @@ export default function ProductPage1() {
                 placeholder="Enter product name"
                 required
               />
+              <input
+                type="number"
+                name="order_no"
+                value={form.order_no}
+                onChange={handleInputChange}
+                placeholder="Enter order number"
+              />
+
               <div className="product-image-upload">
                 <input type="file" accept="image/*" onChange={handleFileChange} />
               </div>

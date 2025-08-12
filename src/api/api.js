@@ -158,9 +158,34 @@ export const deleteCategory = (id) => {return axios.delete(`${BASE_URL}/category
 
 
 
+// ProductsPage0.js 
+
+export const fetchProductTypes = () => axios.get(`${BASE_URL}/products/availableProductType`);
+
+
+export const addProductType = (data) => axios.post(`${BASE_URL}/products/availableProductType`, data);
+
+
+export const editProductType = (id, data) => axios.put(`${BASE_URL}/products/availableProductType/${id}`, data);
+
+
+export const removeProductType = (id) => axios.delete(`${BASE_URL}/products/availableProductType/${id}`);
+
+export const sendImage = (formData) =>
+  axios.post(`${BASE_URL}/upload`, formData, {
+    headers: { "Content-Type": "multipart/form-data" }
+  });
+
+  // ✅ Upload image
+export const uploadImagesproductpage1 = (formData) =>
+  axios.post(`${BASE_URL}/upload`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+// ----------------------------------------------------------------------
+
 // --- Product APIs ---
-export const getAvailableProducts = () => {
-  return axios.get(`${BASE_URL}/products/availableProduct`);
+export const getAvailableProducts = (productTypeId) => {
+  return axios.get(`${BASE_URL}/products/availableProduct/${productTypeId}`);
 };
 
 export const createAvailableProduct = (payload) => {
@@ -229,10 +254,34 @@ export const deleteProduct = (id) => {
 };
 
 
+// Services -1(Available Services)
+
+export const getAvailableServiceTypes=()=>{
+  return axios.get(`${BASE_URL}/services/available-service-types`)
+}
+
+// POST new service type
+export const createAvailableServiceType = (data) => {
+  return axios.post(`${BASE_URL}/services/available-service-types`, data);
+};
+
+export const updateAvailableServiceType = ({ id, ...data }) => {
+  return axios.put(`${BASE_URL}/services/available-service-types/${id}`, data);
+};
+
+export const deleteAvailableServiceType = (id) => {
+  return axios.delete(`${BASE_URL}/services/available-service-types/${id}`);
+};
+
+// Optional image upload API
+export const uploadImages = (formData) => {
+  return axios.post(`${BASE_URL}/upload`, formData);
+};
+
 
 // Services (Available Services)
-export const getAvailableServices = () => {
-  return axios.get(`${BASE_URL}/services/available-services`);
+export const getAvailableServices = (id) => {
+  return axios.get(`${BASE_URL}/services/available-services/${id}`);
 };
 
 export const createAvailableService = (payload) => {

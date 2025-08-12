@@ -30,6 +30,8 @@ import Events from './pages/Events/Events';
 import OffersPage from './pages/Offers/Offers';
 import BlogTopics from './pages/blogs/Blogs';
 import BlogManagement from './pages/blogs/BlogTopic';
+import ProductTypePage0 from './pages/Products/Products0/ProductPage0';
+import ServicePage0 from './pages/Service/ServicePage0';
 
 function App() {
   return (
@@ -59,15 +61,24 @@ function App() {
           <Route path="/doctor/:doctorTypeId" element={<DoctorName />} />
           <Route path="/doctordetails/:doctorId" element={<DoctorDetails />} />
 
-          <Route path="/product" element={<ProductPage1 />} />
-          <Route path="/product/:productId" element={<Productpage2 />} />
-          <Route path="/product/:productId/:productTypeId" element={<Productpage3 />} />
+          <Route path="/product" element={<ProductTypePage0 />} />
+          <Route path="/product/:productTypeId" element={<ProductPage1 />} />
+          <Route path="/product/:productTypeId/:productId" element={<Productpage2 />} />
+          <Route path="/product/:productTypeId/:productId/:productTypeId" element={<Productpage3 />} />
           <Route path="/productdetails/:productId" element={<ProductPage4 />} />
+          {/* <Route path="/product/:productId" element={<Productpage2 />} />
+          <Route path="/product/:productId/:productTypeId" element={<Productpage3 />} />
+          <Route path="/productdetails/:productId" element={<ProductPage4 />} /> */}
 
-          <Route path='/service' element={<ServicePage />} />
-          <Route path='/service/:availableServiceId' element={<ServicePage1 />} />
-          <Route path='/service/:availableServiceId/:serviceTypeId' element={<ServicePage2 />} />
+          <Route path='/service' element={<ServicePage0 />} />
+          <Route path='/service/:availableServiceTypeId' element={<ServicePage />} />
+          <Route path='/service/:availableServiceTypeId/:availableServiceId' element={<ServicePage1 />} />
+          <Route path='/service/:availableServiceTypeId/:availableServiceId/:serviceTypeId' element={<ServicePage2 />} />
           <Route path='/servicedetails/:serviceId' element={<ServicePage3 />} />
+
+          {/* <Route path='/service/:availableServiceId' element={<ServicePage1 />} />
+          <Route path='/service/:availableServiceId/:serviceTypeId' element={<ServicePage2 />} />
+          <Route path='/servicedetails/:serviceId' element={<ServicePage3 />} /> */}
 
           <Route path="/traditional" element={<Traditional1 />} />
           <Route path="/traditional/:hospitalTypeId" element={<Traditional2 />} />
