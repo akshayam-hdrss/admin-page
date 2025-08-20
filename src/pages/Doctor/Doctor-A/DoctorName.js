@@ -283,7 +283,7 @@ const groupDoctorsByCategory = () => {
       const payload = {
         doctorName: formData.doctorName,
         experience: formData.experience,
-        businessName: formData.hospital,
+        businessName: formData.businessName,
         rating: 0,
         imageUrl: formData.imageUrl,
         location: formData.location,
