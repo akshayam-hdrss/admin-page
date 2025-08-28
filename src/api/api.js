@@ -343,8 +343,8 @@ export const deleteService = (id) => {
 };
 
 // blogs api 
-export const getBlogs = () => {
-  return axios.get(`${BASE_URL}/blog`)
+export const getBlogs = (id) => {
+  return axios.get(`${BASE_URL}/blog/bytopic/${id}`);
 }
 export const getBlogById = (id) => {
   return axios.get(`${BASE_URL}/blog/${id}`)
