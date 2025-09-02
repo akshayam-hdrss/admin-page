@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './HospitalDoctors.css';
-import profile from '../../../assets/Doctors_img.webp';
+// import profile from '../../../assets/Doctors_img.webp';
 
 export default function HospitalDoctors() {
   const { hospitalId, categoryName } = useParams();
@@ -21,6 +21,7 @@ export default function HospitalDoctors() {
     name: '',
     experience: '',
     hospital: '',
+    order_no:'',
     rating: '',
     imageUrl: ''
   });
@@ -125,8 +126,10 @@ export default function HospitalDoctors() {
         <div className="form-overlay">
           <form className="form-container" onSubmit={handleSubmit}>
             <h2>{editingId ? 'Edit Doctor' : 'Add Doctor'}</h2>
-            <label>Name *</label>
+            <label>Name</label>
             <input name="name" value={formData.name} onChange={handleChange} required />
+            {/* <label >Order_no</label> */}
+
             <label>Experience *</label>
             <input name="experience" value={formData.experience} onChange={handleChange} required />
             <label>Hospital *</label>
@@ -147,10 +150,11 @@ export default function HospitalDoctors() {
         {doctors.map(doc => (
           <div key={doc.id} className="doctor-row">
             <div className="col image">
-              <img src={profile} alt={doc.name} className="doctor-image" />
+              <img src={doc.imageUrl} alt={doc.imageUrl} className="doctor-image" />
             </div>
             <div className="col name"><strong>{doc.name}</strong></div>
             <div className="col experience">{doc.experience}</div>
+            <div className="col experience">{doc.order_no}</div>
             <div className="col hospital">{doc.hospital}</div>
             <div className="col rating">
               <div className="stars">{renderStars(doc.rating)} <span className="rating-num">{doc.rating.toFixed(1)}</span></div>

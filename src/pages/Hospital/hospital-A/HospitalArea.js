@@ -30,26 +30,37 @@ const HospitalArea = () => {
     address2: "",
     district: "",
     pincode: "",
+    order_no: "", // ✅ new field
   });
 
   const [showForm, setShowForm] = useState(false);
   const [editHospitalId, setEditHospitalId] = useState(null);
 
   useEffect(() => {
-    const fetchHospitals = async () => {
-      try {
-        setLoading(true);
-        const response = await getHospitalsByType(hospitalTypeId);
-        setHospitals(response.data.resultData);
-        setLoading(false);
-      } catch (err) {
-        setError(err.response?.data?.message || err.message);
-        setLoading(false);
-      }
-    };
-
     fetchHospitals();
   }, [hospitalTypeId]);
+
+  const fetchHospitals = async () => {
+    try {
+      setLoading(true);
+      const response = await getHospitalsByType(hospitalTypeId);
+      let data = response.data.resultData || [];
+
+      // ✅ sort by order_no (null at end)
+      data.sort((a, b) => {
+        if (a.order_no == null && b.order_no == null) return 0;
+        if (a.order_no == null) return 1;
+        if (b.order_no == null) return -1;
+        return a.order_no - b.order_no;
+      });
+
+      setHospitals(data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message);
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -90,6 +101,7 @@ const HospitalArea = () => {
       address2: "",
       district: "",
       pincode: "",
+      order_no: "", // reset
     });
   };
 
@@ -97,7 +109,7 @@ const HospitalArea = () => {
     setShowForm(true);
     setEditHospitalId(hospitalId);
     const hospitalToEdit = hospitals.find((h) => h.id === hospitalId);
-    setHospitalData(hospitalToEdit);
+    setHospitalData({ ...hospitalToEdit, order_no: hospitalToEdit.order_no || "" });
   };
 
   const handleSubmit = async (e) => {
@@ -106,19 +118,23 @@ const HospitalArea = () => {
       alert("Hospital name is required!");
       return;
     }
-    if (!hospitalData.hospitalTypeId){
+    if (!hospitalData.hospitalTypeId) {
       alert("Hospital Type ID is required!");
       return;
     }
 
+    const payload = {
+      ...hospitalData,
+      order_no: hospitalData.order_no ? parseInt(hospitalData.order_no) : null, // ✅ ensure number/null
+    };
+
     try {
       if (editHospitalId) {
-        await updateHospital({ id: editHospitalId, ...hospitalData });
+        await updateHospital({ id: editHospitalId, ...payload });
       } else {
-        await createHospital(hospitalData);
+        await createHospital(payload);
       }
-      const updatedResponse = await getHospitalsByType(hospitalTypeId);
-      setHospitals(updatedResponse.data.resultData);
+      await fetchHospitals(); // refresh sorted
       setShowForm(false);
     } catch (err) {
       setError(err.response?.data?.message || err.message);
@@ -129,21 +145,20 @@ const HospitalArea = () => {
     if (window.confirm("Are you sure you want to delete this hospital?")) {
       try {
         await deleteHospital(hospitalId);
-        const updatedResponse = await getHospitalsByType(hospitalTypeId);
-        setHospitals(updatedResponse.data.resultData);
+        await fetchHospitals();
       } catch (err) {
         setError(err.response?.data?.message || err.message);
       }
     }
   };
 
-   // ✅ Show loading spinner before content
+  // ✅ Loading
   if (loading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p style={{ textAlign: 'center', color: 'red', marginTop: '10px' }}>
-          {/* Loading Categories... */}
+        <p style={{ textAlign: "center", color: "red", marginTop: "10px" }}>
+          Loading Hospitals...
         </p>
       </div>
     );
@@ -152,125 +167,216 @@ const HospitalArea = () => {
 
   return (
     <div className="ha-wrapper">
-      <AdManagement category="hosptial" typeId={hospitalTypeId} itemId={null} />
-    <div className="ha-container">
+      <AdManagement category="hospital" typeId={hospitalTypeId} itemId={null} />
+      <div className="ha-container">
+        <h1 className="ha-title">HOSPITALS</h1>
 
-      <h1 className="ha-title">HOSPITALS</h1>
+        <button className="ha-btn ha-btn-add" onClick={handleAddHospital}>
+          + Add Hospital
+        </button>
 
-      <button className="ha-btn ha-btn-add" onClick={handleAddHospital}>
-        + Add Hospital
-      </button>
-
-      <div className="ha-list">
-        {hospitals.length > 0 ? (
-          hospitals.map((hospital) => (
-            <div key={hospital.id} className="ha-card">
-              {hospital.imageUrl && (
-                <img src={hospital.imageUrl} alt={hospital.name} />
-              )}
-              <h3 className="ha-name">{hospital.name}</h3>
-              <p className="ha-info"><strong>Area:</strong> {hospital.area}</p>
-              <p className="ha-info"><strong>Phone:</strong> {hospital.phone}</p>
-
-              {hospital.mapLink && (
-                <a href={hospital.mapLink} target="_blank" rel="noopener noreferrer" className="ha-map-link">
-                  View on Map
-                </a>
-              )}
-
-              <div className="ha-actions">
-                <Link to={`/hospital/${hospitalTypeId}/${hospital.id}`} className="ha-btn ha-btn-view">
-                  View Doctors
-                </Link>
-                <button className="ha-btn ha-btn-edit" onClick={() => handleEditHospital(hospital.id)}>
-                  Edit
-                </button>
-                <button className="ha-btn ha-btn-delete" onClick={() => handleDeleteHospital(hospital.id)}>
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="ha-info">No hospitals found for this type.</p>
-        )}
-      </div>
-
-      {showForm && (
-        <div className="ha-modal-overlay">
-          <div className="ha-modal">
-            <h2>{editHospitalId ? "Edit Hospital" : "Add Hospital"}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="ha-field">
-                <label>Name *</label>
-                <input type="text" name="name" value={hospitalData.name} onChange={handleInputChange} required />
-              </div>
-
-              <div className="ha-field">
-                <label>Upload Image</label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} />
-                {loadingImage ? (
-                  <p>Uploading...</p>
-                ) : (
-                  hospitalData.imageUrl && <img src={hospitalData.imageUrl} alt="Preview" style={{ width: "80px", marginTop: "10px" }} />
+        <div className="ha-list">
+          {hospitals.length > 0 ? (
+            hospitals.map((hospital) => (
+              <div key={hospital.id} className="ha-card">
+                {hospital.imageUrl && (
+                  <img src={hospital.imageUrl} alt={hospital.name} />
                 )}
-              </div>
+                <h3 className="ha-name">{hospital.name}</h3>
+                <p className="ha-info">
+                  <strong>Order No:</strong> {hospital.order_no ?? "null"}
+                </p>
+                <p className="ha-info"><strong>Area:</strong> {hospital.area}</p>
+                <p className="ha-info"><strong>Phone:</strong> {hospital.phone}</p>
 
-              <div className="ha-field">
-                <label>Area</label>
-                <input type="text" name="area" value={hospitalData.area} onChange={handleInputChange} />
-              </div>
+                {hospital.mapLink && (
+                  <a
+                    href={hospital.mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ha-map-link"
+                  >
+                    View on Map
+                  </a>
+                )}
 
-              <div className="ha-field">
-                <label>Map Link</label>
-                <input type="url" name="mapLink" value={hospitalData.mapLink} onChange={handleInputChange} placeholder="https://maps.google.com/..." />
+                <div className="ha-actions">
+                  <Link
+                    to={`/hospital/${hospitalTypeId}/${hospital.id}`}
+                    className="ha-btn ha-btn-view"
+                  >
+                    View Doctors
+                  </Link>
+                  <button
+                    className="ha-btn ha-btn-edit"
+                    onClick={() => handleEditHospital(hospital.id)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="ha-btn ha-btn-delete"
+                    onClick={() => handleDeleteHospital(hospital.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-
-              <div className="ha-field">
-                <label>Phone</label>
-                <input type="tel" name="phone" value={hospitalData.phone} onChange={handleInputChange} placeholder="+971-123456789" />
-              </div>
-
-              <div className="ha-field">
-                <label>Address Line 1</label>
-                <input type="text" name="address1" value={hospitalData.address1} onChange={handleInputChange} />
-              </div>
-
-              <div className="ha-field">
-                <label>Address Line 2</label>
-                <input type="text" name="address2" value={hospitalData.address2} onChange={handleInputChange} />
-              </div>
-
-              <div className="ha-field">
-                <label>District</label>
-                <input type="text" name="district" value={hospitalData.district} onChange={handleInputChange} />
-              </div>
-
-              <div className="ha-field">
-                <label>Pincode</label>
-                <input type="text" name="pincode" value={hospitalData.pincode} onChange={handleInputChange} />
-              </div>
-              <div className="ha-field">
-                <label>Hospital Type ID</label>
-                <input type="text" name="hospitalTypeId" value={hospitalData.hospitalTypeId} readOnly />
-              </div>
-
-
-              <div className="ha-form-actions">
-                <button type="button" className="ha-btn ha-btn-cancel" onClick={() => setShowForm(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="ha-btn ha-btn-save">
-                  {editHospitalId ? "Save Changes" : "Add Hospital"}
-                </button>
-              </div>
-            </form>
-          </div>
+            ))
+          ) : (
+            <p className="ha-info">No hospitals found for this type.</p>
+          )}
         </div>
-      )}
 
-      <Link to="/hospital" className="ha-back">← Back to Categories</Link>
-    </div>
+        {showForm && (
+          <div className="ha-modal-overlay">
+            <div className="ha-modal">
+              <h2>{editHospitalId ? "Edit Hospital" : "Add Hospital"}</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="ha-field">
+                  <label>Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={hospitalData.name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Upload Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+                  {loadingImage ? (
+                    <p>Uploading...</p>
+                  ) : (
+                    hospitalData.imageUrl && (
+                      <img
+                        src={hospitalData.imageUrl}
+                        alt="Preview"
+                        style={{ width: "80px", marginTop: "10px" }}
+                      />
+                    )
+                  )}
+                </div>
+
+                <div className="ha-field">
+                  <label>Area</label>
+                  <input
+                    type="text"
+                    name="area"
+                    value={hospitalData.area}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Map Link</label>
+                  <input
+                    type="url"
+                    name="mapLink"
+                    value={hospitalData.mapLink}
+                    onChange={handleInputChange}
+                    placeholder="https://maps.google.com/..."
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={hospitalData.phone}
+                    onChange={handleInputChange}
+                    placeholder="+971-123456789"
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Address Line 1</label>
+                  <input
+                    type="text"
+                    name="address1"
+                    value={hospitalData.address1}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Address Line 2</label>
+                  <input
+                    type="text"
+                    name="address2"
+                    value={hospitalData.address2}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>District</label>
+                  <input
+                    type="text"
+                    name="district"
+                    value={hospitalData.district}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Pincode</label>
+                  <input
+                    type="text"
+                    name="pincode"
+                    value={hospitalData.pincode}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Order No</label>
+                  <input
+                    type="number"
+                    name="order_no"
+                    value={hospitalData.order_no}
+                    onChange={handleInputChange}
+                    placeholder="Enter order number"
+                  />
+                </div>
+
+                <div className="ha-field">
+                  <label>Hospital Type ID</label>
+                  <input
+                    type="text"
+                    name="hospitalTypeId"
+                    value={hospitalData.hospitalTypeId}
+                    readOnly
+                  />
+                </div>
+
+                <div className="ha-form-actions">
+                  <button
+                    type="button"
+                    className="ha-btn ha-btn-cancel"
+                    onClick={() => setShowForm(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="ha-btn ha-btn-save">
+                    {editHospitalId ? "Save Changes" : "Add Hospital"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <Link to="/hospital" className="ha-back">
+          ← Back to Categories
+        </Link>
+      </div>
     </div>
   );
 };

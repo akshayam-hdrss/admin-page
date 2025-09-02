@@ -28,7 +28,17 @@ export default function ProductPage1() {
   const fetchProducts = async () => {
     try {
       const res = await getAvailableProducts(productTypeId);
-      setProducts(res.data.resultData || []);
+      let data = res.data.resultData || [];
+
+      // 🔑 Sort: numbers first (ascending), nulls at the end
+      data = data.sort((a, b) => {
+        if (a.order_no == null && b.order_no == null) return 0;
+        if (a.order_no == null) return 1;
+        if (b.order_no == null) return -1;
+        return a.order_no - b.order_no;
+      });
+
+      setProducts(data);
     } catch {
       alert("Failed to fetch products");
     }
@@ -60,42 +70,27 @@ export default function ProductPage1() {
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     if (isEditing) {
-  //       await updateAvailableProduct({ id: editId, ...form });
-  //     } else {
-  //       await createAvailableProduct(form);
-  //     }
-  //     resetForm();
-  //     fetchProducts();
-  //   } catch {
-  //     alert("Failed to save product");
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const payload = {
-      ...form,
-      availableProductTypeId: parseInt(productTypeId, 10) 
-    };
+    e.preventDefault();
+    try {
+      const payload = {
+        ...form,
+        order_no: form.order_no === "" ? null : parseInt(form.order_no, 10), // ✅ null if empty
+        availableProductTypeId: parseInt(productTypeId, 10),
+      };
 
-    if (isEditing) {
-      await updateAvailableProduct({ id: editId, ...payload });
-    } else {
-      await createAvailableProduct(payload);
+      if (isEditing) {
+        await updateAvailableProduct({ id: editId, ...payload });
+      } else {
+        await createAvailableProduct(payload);
+      }
+
+      resetForm();
+      fetchProducts();
+    } catch {
+      alert("Failed to save product");
     }
-
-    resetForm();
-    fetchProducts();
-  } catch {
-    alert("Failed to save product");
-  }
-};
-
+  };
 
   const resetForm = () => {
     setForm({ name: "", imageUrl: "", order_no: "" });
@@ -106,7 +101,11 @@ export default function ProductPage1() {
   };
 
   const handleEdit = (item) => {
-    setForm({ name: item.name, imageUrl: item.imageUrl, order_no: item.order_no });
+    setForm({
+      name: item.name,
+      imageUrl: item.imageUrl,
+      order_no: item.order_no ?? "" // ✅ show blank in input if null
+    });
     setImagePreview(item.imageUrl);
     setEditId(item.id);
     setIsEditing(true);
@@ -169,7 +168,7 @@ export default function ProductPage1() {
                 name="order_no"
                 value={form.order_no}
                 onChange={handleInputChange}
-                placeholder="Enter order number"
+                placeholder="Enter order number (optional)"
               />
 
               <div className="product-image-upload">
@@ -211,6 +210,7 @@ export default function ProductPage1() {
               )}
               <div className="product-details">
                 <h3>{item.name}</h3>
+                <p>Order No: {item.order_no ?? "null"}</p> {/* ✅ show order_no */}
               </div>
             </div>
             <div className="product-actions">

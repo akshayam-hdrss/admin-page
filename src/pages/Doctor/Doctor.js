@@ -1,180 +1,191 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Doctor.css';
-import { getDoctorTypes, createDoctorType, updateDoctorType, deleteDoctorType, uploadImage } from '../../api/api.js'; // Import API functions
+import { 
+  getDoctorTypes, 
+  createDoctorType, 
+  updateDoctorType, 
+  deleteDoctorType, 
+  uploadImage 
+} from '../../api/api.js'; 
 import AdManagement from '../../components/AdManagement/AdManagement.js';
 
 const Doctor = () => {
-  const [categories, setCategories] = useState([]); // Categories fetched from the backend
-  const [isFormOpen, setIsFormOpen] = useState(false); // Track if form is open (for adding or editing)
-  const [newCategory, setNewCategory] = useState({ name: '', imageUrl: '', path: '' });
-  const [editIndex, setEditIndex] = useState(null); // Store index of category being edited (for edit mode)
-  const [imagePreview, setImagePreview] = useState(null); // Store image preview for the uploaded file
-  const [uploading, setUploading] = useState(false); // Track image upload
+  const [categories, setCategories] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [newCategory, setNewCategory] = useState({ name: '', imageUrl: '', path: '', order_no: '' });
+  const [editIndex, setEditIndex] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-
-  // Fetch categories from the backend when the component mounts
+  // ✅ Fetch categories
   const fetchCategories = async () => {
     try {
-      const response = await getDoctorTypes(); // Fetch categories from API
-      setCategories(response.data.resultData); // Update state with fetched categories
+      const response = await getDoctorTypes();
+      let data = response.data.resultData || [];
+
+      // ✅ Sort by order_no (ascending, nulls last)
+      data = data.sort((a, b) => {
+        if (a.order_no == null && b.order_no == null) return 0;
+        if (a.order_no == null) return 1;
+        if (b.order_no == null) return -1;
+        return a.order_no - b.order_no;
+      });
+
+      setCategories(data);
     } catch (error) {
       console.error('Error fetching doctor categories:', error);
     }
   };
 
-  // Fetch categories only once on mount
   useEffect(() => {
     fetchCategories();
-  }, []); // Only run once when the component mounts
+  }, []);
 
-  // Handle delete category with alert
+  // ✅ Delete
   const deleteCategory = async (index) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this category?');
-    if (confirmDelete) {
+    if (window.confirm('Are you sure you want to delete this category?')) {
       try {
         const categoryId = categories[index].id;
-        await deleteDoctorType(categoryId); // API call to delete category
-        fetchCategories(); // Re-fetch categories after deletion
+        await deleteDoctorType(categoryId);
+        fetchCategories();
       } catch (error) {
         console.error('Error deleting category:', error);
       }
     }
   };
 
-  // Handle file change (for image upload)
- const handleFileChange = async (event) => {
-  const file = event.target.files[0];
-  if (file) {
+  // ✅ Image upload
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result); // Show preview
-    };
+    reader.onloadend = () => setImagePreview(reader.result);
     reader.readAsDataURL(file);
 
     try {
-      setUploading(true); // Start loading
-
+      setUploading(true);
       const formData = new FormData();
       formData.append('image', file);
-
       const response = await uploadImage(formData);
-      setNewCategory({ ...newCategory, imageUrl: response.data.imageUrl });
-
+      setNewCategory((prev) => ({ ...prev, imageUrl: response.data.imageUrl }));
     } catch (error) {
       console.error('Error uploading image:', error);
     } finally {
-      setUploading(false); // Stop loading
+      setUploading(false);
     }
-  }
-};
+  };
 
-
-  // Handle form submission (both add and edit)
+  // ✅ Form submit
   const handleFormSubmit = async () => {
     try {
+      let payload = {
+        ...newCategory,
+        order_no: newCategory.order_no === '' ? null : parseInt(newCategory.order_no),
+      };
+
       if (editIndex !== null) {
-        // If we're in edit mode
         const categoryId = categories[editIndex].id;
-        await updateDoctorType(categoryId, newCategory); // API call to update category
-        fetchCategories(); // Re-fetch categories after update
+        await updateDoctorType(categoryId, payload);
       } else {
-        // If we're adding a new category
-        await createDoctorType(newCategory); // API call to add category
-        fetchCategories(); // Re-fetch categories after addition
+        await createDoctorType(payload);
       }
-      setIsFormOpen(false); // Close the form after submission
-      setNewCategory({ name: '', imageUrl: '', path: '' }); // Reset the form
-      setImagePreview(null); // Reset image preview
-      setEditIndex(null); // Reset edit index
+
+      fetchCategories();
+      setIsFormOpen(false);
+      setNewCategory({ name: '', imageUrl: '', path: '', order_no: '' });
+      setImagePreview(null);
+      setEditIndex(null);
     } catch (error) {
       console.error('Error saving category:', error);
     }
   };
 
-  // Open the form to edit a category
+  // ✅ Edit mode
   const openEditForm = (index) => {
     const categoryToEdit = categories[index];
-    setNewCategory(categoryToEdit);
-    setImagePreview(categoryToEdit.imageUrl); // Set the preview with the existing image
+    setNewCategory({
+      ...categoryToEdit,
+      order_no: categoryToEdit.order_no ?? '',
+    });
+    setImagePreview(categoryToEdit.imageUrl);
     setEditIndex(index);
     setIsFormOpen(true);
   };
 
-  // Open the form to add a new category
+  // ✅ Add new
   const openAddForm = () => {
-    setNewCategory({ name: '', imageUrl: '', path: '' }); // Reset the form to empty fields
-    setImagePreview(null); // Clear image preview
-    setEditIndex(null); // Make sure we're not in edit mode
+    setNewCategory({ name: '', imageUrl: '', path: '', order_no: '' });
+    setImagePreview(null);
+    setEditIndex(null);
     setIsFormOpen(true);
   };
 
   return (
-  <>
+    <>
       <AdManagement category="doctor" typeId={null} itemId={null} />
       <div className="doctor-container">
-      <div className="doctor-header">
-        <h1 className="doctor-title">Doctor Categories</h1>
-        <button className="doctor-add-btn" onClick={openAddForm}>Add Category</button>
-      </div>
-
-      {/* Category Form (Add or Edit) */}
-      {isFormOpen && (
-        <div className="add-category-form">
-          <input
-            type="text"
-            value={newCategory.name}
-            onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-            placeholder="Category Name"
-            className="input-field"
-          />
-          {/* Image Upload */}
-          <div className="image-upload">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="input-field file-input"
-              required
-            />
-            {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
-            {uploading && <p className="uploading-text">Uploading image...</p>}
-
-          </div>
-          <div className="form-buttons">
-            <button className="submit-btn" onClick={handleFormSubmit}>
-              {editIndex !== null ? 'Update' : 'Add'}
-            </button>
-            <button className="cancel-btn" onClick={() => setIsFormOpen(false)}>Cancel</button>
-          </div>
+        <div className="doctor-header">
+          <h1 className="doctor-title">Doctor Categories</h1>
+          <button className="doctor-add-btn" onClick={openAddForm}>Add Category</button>
         </div>
-      )}
 
-      <div className="doctor-category-grid">
-        {categories.map((category, index) => (
-          <div key={index} className="doctor-category">
-            <Link to={`/doctor/${category.id}`} className="doctor-category-link">
-              <img src={category.imageUrl} alt={category.name} className="doctor-category-img" />
-              <h2>{category.name}</h2>
-            </Link>
-            <button
-              className="doctor-edit-btn"
-              onClick={() => openEditForm(index)}
-            >
-              Edit
-            </button>
-            <button
-              className="doctor-delete-btn"
-              onClick={() => deleteCategory(index)}
-            >
-              Delete
-            </button>
+        {/* ✅ Form */}
+        {isFormOpen && (
+          <div className="add-category-form">
+            <input
+              type="text"
+              value={newCategory.name}
+              onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+              placeholder="Category Name"
+              className="input-field"
+            />
+
+            <input
+              type="number"
+              value={newCategory.order_no}
+              onChange={(e) => setNewCategory({ ...newCategory, order_no: e.target.value })}
+              placeholder="Order Number"
+              className="input-field"
+            />
+
+            <div className="image-upload">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="input-field file-input"
+              />
+              {imagePreview && <img src={imagePreview} alt="Preview" className="image-preview" />}
+              {uploading && <p className="uploading-text">Uploading image...</p>}
+            </div>
+
+            <div className="form-buttons">
+              <button className="submit-btn" onClick={handleFormSubmit}>
+                {editIndex !== null ? 'Update' : 'Add'}
+              </button>
+              <button className="cancel-btn" onClick={() => setIsFormOpen(false)}>Cancel</button>
+            </div>
           </div>
-        ))}
-      </div>
-    </div>
-    </>
+        )}
 
+        {/* ✅ Category Grid */}
+        <div className="doctor-category-grid">
+          {categories.map((category, index) => (
+            <div key={index} className="doctor-category">
+              <Link to={`/doctor/${category.id}`} className="doctor-category-link">
+                <img src={category.imageUrl} alt={category.name} className="doctor-category-img" />
+                <h2>{category.name}</h2>
+              </Link>
+              <p>Order No: {category.order_no ?? 'null'}</p>
+              <button className="doctor-edit-btn" onClick={() => openEditForm(index)}>Edit</button>
+              <button className="doctor-delete-btn" onClick={() => deleteCategory(index)}>Delete</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
   );
 };
 

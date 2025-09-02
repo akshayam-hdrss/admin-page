@@ -18,32 +18,52 @@ export default function HospitalCategory() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [newCategoryImage, setNewCategoryImage] = useState('');
+  const [newOrderNo, setNewOrderNo] = useState(''); // ✅ order_no state
   const [editIndex, setEditIndex] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(true); // ✅ Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        const response = await getHospitalTypes();
-        setCategories(response.data.resultData);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        setLoading(false);
-      }
-    };
     fetchCategories();
   }, []);
 
+  const fetchCategories = async () => {
+    try {
+      setLoading(true);
+      const response = await getHospitalTypes();
+      let data = response.data.resultData || [];
+
+      // ✅ sort categories by order_no (null at end)
+      data.sort((a, b) => {
+        if (a.order_no == null && b.order_no == null) return 0;
+        if (a.order_no == null) return 1;
+        if (b.order_no == null) return -1;
+        return a.order_no - b.order_no;
+      });
+
+      setCategories(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setLoading(false);
+    }
+  };
+
   const handleAddCategory = () => {
     setEditIndex(null);
+    setNewCategory('');
+    setNewCategoryImage('');
+    setNewOrderNo('');
+    setImagePreview(null);
     setIsFormOpen(true);
   };
 
   const handleCategoryChange = (e) => {
     setNewCategory(e.target.value);
+  };
+
+  const handleOrderChange = (e) => {
+    setNewOrderNo(e.target.value);
   };
 
   const handleFileChange = async (e) => {
@@ -68,7 +88,11 @@ export default function HospitalCategory() {
 
   const handleSaveCategory = async () => {
     if (newCategory.trim() && newCategoryImage) {
-      const categoryData = { name: newCategory, imageUrl: newCategoryImage };
+      const categoryData = {
+        name: newCategory,
+        imageUrl: newCategoryImage,
+        order_no: newOrderNo ? parseInt(newOrderNo) : null, // ✅ save order_no
+      };
       try {
         if (editIndex !== null) {
           const categoryId = categories[editIndex].id;
@@ -77,13 +101,8 @@ export default function HospitalCategory() {
           await createHospitalType(categoryData);
         }
 
-        setNewCategory('');
-        setNewCategoryImage('');
-        setImagePreview(null);
         setIsFormOpen(false);
-
-        const response = await getHospitalTypes();
-        setCategories(response.data.resultData);
+        await fetchCategories(); // refresh list with sorting
       } catch (error) {
         console.error('Error saving category:', error);
       }
@@ -93,6 +112,7 @@ export default function HospitalCategory() {
   const handleCancelAdd = () => {
     setNewCategory('');
     setNewCategoryImage('');
+    setNewOrderNo('');
     setImagePreview(null);
     setIsFormOpen(false);
   };
@@ -102,8 +122,7 @@ export default function HospitalCategory() {
       const categoryId = categories[index].id;
       try {
         await deleteHospitalType({ id: categoryId });
-        const response = await getHospitalTypes();
-        setCategories(response.data.resultData);
+        await fetchCategories();
       } catch (error) {
         console.error('Error deleting category:', error);
       }
@@ -118,8 +137,7 @@ export default function HospitalCategory() {
             await deleteHospitalType({ id: category.id });
           })
         );
-        const response = await getHospitalTypes();
-        setCategories(response.data.resultData);
+        await fetchCategories();
       } catch (error) {
         console.error('Error deleting all categories:', error);
       }
@@ -127,10 +145,12 @@ export default function HospitalCategory() {
   };
 
   const handleEditCategory = (index) => {
+    const cat = categories[index];
     setEditIndex(index);
-    setNewCategory(categories[index].name);
-    setNewCategoryImage(categories[index].imageUrl);
-    setImagePreview(categories[index].imageUrl);
+    setNewCategory(cat.name);
+    setNewCategoryImage(cat.imageUrl);
+    setNewOrderNo(cat.order_no || '');
+    setImagePreview(cat.imageUrl);
     setIsFormOpen(true);
   };
 
@@ -138,13 +158,12 @@ export default function HospitalCategory() {
     navigate(`/hospital/${id}`);
   };
 
-  // ✅ Show loading spinner before content
   if (loading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
         <p style={{ textAlign: 'center', color: 'red', marginTop: '10px' }}>
-          {/* Loading Categories... */}
+          Loading Categories...
         </p>
       </div>
     );
@@ -152,93 +171,96 @@ export default function HospitalCategory() {
 
   return (
     <>
-    <AdManagement category="hospital" typeId={null} itemId={null} />
-    <div className="category-page">
-      <div className="category-header">
-        <h1>Hospital Categories</h1>
-        <div>
+      <AdManagement category="hospital" typeId={null} itemId={null} />
+      <div className="category-page">
+        <div className="category-header">
+          <h1>Hospital Categories</h1>
           <button className="btn btn-add" onClick={handleAddCategory}>
             + Add Category
           </button>
-          {/* <button className="btn btn-delete-all" onClick={handleDeleteAll}>
-            Delete All
-          </button> */}
         </div>
-      </div>
 
-      {isFormOpen && (
-        <div className="form-overlay">
-          <div className="form-container">
-            <h2>{editIndex !== null ? 'Edit Category' : 'Add New Category'}</h2>
-            <input
-              type="text"
-              value={newCategory}
-              onChange={handleCategoryChange}
-              placeholder="Enter category name"
-            />
-            <div className="image-upload">
+        {isFormOpen && (
+          <div className="form-overlay">
+            <div className="form-container">
+              <h2>{editIndex !== null ? 'Edit Category' : 'Add New Category'}</h2>
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="input-field file-input"
+                type="text"
+                value={newCategory}
+                onChange={handleCategoryChange}
+                placeholder="Enter category name"
               />
-              {imagePreview && (
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="image-preview"
+              <input
+                type="number"
+                value={newOrderNo}
+                onChange={handleOrderChange}
+                placeholder="Enter order no"
+                className="input-field"
+              />
+              <div className="image-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="input-field file-input"
                 />
-              )}
-            </div>
-            <div className="form-actions">
-              <button className="btn btn-cancel" onClick={handleCancelAdd}>
-                Cancel
-              </button>
-              <button className="btn btn-save" onClick={handleSaveCategory}>
-                {editIndex !== null ? 'Update' : 'Save'}
-              </button>
+                {imagePreview && (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="image-preview"
+                  />
+                )}
+              </div>
+              <div className="form-actions">
+                <button className="btn btn-cancel" onClick={handleCancelAdd}>
+                  Cancel
+                </button>
+                <button className="btn btn-save" onClick={handleSaveCategory}>
+                  {editIndex !== null ? 'Update' : 'Save'}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <ul className="category-list">
-        {categories.map((category, index) => (
-          <li key={index} className="category-item">
-            <div
-              className="category-card"
-              onClick={() => handleCategoryClick(category.id)}
-            >
-              <div className="category-images">
-                <img
-                  src={category.imageUrl || hospital}
-                  alt={category.name}
-                  className="category-image"
-                />
-              </div>
-              <div className="category-details">
-                <h3>{category.name}</h3>
-              </div>
-            </div>
-            <div className="category-actions">
-              <button
-                className="btn btn-edit"
-                onClick={() => handleEditCategory(index)}
+        <ul className="category-list">
+          {categories.map((category, index) => (
+            <li key={index} className="category-item">
+              <div
+                className="category-card"
+                onClick={() => handleCategoryClick(category.id)}
               >
-                Edit
-              </button>
-              <button
-                className="btn btn-delete"
-                onClick={() => handleDeleteCategory(index)}
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+                <div className="category-images">
+                  <img
+                    src={category.imageUrl || hospital}
+                    alt={category.name}
+                    className="category-image"
+                  />
+                </div>
+                <div className="category-details">
+                  <h3>{category.name}</h3>
+                  <p>Order No: {category.order_no ?? 'null'}</p>
+                </div>
+              </div>
+              <div className="category-actions">
+                <button
+                  className="btn btn-edit"
+                  onClick={() => handleEditCategory(index)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-delete"
+                  onClick={() => handleDeleteCategory(index)}
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 }

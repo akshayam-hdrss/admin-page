@@ -33,6 +33,7 @@ export default function DoctorDetails() {
         setDoctor(d);
         setFormData({
           ...d,
+          order_no: d.order_no ?? "", 
           bannerUrl: d.bannerUrl || '',
           gallery: d.gallery,
         });
@@ -164,6 +165,7 @@ export default function DoctorDetails() {
             {renderStars(doctor.rating)}
             <span className="rating-num-custom">{parseFloat(doctor.rating).toFixed(1)}</span>
           </div>
+          <p><strong>Order_no:</strong> {doctor.order_no ?? 'null'}</p>
           <p><strong>Experience:</strong> {doctor.experience}</p>
           <p><strong>Phone:</strong> {doctor.phone}</p>
           <p><strong>WhatsApp:</strong> {doctor.whatsapp}</p>
@@ -212,6 +214,7 @@ export default function DoctorDetails() {
             {[
               { label: 'Name *', name: 'doctorName' },
               { label: 'Degree', name: 'degree' },
+              {label : 'order_no', name:'order_no'},
               { label: 'Business Name', name: 'businessName' },
               { label: 'Experience', name: 'experience' },
               { label: 'Phone', name: 'phone' },
@@ -247,6 +250,7 @@ export default function DoctorDetails() {
                 formData.bannerUrl && <img src={formData.bannerUrl} alt="Banner Preview" className="image-preview" />}
             </div>
 
+            
             <div className="form-group-custom">
               <label>Gallery</label>
               <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, 'gallery')} />

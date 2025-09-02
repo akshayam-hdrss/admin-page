@@ -13,7 +13,7 @@ import AdManagement from "../../../components/AdManagement/AdManagement";
 function Productpage2() {
   const { productTypeId, productId } = useParams();
   const [types, setTypes] = useState([]);
-  const [form, setForm] = useState({ name: "", imageUrl: "" });
+  const [form, setForm] = useState({ name: "", imageUrl: "", order_no: "" });
   const [imagePreview, setImagePreview] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -29,7 +29,17 @@ function Productpage2() {
   const fetchTypes = async () => {
     try {
       const res = await getProductTypesByAvailableProduct(productId);
-      setTypes(res.data.resultData || []);
+      let data = res.data.resultData || [];
+
+      // 🔑 Sort by order_no: numbers ascending, nulls last
+      data = data.sort((a, b) => {
+        if (a.order_no == null && b.order_no == null) return 0;
+        if (a.order_no == null) return 1;
+        if (b.order_no == null) return -1;
+        return a.order_no - b.order_no;
+      });
+
+      setTypes(data);
     } catch {
       alert("Failed to load product types");
     }
@@ -63,7 +73,12 @@ function Productpage2() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { ...form, availableProductId: productId };
+    const payload = {
+      ...form,
+      order_no: form.order_no === "" ? null : parseInt(form.order_no, 10), // ✅ null if empty
+      availableProductId: productId,
+    };
+
     try {
       if (isEditing) {
         await updateProductType({ id: editId, ...payload });
@@ -78,7 +93,11 @@ function Productpage2() {
   };
 
   const handleEdit = (item) => {
-    setForm({ name: item.name, imageUrl: item.imageUrl });
+    setForm({
+      name: item.name,
+      imageUrl: item.imageUrl,
+      order_no: item.order_no ?? "" // ✅ show blank in input if null
+    });
     setImagePreview(item.imageUrl);
     setEditId(item.id);
     setIsEditing(true);
@@ -96,7 +115,7 @@ function Productpage2() {
   };
 
   const resetForm = () => {
-    setForm({ name: "", imageUrl: "" });
+    setForm({ name: "", imageUrl: "", order_no: "" });
     setImagePreview(null);
     setIsEditing(false);
     setEditId(null);
@@ -108,83 +127,92 @@ function Productpage2() {
   };
 
   return (
-  <>
-  <AdManagement category="products" typeId={null} itemId={null} />
-  
-    <div className="product-page">
-      <div className="product-header">
-        <h2>Product Types</h2>
-        <button className="product-btn-add" onClick={() => setIsFormOpen(true)}>
-          + Add Product Type
-        </button>
-      </div>
+    <>
+      <AdManagement category="products" typeId={null} itemId={null} />
 
-      {isFormOpen && (
-        <div className="product-form-overlay">
-          <div className="product-form-container">
-            <h2>{isEditing ? "Edit Product Type" : "Add New Product Type"}</h2>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleInputChange}
-                placeholder="Enter product type name"
-                required
-              />
-              <div className="product-image-upload">
-                <input type="file" accept="image/*" onChange={handleFileChange} />
-              </div>
-              {uploading && <p>Uploading image...</p>}
-              {imagePreview && (
-                <img src={imagePreview} alt="Preview" className="image-preview" />
-              )}
-              <div className="product-form-actions">
-                <button
-                  type="button"
-                  className="product-btn-cancel"
-                  onClick={resetForm}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="product-btn-save">
-                  {isEditing ? "Update" : "Save"}
-                </button>
-              </div>
-            </form>
-          </div>
+      <div className="product-page">
+        <div className="product-header">
+          <h2>Product Types</h2>
+          <button className="product-btn-add" onClick={() => setIsFormOpen(true)}>
+            + Add Product Type
+          </button>
         </div>
-      )}
 
-      <ul className="product-list">
-        {types.map((type) => (
-          <li className="product-item" key={type.id}>
-            <div className="product-card" onClick={() => handleCategoryClick(type.id)}>
-              {type.imageUrl && (
-                <div className="product-images">
-                  <img
-                    src={type.imageUrl}
-                    alt={type.name}
-                    className="product-image"
-                  />
+        {isFormOpen && (
+          <div className="product-form-overlay">
+            <div className="product-form-container">
+              <h2>{isEditing ? "Edit Product Type" : "Add New Product Type"}</h2>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter product type name"
+                  required
+                />
+                <input
+                  type="number"
+                  name="order_no"
+                  value={form.order_no}
+                  onChange={handleInputChange}
+                  placeholder="Enter order number (optional)"
+                />
+
+                <div className="product-image-upload">
+                  <input type="file" accept="image/*" onChange={handleFileChange} />
                 </div>
-              )}
-              <div className="product-details">
-                <h3>{type.name}</h3>
+                {uploading && <p>Uploading image...</p>}
+                {imagePreview && (
+                  <img src={imagePreview} alt="Preview" className="image-preview" />
+                )}
+                <div className="product-form-actions">
+                  <button
+                    type="button"
+                    className="product-btn-cancel"
+                    onClick={resetForm}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="product-btn-save">
+                    {isEditing ? "Update" : "Save"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <ul className="product-list">
+          {types.map((type) => (
+            <li className="product-item" key={type.id}>
+              <div className="product-card" onClick={() => handleCategoryClick(type.id)}>
+                {type.imageUrl && (
+                  <div className="product-images">
+                    <img
+                      src={type.imageUrl}
+                      alt={type.name}
+                      className="product-image"
+                    />
+                  </div>
+                )}
+                <div className="product-details">
+                  <h3>{type.name}</h3>
+                  <p>Order No: {type.order_no ?? "null"}</p> {/* ✅ display order_no */}
+                </div>
               </div>
-            </div>
-            <div className="product-actions">
-              <button className="product-btn-edit" onClick={() => handleEdit(type)}>
-                Edit
-              </button>
-              <button className="product-btn-delete" onClick={() => handleDelete(type.id)}>
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
+              <div className="product-actions">
+                <button className="product-btn-edit" onClick={() => handleEdit(type)}>
+                  Edit
+                </button>
+                <button className="product-btn-delete" onClick={() => handleDelete(type.id)}>
+                  Delete
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 }

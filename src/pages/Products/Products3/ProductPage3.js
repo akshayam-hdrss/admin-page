@@ -30,13 +30,14 @@ export default function Productpage3() {
     experience: "",
     addressLine1: "",
     addressLine2: "",
-    district: "",      // <-- added
-    pincode: "",       // <-- added
+    district: "",
+    pincode: "",
     mapLink: "",
     about: "",
     youtubeLink: "",
     bannerUrl: "",
     gallery: [],
+    order_no: "",   // ✅ Added order_no field
     productTypeId: parseInt(productTypeId),
   };
 
@@ -49,7 +50,17 @@ export default function Productpage3() {
   const fetchProducts = async () => {
     try {
       const res = await getProductsByProductType(productTypeId);
-      setProducts(res.data.resultData || []);
+      let data = res.data.resultData || [];
+
+      // ✅ Sort by order_no ascending, null last
+      data = data.sort((a, b) => {
+        if (a.order_no == null && b.order_no == null) return 0;
+        if (a.order_no == null) return 1;
+        if (b.order_no == null) return -1;
+        return a.order_no - b.order_no;
+      });
+
+      setProducts(data);
     } catch (err) {
       setError(err.message || "Failed to fetch products");
     }
@@ -93,7 +104,13 @@ export default function Productpage3() {
   };
 
   const handleEdit = (product) => {
-    setForm({ ...product });
+    setForm({
+      ...product,
+      gallery: Array.isArray(product.gallery)
+        ? product.gallery
+        : JSON.parse(product.gallery || "[]"),
+      order_no: product.order_no ?? "", // ✅ handle null as blank in input
+    });
     setImagePreview(product.imageUrl);
     setEditingId(product.id);
     setShowModal(true);
@@ -112,14 +129,19 @@ export default function Productpage3() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = { ...form, gallery: JSON.stringify(form.gallery) };
+      const payload = {
+        ...form,
+        order_no: form.order_no === "" ? null : parseInt(form.order_no, 10), // ✅ null if empty
+        gallery: JSON.stringify(form.gallery),
+      };
 
       if (editingId) {
         payload.id = editingId;
-        await updateProduct(payload); // <-- use updateProduct for edit
+        await updateProduct(payload);
       } else {
         await createProduct(payload);
       }
+
       setForm(initialForm);
       setEditingId(null);
       setImagePreview(null);
@@ -161,22 +183,23 @@ export default function Productpage3() {
                 <p className="card-text">{item.businessName}</p>
                 <p className="card-text">Rs. {item.price}</p>
                 <p className="card-text">{item.location}</p>
+                <p className="card-text">Order No: {item.order_no ?? "null"}</p> {/* ✅ display order_no */}
               </div>
               <div className="card-footer d-flex justify-content-between">
                 <div>
                   <a href={`tel:${item.phone}`} className="btn btn-sm btn-outline-primary me-1">
-                    <i class="fa-solid fa-phone-volume"></i>
+                    <i className="fa-solid fa-phone-volume"></i>
                   </a>
                   <a
                     href={`https://wa.me/${item.whatsapp}`}
                     className="btn btn-sm btn-outline-success"
                   >
-                    <i class="fa-brands fa-whatsapp"></i>
+                    <i className="fa-brands fa-whatsapp"></i>
                   </a>
                 </div>
                 <div>
                   <button className="btn btn-sm btn-warning me-1" onClick={() => handleEdit(item)}>
-                    <i class="fa-solid fa-pen"></i>
+                    <i className="fa-solid fa-pen"></i>
                   </button>
                   <button className="btn btn-sm btn-danger" onClick={() => handleDelete(item.id)}>
                     🗑
@@ -210,8 +233,8 @@ export default function Productpage3() {
                       "experience",
                       "addressLine1",
                       "addressLine2",
-                      "district",      // <-- added
-                      "pincode",       // <-- added
+                      "district",
+                      "pincode",
                       "mapLink",
                       "youtubeLink",
                     ].map((field) => (
@@ -227,6 +250,18 @@ export default function Productpage3() {
                         />
                       </div>
                     ))}
+
+                    {/* ✅ Order No input */}
+                    <div className="col-md-6">
+                      <input
+                        className="form-control"
+                        name="order_no"
+                        value={form.order_no}
+                        onChange={handleInputChange}
+                        placeholder="Order No (optional)"
+                        type="number"
+                      />
+                    </div>
 
                     <div className="col-12">
                       <textarea

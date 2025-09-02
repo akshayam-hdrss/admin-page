@@ -36,6 +36,7 @@ export default function Traditional3() {
     designation: "",
     category: "",
     businessName: "",
+    order_no:"",
     rating: 0,
     imageUrl: "",
     location: "",
@@ -64,9 +65,6 @@ export default function Traditional3() {
 
 
 
-  // useEffect(() => {
-  //   fetchDoctors();
-  // }, [hospitalId]);
 
   useEffect(() => {
     fetchDoctors();
@@ -83,18 +81,6 @@ export default function Traditional3() {
 
   }, [hospitalId]);
 
-// const handleCreateCategory = async () => {
-//   if (!newCategoryText) return;
-//   try {
-//     await createCategory({ text: newCategoryText.trim(), hospitalId: Number(hospitalId) });
-//     setNewCategoryText("");
-//     setShowCategoryInput(false);
-//     // fetchCategories();
-//     fetchDoctors();
-//   } catch (err) {
-//     console.error("Failed to add category:", err);
-//   }
-// };
 
 const handleCreateCategory = async () => {
   if (!newCategoryText.trim()) return;
@@ -171,6 +157,7 @@ const groupDoctorsByCategory = () => {
       doctorName: "",
       experience: "",
       businessName: "",
+      order_no:'',
       rating: 0,
       imageUrl: "",
       location: "",
@@ -201,6 +188,7 @@ const groupDoctorsByCategory = () => {
       doctorName: doc.doctorName,
       experience: doc.experience || "",
       businessName: doc.businessName || "",
+      order_no:doc.order_no || "",
       rating: 0,
       imageUrl: doc.imageUrl,
       location: doc.location,
@@ -286,6 +274,7 @@ const groupDoctorsByCategory = () => {
         doctorName: formData.doctorName,
         experience: formData.experience,
         businessName: formData.hospital,
+        order_no:formData.order_no,
         rating: 0,
         imageUrl: formData.imageUrl,
         location: formData.location,
@@ -483,7 +472,8 @@ const groupDoctorsByCategory = () => {
 
             <label>Name *</label>
             <input name="doctorName" value={formData.doctorName} onChange={handleChange} required />
-
+            <label>order_no </label>
+            <input name="order_no" value={formData.order_no} onChange={handleChange} required />
             <label>Experience *</label>
             <input name="experience" value={formData.experience} onChange={handleChange} required />
             <label>Degree</label>
@@ -638,6 +628,7 @@ const groupDoctorsByCategory = () => {
         <div className="col degree">{doc.degree}</div>
         <div className="col experience">{doc.experience}</div>
         <div className="col hospital">{doc.businessName}</div>
+      
         <div className="col rating">
           <div className="stars">
             {renderStars(parseFloat(doc.rating))}
@@ -666,7 +657,8 @@ const groupDoctorsByCategory = () => {
             <div className="col name"><strong>{doc.doctorName}</strong></div>
             <div className="col degree">{doc.degree}</div>
             <div className="col experience">{doc.experience}</div>
-            <div className="col hospital">{doc.businessName}</div>
+            {/* <div className="col hospital">{doc.businessName}</div> */}
+            <div className="col-order-no">{doc.order_no ?? 'null'}</div>
             <div className="col rating">
               <div className="stars">
                 {renderStars(parseFloat(doc.rating))}

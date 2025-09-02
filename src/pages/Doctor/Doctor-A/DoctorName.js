@@ -82,31 +82,21 @@ export default function DoctorName() {
 
   }, [hospitalId]);
 
-// const handleCreateCategory = async () => {
-//   if (!newCategoryText) return;
-//   try {
-//     await createCategory({ text: newCategoryText.trim(), hospitalId: Number(hospitalId) });
-//     setNewCategoryText("");
-//     setShowCategoryInput(false);
-//     // fetchCategories();
-//     fetchDoctors();
-//   } catch (err) {
-//     console.error("Failed to add category:", err);
-//   }
-// };
 
 const handleCreateCategory = async () => {
   if (!newCategoryText.trim()) return;
 
   try {
+    const payload = {
+      text: newCategoryText.trim(),
+      number: newCategoryOrderNo === "" ? null : parseInt(newCategoryOrderNo), 
+      hospitalId: Number(hospitalId),
+    };
+
     if (editingCategoryId) {
-      await updateCategory(editingCategoryId, {
-        text: newCategoryText.trim(),
-        number: parseInt(newCategoryOrderNo) || 1,
-        hospitalId: Number(hospitalId),
-      });
+      await updateCategory(editingCategoryId, payload);
     } else {
-      await createCategory({ text: newCategoryText.trim(), number: parseInt(newCategoryOrderNo) || 1, hospitalId: Number(hospitalId) });
+      await createCategory(payload);
     }
 
     setNewCategoryText("");
@@ -122,7 +112,7 @@ const handleCreateCategory = async () => {
 const handleEditCategory = (cat) => {
   setShowCategoryInput(true);
   setNewCategoryText(cat.text);
-  setNewCategoryOrderNo(cat.number || "");
+  setNewCategoryOrderNo(cat.number ?? ""); // keep empty if null
   setEditingCategoryId(cat.id);
 };
 
@@ -136,17 +126,38 @@ const handleDeleteCategory = async (catId) => {
 };
 
 
-  const fetchDoctors = async () => {
+const fetchDoctors = async () => {
   try {
     const res = await getDoctors({ hospitalId, doctorTypeId });
-    setDoctors(res.data.resultData || []);
-    setCategories(res.data.category || []);
+    let doctorsData = res.data.resultData || [];
+    let categoryData = res.data.category || [];
+
+    // 🔑 Sort categories by order_no (ascending, null last)
+    categoryData = categoryData.sort((a, b) => {
+      if (a.order_no == null && b.order_no == null) return 0;
+      if (a.order_no == null) return 1;
+      if (b.order_no == null) return -1;
+      return a.order_no - b.order_no;
+    });
+
+    // 🔑 Sort doctors by order_no (ascending, null last)
+    doctorsData = doctorsData.sort((a, b) => {
+      if (a.order_no == null && b.order_no == null) return 0;
+      if (a.order_no == null) return 1;
+      if (b.order_no == null) return -1;
+      return a.order_no - b.order_no;
+    });
+
+    setDoctors(doctorsData);
+    setCategories(categoryData);
   } catch (err) {
     console.error("Failed to fetch doctors:", err);
     setDoctors([]);
     setCategories([]);
   }
 };
+
+
 const groupDoctorsByCategory = () => {
   const grouped = {};
 
@@ -200,6 +211,7 @@ const groupDoctorsByCategory = () => {
       doctorName: doc.doctorName,
       experience: doc.experience || "",
       businessName: doc.businessName || "",
+      order_no:doc.order_no || "",
       rating: 0,
       imageUrl: doc.imageUrl,
       location: doc.location,
@@ -284,6 +296,7 @@ const groupDoctorsByCategory = () => {
         doctorName: formData.doctorName,
         experience: formData.experience,
         businessName: formData.businessName,
+        order_no:formData.order_no,
         rating: 0,
         imageUrl: formData.imageUrl,
         location: formData.location,
@@ -376,7 +389,9 @@ const groupDoctorsByCategory = () => {
             className="dropdown-item d-flex justify-content-between align-items-center"
             onClick={() => setSelectedCategory(cat.text)}
           >
-            <span>{cat.text}</span>
+            <span>
+              {cat.text} <small className="text-muted">(Order: {cat.number ?? 'null'})</small>
+            </span>
             <span>
               <button
                 className="btn btn-sm btn-outline-primary me-1"
@@ -388,11 +403,9 @@ const groupDoctorsByCategory = () => {
                     const dropdown = window.bootstrap.Dropdown.getInstance(dropdownEl);
                     if (dropdown) dropdown.hide();
                   }
-
                 }}
-                
               >
-                ✏️
+                ✏️edit
               </button>
               <button
                 className="btn btn-sm btn-outline-danger"
@@ -407,6 +420,7 @@ const groupDoctorsByCategory = () => {
           </li>
         ))}
       </ul>
+
     </div>
 
     {/* Add / Edit Input */}
@@ -481,8 +495,13 @@ const groupDoctorsByCategory = () => {
 
             <label>Name *</label>
             <input name="doctorName" value={formData.doctorName} onChange={handleChange} required />
+            <label>Order-no</label>
+
+
+            <input name="order_no" value={formData.order_no} onChange={handleChange} required />
 
             <label>Experience *</label>
+            
             <input name="experience" value={formData.experience} onChange={handleChange} required />
             <label>Degree</label>
             <input name="degree" value={formData.degree} onChange={handleChange} required/>
@@ -634,8 +653,11 @@ const groupDoctorsByCategory = () => {
         </div>
         <div className="col name"><strong>{doc.doctorName}</strong></div>
         <div className="col degree">{doc.degree}</div>
+        
         <div className="col experience">{doc.experience}</div>
         <div className="col hospital">{doc.businessName}</div>
+        <div className="col-order_no">{doc.order_no ?? "null"}</div>
+        
         <div className="col rating">
           <div className="stars">
             {renderStars(parseFloat(doc.rating))}
@@ -655,29 +677,47 @@ const groupDoctorsByCategory = () => {
   <div className="doctors-list">
     {Object.entries(groupDoctorsByCategory()).map(([category, docs]) => (
       <div key={category} className="category-group">
-        <h2 className="category-title">{category}</h2>
-        {docs.map((doc) => (
-          <div key={doc.id} className="doctor-row">
-            <div className="col image">
-              <img src={doc.imageUrl || profile} alt={doc.doctorName} className="doctor-image" />
-            </div>
-            <div className="col name"><strong>{doc.doctorName}</strong></div>
-            <div className="col degree">{doc.degree}</div>
-            <div className="col experience">{doc.experience}</div>
-            <div className="col hospital">{doc.businessName}</div>
-            <div className="col rating">
-              <div className="stars">
-                {renderStars(parseFloat(doc.rating))}
-                <span className="rating-num">{isNaN(parseFloat(doc.rating)) ? "0.0" : parseFloat(doc.rating).toFixed(1)}</span>
-              </div>
-            </div>
-            <div className="col actions-col">
-              <Link to={`/doctordetails/${doc.id}`} className="btn btn-details">Details</Link>
-              <button className="btn btn-edit" onClick={() => handleEdit(doc)}>✏️</button>
-              <button className="btn btn-delete" onClick={() => handleDelete(doc.id)}>🗑</button>
-            </div>
-          </div>
-        ))}
+        <h2 className="category-title">
+          {category}
+          {(() => {
+            const cat = categories.find(c => c.text === category);
+            {/* return cat ? ` (Order: ${cat ?? 'null'})` : "hello"; */}
+          })()}
+        </h2>
+
+        {docs
+  .slice() // make a copy so we don’t mutate original
+  .sort((a, b) => {
+    if (a.order_no == null && b.order_no == null) return 0;
+    if (a.order_no == null) return 1;   // null → last
+    if (b.order_no == null) return -1;  // null → last
+    return a.order_no - b.order_no;     // ascending order
+  })
+  .map((doc) => (
+    <div key={doc.id} className="doctor-row">
+      <div className="col image">
+        <img src={doc.imageUrl || profile} alt={doc.doctorName} className="doctor-image" />
+      </div>
+      <div className="col name"><strong>{doc.doctorName}</strong></div>
+      <div className="col degree">{doc.degree}</div>
+      <div className="col experience">{doc.experience}</div>
+      <div className="col-order_no">{doc.order_no ?? "null"}</div>
+      <div className="col rating">
+        <div className="stars">
+          {renderStars(parseFloat(doc.rating))}
+          <span className="rating-num">
+            {isNaN(parseFloat(doc.rating)) ? "0.0" : parseFloat(doc.rating).toFixed(1)}
+          </span>
+        </div>
+      </div>
+      <div className="col actions-col">
+        <Link to={`/doctordetails/${doc.id}`} className="btn btn-details">Details</Link>
+        <button className="btn btn-edit" onClick={() => handleEdit(doc)}>✏️</button>
+        <button className="btn btn-delete" onClick={() => handleDelete(doc.id)}>🗑</button>
+      </div>
+    </div>
+))}
+
       </div>
     ))}
   </div>
@@ -697,4 +737,3 @@ const groupDoctorsByCategory = () => {
     </>
   );
 }
-
