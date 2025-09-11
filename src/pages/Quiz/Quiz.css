@@ -1,0 +1,183 @@
+/* Container */
+.quiz-container {
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+/* Header */
+.quiz-container h2 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+/* Add Button */
+.quiz-add-btn {
+  display: block;
+  margin: 0 auto 2rem auto;
+  padding: 10px 20px;
+  background: #3498db;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.quiz-add-btn:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+
+/* Questions List */
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Single Question Card */
+.question-card {
+  border: none;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.question-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Question Card Buttons */
+.question-card button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.question-card button:hover {
+  opacity: 0.85;
+}
+
+.edit-btn {
+  background: #f39c12;
+}
+
+.delete-btn {
+  background: #e74c3c;
+}
+
+/* Modal Background */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* Modal Content */
+.modal-content {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Slide in animation */
+@keyframes slideIn {
+  0% { transform: translateY(-50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Modal Header */
+.modal-content h3 {
+  margin-bottom: 1.5rem;
+  color: #34495e;
+  text-align: center;
+}
+
+/* Modal Inputs */
+.modal-content input {
+  padding: 10px 12px;
+  margin: 4px 0px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-content input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+  outline: none;
+}
+
+/* Modal Buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.modal-buttons button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn {
+  background: #bdc3c7;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background: #95a5a6;
+}
+
+.save-btn {
+  background: #27ae60;
+  color: #fff;
+}
+
+.save-btn:hover {
+  background: #1e8449;
+}
+
+.hrline{
+    margin: 20px 0px;
+    color: black !important;
+    width: 100%;
+}
+/* Responsive */
+@media (max-width: 500px) {
+  .modal-content {
+    padding: 1.5rem;
+  }
+  .quiz-add-btn {
+    width: 100%;
+  }
+}

@@ -16,8 +16,8 @@ const links = [
   { to: '/charities', label: 'Charities' },
   { to: '/event', label: 'Events' },
   { to: '/offers', label: 'Offers' },
-  
-
+  {to :'/stages', label:'Quiz Stages'},
+  {to :'/userdata', label:'Quiz User Data'},
 ];
 
 export default function Sidebar() {
