@@ -7,6 +7,7 @@ import Topstars from './pages/Topstars/Topstars';
 import Blogs from './pages/blogs/Blogs';
 import Hospital from './pages/Hospital/HospitalCategory';
 import HospitalDoctors from './pages/Hospital/hospital-B/HospitalDoctors';
+import HospitalInfo from './pages/Hospital/hospital-info/Hospital_info';
 import DoctorDetails from './pages/Hospital/hospital-c/DoctorDetails';
 import Doctor from './pages/Doctor/Doctor';
 import NotFound from './pages/NotFound/NotFound';
@@ -33,6 +34,11 @@ import BlogManagement from './pages/blogs/BlogTopic';
 import ProductTypePage0 from './pages/Products/Products0/ProductPage0';
 import ServicePage0 from './pages/Service/ServicePage0';
 import Booking from './pages/Booking/Booking';
+import Quiz from './pages/Quiz/Quiz';
+import Stages from './pages/Quiz/Stages';
+import QuizData from './pages/Quiz/QuizData';
+import Quizprogress from './pages/Quiz/Quizprogress';
+import Quizresult from './pages/Quiz/Quizresult';
 import EmployeeForm from './Crm_pages/Employes/employes';
 import RegisterOrder from './Crm_pages/Register_orders/RegisterOrder';
 
@@ -61,6 +67,8 @@ function App() {
            <Route path="/hospitals/:hospitalId/categories/:categoryName/doctors/:doctorId" element={<DoctorDetails />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/doctor" element={<Doctor/>} />
+
+          <Route path='hospital-information/hospital/:hospitalId' element={<HospitalInfo/>}/>
 
           <Route path='/hospital/:hospitalTypeId' element={<HospitalArea/>} />
           <Route path='/hospital/:hospitalTypeId/:hospitalId' element={<DoctorName />} />
@@ -91,9 +99,14 @@ function App() {
           <Route path="/traditional/:hospitalTypeId/:hospitalId" element={<Traditional3 />} />
 
 
-        
           <Route path="/booking" element={<Booking />} />
 
+          <Route path='/stages' element={<Stages/>}/>
+          <Route path='/quiz/:id' element={<Quiz/>}/>
+
+          <Route path='/userdata' element={<QuizData/>}/>
+          <Route path='/progress/:userId' element={<Quizprogress/>}/>
+          <Route path='/result/:userId' element={<Quizresult/>}/>
 
         </Routes>
       </div>

@@ -16,9 +16,13 @@ const links = [
   { to: '/charities', label: 'Charities' },
   { to: '/event', label: 'Events' },
   { to: '/offers', label: 'Offers' },
+
   { to: '/booking', label: 'Booking' },
   { to: '/registerorder', label: 'RegisterOrder' },
   { to: '/employeeform', label: 'Employee Form' }
+
+  {to :'/stages', label:'Quiz Stages'},
+  {to :'/userdata', label:'Quiz User Data'},
 ];
 
 export default function Sidebar() {

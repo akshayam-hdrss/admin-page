@@ -52,6 +52,33 @@ export const deleteHospital = (id) => {
   return axios.delete(`${BASE_URL}/hospital/${id}`);
 };
 
+// hospital information
+
+// ✅ Get hospital info by ID
+export const getHospitalInfo = async (hospitalId) => {
+  return await axios.get(`${BASE_URL}/hospital-information/hospital/${hospitalId}`);
+};
+
+// ✅ Add new hospital info (JSON payload)
+export const addHospitalInfo = async (data) => {
+  return await axios.post(`${BASE_URL}/hospital-information`, data, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+// ✅ Update hospital info (JSON payload)
+export const updateHospitalInfo = async (hospitalId, data) => {
+  return await axios.put(`${BASE_URL}/hospital-information/hospital/${hospitalId}`, data, {
+    headers: { "Content-Type": "application/json" },
+  });
+};
+
+
+// ✅ Delete hospital info
+export const deleteHospitalInfo = async (hospitalId) => {
+  return await axios.delete(`${BASE_URL}/hospital-information/hospital/${hospitalId}`);
+};
+
 // Traditional Types
 
 export const getTraditionalType = () => {
@@ -464,6 +491,88 @@ export const deleteOffer = (id) => {
 };
 
 
+
 export const getEmployees = () => {
   return axios.get(`${BASE_URL}/employees`);
+};
+
+
+// quiz game
+
+
+
+// ✅ Fetch questions by stage
+export const getQuestionsByStage = async (stage) => {
+  try {
+    const res = await fetch(`${BASE_URL}/quiz?stage=${stage}`);
+    const data = await res.json();
+    return data.questions || [];
+  } catch (error) {
+    console.error("Error fetching questions:", error);
+    return [];
+  }
+};
+
+// ✅ Add a new question
+export const addQuestion = async (questionData) => {
+  try {
+    const res = await fetch(BASE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(questionData),
+    });
+    return await res.json();
+  } catch (error) {
+    console.error("Error adding question:", error);
+  }
+};
+
+// ✅ Update a question
+export const updateQuestion = async (id, updatedData) => {
+  try {
+    const res = await fetch(`${BASE_URL}/quiz/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+    return await res.json();
+  } catch (error) {
+    console.error("Error updating question:", error);
+  }
+};
+
+// ✅ Delete a question
+export const deleteQuestion = async (id) => {
+  try {
+    const res = await fetch(`${BASE_URL}/quiz/${id}`, {
+      method: "DELETE",
+    });
+    return await res.json();
+  } catch (error) {
+    console.error("Error deleting question:", error);
+  }
+};
+
+
+// userdata 
+
+
+// ✅ Fetch quiz user data
+export const getQuizUserData = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/quiz-userdata`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching quiz user data:", err);
+    throw err;
+  }
+};
+// ✅ Edit quiz user data
+export const editQuizUserData = async (userId, updatedData) => {
+  return await axios.put(`${BASE_URL}/quiz-userdata/${userId}`, updatedData);
+};
+
+// ✅ Delete quiz user data
+export const deleteQuizUserData = async (userId) => {
+  return await axios.delete(`${BASE_URL}/quiz-userdata/${userId}`);
 };
