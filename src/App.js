@@ -32,6 +32,10 @@ import BlogTopics from './pages/blogs/Blogs';
 import BlogManagement from './pages/blogs/BlogTopic';
 import ProductTypePage0 from './pages/Products/Products0/ProductPage0';
 import ServicePage0 from './pages/Service/ServicePage0';
+import Booking from './pages/Booking/Booking';
+import EmployeeForm from './Crm_pages/Employes/employes';
+import RegisterOrder from './Crm_pages/Register_orders/RegisterOrder';
+
 
 function App() {
   return (
@@ -49,6 +53,8 @@ function App() {
           <Route path="/primecareicon" element={<PrimecareIcon />} />
           <Route path="/event" element={<Events />} />
           <Route path="/offers" element={<OffersPage />} />
+          <Route path="/employeeform" element={<EmployeeForm />} />
+          <Route path="/registerorder" element={<RegisterOrder />} />
 
           <Route path="/hospital" element={<Hospital />} />
            <Route path="hospital/:hospitalTypeId/categories/:categoryName/doctors" element={<HospitalDoctors />} />
@@ -83,6 +89,10 @@ function App() {
           <Route path="/traditional" element={<Traditional1 />} />
           <Route path="/traditional/:hospitalTypeId" element={<Traditional2 />} />
           <Route path="/traditional/:hospitalTypeId/:hospitalId" element={<Traditional3 />} />
+
+
+        
+          <Route path="/booking" element={<Booking />} />
 
 
         </Routes>

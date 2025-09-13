@@ -462,3 +462,8 @@ export const updateOffer = (id, payload) => {
 export const deleteOffer = (id) => {
   return axios.delete(`${BASE_URL}/offers/${id}`);
 };
+
+
+export const getEmployees = () => {
+  return axios.get(`${BASE_URL}/employees`);
+};

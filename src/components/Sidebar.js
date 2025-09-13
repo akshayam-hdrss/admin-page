@@ -16,8 +16,9 @@ const links = [
   { to: '/charities', label: 'Charities' },
   { to: '/event', label: 'Events' },
   { to: '/offers', label: 'Offers' },
-  
-
+  { to: '/booking', label: 'Booking' },
+  { to: '/registerorder', label: 'RegisterOrder' },
+  { to: '/employeeform', label: 'Employee Form' }
 ];
 
 export default function Sidebar() {
@@ -64,3 +65,4 @@ export default function Sidebar() {
     </>
   );
 }
+
