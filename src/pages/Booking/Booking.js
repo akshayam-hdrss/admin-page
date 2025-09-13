@@ -733,6 +733,7 @@ function Booking() {
     district: "",
     pincode: "",
     additionalBranch: 0,
+    additionalDoctor: 0,
     banner: 0,
     premiumBanner: 0,
     video: 0,
@@ -823,11 +824,11 @@ function Booking() {
   const packagePrices = {
     gold: 5000,
     Diamond: 10000,
-    Premium: 15000 // Added Premium package price
   };
 
   const featurePrices = {
     additionalBranch: 2500,
+    additionalDoctor: 1500,
     banner: 5000,
     premiumBanner: 10000,
     video: 1000,
@@ -840,6 +841,7 @@ function Booking() {
       subtotal += packagePrices[formData.package] || 0;
     }
     subtotal += formData.additionalBranch * featurePrices.additionalBranch;
+    subtotal += formData.additionalDoctor * featurePrices.additionalDoctor;
     subtotal += formData.banner * featurePrices.banner;
     subtotal += formData.premiumBanner * featurePrices.premiumBanner;
     subtotal += formData.video * featurePrices.video;
@@ -1042,6 +1044,7 @@ function Booking() {
     };
 
     addRow("Additional Branches", formData.additionalBranch, featurePrices.additionalBranch);
+    addRow("Additional Doctors", formData.additionalDoctor, featurePrices.additionalDoctor);
     addRow("Banners", formData.banner, featurePrices.banner);
     addRow("Premium Banners", formData.premiumBanner, featurePrices.premiumBanner);
     addRow("Videos", formData.video, featurePrices.video);
@@ -1193,6 +1196,7 @@ wrappedText.forEach(line => {
         district: formData.district,
         pincode: formData.pincode,
         additionalBranch: formData.additionalBranch,
+        additionalDoctor: formData.additionalDoctor,
         banner: formData.banner,
         premiumBanner: formData.premiumBanner,
         video: formData.video,
