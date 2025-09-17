@@ -102,12 +102,14 @@ const RegisterOrder = () => {
               <th>Package</th>
               <th>Valid From</th>
               <th>Valid To</th>
-              <th>Status</th>
+              <th>System Status</th>
+              <th>Expiry Status</th>
+              <th>Additional Doctors</th>
             </tr>
           </thead>
           <tbody>
             {memberships.map((membership) => {
-              const status = getStatus(membership.validTo);
+              const expiryStatus = getStatus(membership.validTo);
               return (
                 <tr key={membership.id} onClick={() => handleRowClick(membership)}>
                   <td>{membership.id}</td>
@@ -122,11 +124,13 @@ const RegisterOrder = () => {
                   </td>
                   <td>{formatDate(membership.validFrom)}</td>
                   <td>{formatDate(membership.validTo)}</td>
+                  <td>{membership.status || 'N/A'}</td>
                   <td>
-                    <span className={`status-${status.toLowerCase()}`}>
-                      {status}
+                    <span className={`status-${expiryStatus.toLowerCase()}`}>
+                      {expiryStatus}
                     </span>
                   </td>
+                  <td>{membership.additionalDoctor || 0}</td>
                 </tr>
               );
             })}
@@ -140,7 +144,7 @@ const RegisterOrder = () => {
     if (!selectedMembership) return null;
     
     const m = selectedMembership;
-    const status = getStatus(m.validTo);
+    const expiryStatus = getStatus(m.validTo);
     
     return (
       <div className="membership-details">
@@ -155,8 +159,8 @@ const RegisterOrder = () => {
           <div className="card-header">
             <div>
               <h3>{m.addInName || 'N/A'}</h3>
-              <span className={`status-badge status-${status.toLowerCase()}`}>
-                {status}
+              <span className={`status-badge status-${expiryStatus.toLowerCase()}`}>
+                {expiryStatus}
               </span>
             </div>
             <div className="membership-code">{m.membershipCode || 'Pending Assignment'}</div>
@@ -264,6 +268,10 @@ const RegisterOrder = () => {
                   <span className="label">Additional Branches:</span>
                   <span className="value">{m.additionalBranch || 0}</span>
                 </div>
+                <div className="detail-item">
+                  <span className="label">Additional Doctors:</span>
+                  <span className="value">{m.additionalDoctor || 0}</span>
+                </div>
               </div>
               
               <div className="detail-group">
@@ -291,6 +299,14 @@ const RegisterOrder = () => {
                 <div className="detail-item">
                   <span className="label">Executive Mobile:</span>
                   <span className="value">{m.executiveMobile || 'N/A'}</span>
+                </div>
+              </div>
+
+              <div className="detail-group">
+                <h4>System Info</h4>
+                <div className="detail-item">
+                  <span className="label">Status:</span>
+                  <span className="value">{m.status || 'N/A'}</span>
                 </div>
               </div>
             </div>

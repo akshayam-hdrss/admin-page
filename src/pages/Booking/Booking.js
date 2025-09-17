@@ -1368,21 +1368,76 @@ All disputes will be subject to Coimbatore Jurisdiction only.`;
       <div className="card shadow-lg p-4">
         <h2 className="text-center mb-4">Booking Form</h2>
         
-        {/* Success Message */}
-        {successMessage && (
-          <div className="alert alert-success" role="alert">
-            {successMessage}
-          </div>
-        )}
-        
-        {/* Error Message */}
-        {error && (
-          <div className="alert alert-danger" role="alert">
-            {error}
-          </div>
-        )}
         
         <form onSubmit={handleSubmit}>
+
+          {/* Executive Details */}
+          <h5 className="mt-3">Executive Details</h5>
+          <div className="row">
+            <div className="col-md-4 mb-3 employee-search-container">
+              <label className="form-label">Executive ID</label>
+              <div className="dropdown position-relative">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search by ID, name or mobile"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onFocus={() => setShowDropdown(true)}
+                  autoComplete="off"
+                />
+                {isLoading && (
+                  <div className="position-absolute top-100 start-0 w-100 mt-1 p-2 bg-white border rounded">
+                    <div className="text-center">Loading employees...</div>
+                  </div>
+                )}
+                {showDropdown && !isLoading && filteredEmployees.length > 0 && (
+                  <div className="position-absolute top-100 start-0 w-100 mt-1 p-0 bg-white border rounded shadow-lg" style={{ zIndex: 1000, maxHeight: "200px", overflowY: "auto" }}>
+                    {filteredEmployees.map((employee) => (
+                      <button
+                        key={employee.employeeNumber}
+                        type="button"
+                        className="dropdown-item d-block w-100 text-start p-2 border-bottom"
+                        onClick={() => handleEmployeeSelect(employee)}
+                      >
+                        <div className="fw-bold">{employee.employeeNumber} - {employee.employeeName}</div>
+                        <small className="text-muted">Mobile: {employee.mobileNumber}</small>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {showDropdown && !isLoading && filteredEmployees.length === 0 && searchTerm && (
+                  <div className="position-absolute top-100 start-0 w-100 mt-1 p-2 bg-white border rounded">
+                    <div className="text-center">No employees found</div>
+                  </div>
+                )}
+              </div>
+              {error && <div className="text-danger small mt-1">{error}</div>}
+            </div>
+            <div className="col-md-4 mb-3">
+              <label className="form-label">Executive Name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="executiveName"
+                value={formData.executiveName}
+                onChange={handleChange}
+                readOnly
+              />
+            </div>
+            <div className="col-md-4 mb-3">
+              <label className="form-label">Executive Mobile No</label>
+              <input
+                type="text"
+                className="form-control"
+                name="executiveMobile"
+                value={formData.executiveMobile}
+                onChange={handleChange}
+                readOnly
+              />
+            </div>
+          </div>
+
           {/* Add in Name & Contact Person */}
           <div className="row">
             <div className="col-md-6 mb-3">
@@ -1713,72 +1768,7 @@ All disputes will be subject to Coimbatore Jurisdiction only.`;
             </div>
           </div>
 
-          {/* Executive Details */}
-          <h5 className="mt-3">Executive Details</h5>
-          <div className="row">
-            <div className="col-md-4 mb-3 employee-search-container">
-              <label className="form-label">Executive ID</label>
-              <div className="dropdown position-relative">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search by ID, name or mobile"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  onFocus={() => setShowDropdown(true)}
-                  autoComplete="off"
-                />
-                {isLoading && (
-                  <div className="position-absolute top-100 start-0 w-100 mt-1 p-2 bg-white border rounded">
-                    <div className="text-center">Loading employees...</div>
-                  </div>
-                )}
-                {showDropdown && !isLoading && filteredEmployees.length > 0 && (
-                  <div className="position-absolute top-100 start-0 w-100 mt-1 p-0 bg-white border rounded shadow-lg" style={{ zIndex: 1000, maxHeight: "200px", overflowY: "auto" }}>
-                    {filteredEmployees.map((employee) => (
-                      <button
-                        key={employee.employeeNumber}
-                        type="button"
-                        className="dropdown-item d-block w-100 text-start p-2 border-bottom"
-                        onClick={() => handleEmployeeSelect(employee)}
-                      >
-                        <div className="fw-bold">{employee.employeeNumber} - {employee.employeeName}</div>
-                        <small className="text-muted">Mobile: {employee.mobileNumber}</small>
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {showDropdown && !isLoading && filteredEmployees.length === 0 && searchTerm && (
-                  <div className="position-absolute top-100 start-0 w-100 mt-1 p-2 bg-white border rounded">
-                    <div className="text-center">No employees found</div>
-                  </div>
-                )}
-              </div>
-              {error && <div className="text-danger small mt-1">{error}</div>}
-            </div>
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Executive Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="executiveName"
-                value={formData.executiveName}
-                onChange={handleChange}
-                readOnly
-              />
-            </div>
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Executive Mobile No</label>
-              <input
-                type="text"
-                className="form-control"
-                name="executiveMobile"
-                value={formData.executiveMobile}
-                onChange={handleChange}
-                readOnly
-              />
-            </div>
-          </div>
+          
 
 {/* Total */}
 <div className="alert alert-info mt-3">
@@ -1793,6 +1783,8 @@ All disputes will be subject to Coimbatore Jurisdiction only.`;
 
 
 
+
+
           <button 
             type="submit" 
             className="btn btn-primary w-100"
@@ -1801,6 +1793,21 @@ All disputes will be subject to Coimbatore Jurisdiction only.`;
             {apiLoading ? "Submitting..." : "Submit & Download Receipt"}
           </button>
         </form>
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="alert alert-success" role="alert">
+            {successMessage}
+          </div>
+        )}
+        
+        {/* Error Message */}
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
+
       </div>
     </div>
   );
