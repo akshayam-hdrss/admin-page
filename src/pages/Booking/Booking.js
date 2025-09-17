@@ -695,6 +695,7 @@ import barcodeImage from "../../assets/upi.png";
 import CategoryData from "./CategoryData";
 import jsPDF from "jspdf";
 import axios from "axios";
+import robotoFont from "./Roboto-Regular";
 
 // Import your logos (replace with your actual logo paths)
 import akTechLogo from "../../assets/medbook.jpg";
@@ -849,23 +850,55 @@ function Booking() {
     return subtotal;
   };
 
-  const calculateTotal = () => {
-    const subtotal = calculateSubtotal();
-    return subtotal + subtotal * 0.18; // incl GST
+ const calculateTotal = () => {
+  let baseAmount = 0;
+
+  if (formData.package) {
+    baseAmount += packagePrices[formData.package] || 0;
+  }
+  baseAmount += formData.additionalBranch * featurePrices.additionalBranch;
+  baseAmount += formData.additionalDoctor * featurePrices.additionalDoctor;
+  baseAmount += formData.banner * featurePrices.banner;
+  baseAmount += formData.premiumBanner * featurePrices.premiumBanner;
+  baseAmount += formData.video * featurePrices.video;
+  baseAmount += formData.premiumVideo * featurePrices.premiumVideo;
+
+  const cgst = baseAmount * 0.09; // 9%
+  const sgst = baseAmount * 0.09; // 9%
+  const total = baseAmount + cgst + sgst;
+
+  return {
+    baseAmount,
+    cgst,
+    sgst,
+    total
   };
+};
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Reset subcategory when category changes
-    if (name === "category") {
-      setFormData({
-        ...formData,
-        category: value,
-        subCategory: "",
-      });
-      return;
-    }
+   if (name === "category") {
+    setFormData(prev => ({
+      ...prev,
+      category: value,
+      subCategory: "",
+      subSubCategory: ""
+    }));
+    return;
+  }
+
+  if (name === "subCategory") {
+    setFormData(prev => ({
+      ...prev,
+      subCategory: value,
+      subSubCategory: ""
+    }));
+    return;
+  }
+
 
     setFormData({
       ...formData,
@@ -881,235 +914,292 @@ function Booking() {
   };
 
   // Sort categories by order_no
-  const getSortedCategories = (key) => {
-    return CategoryData[key]
-      ? [...CategoryData[key]].sort((a, b) => a.order_no - b.order_no)
-      : [];
-  };
+  // const getSortedCategories = (key) => {
+  //   return CategoryData[key]
+  //     ? [...CategoryData[key]].sort((a, b) => a.order_no - b.order_no)
+  //     : [];
+  // };
+
+  // Get subcategories based on selected category
+const getSubCategories = () => {
+  if (!formData.category) return [];
+  const selectedCategory = CategoryData[formData.category];
+
+  // If selected category is an array, return it as subcategories
+  if (Array.isArray(selectedCategory)) {
+    return selectedCategory;
+  }
+
+  // If it's an object (like primecare or healthcare), convert to array of objects with name
+  return Object.keys(selectedCategory).map(key => ({
+    id: key,
+    name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize
+    subcategories: selectedCategory[key]
+  }));
+};
+
+// Get sub-subcategories based on selected subcategory
+const getSubSubCategories = () => {
+  if (!formData.subCategory || !formData.category) return [];
+  const selectedCategory = CategoryData[formData.category];
+
+  // If category is array → no sub-subcategories
+  if (Array.isArray(selectedCategory)) return [];
+
+  // Find the subcategory by key
+  return selectedCategory[formData.subCategory] || [];
+};
+
 
   // Main category options
   const categoryOptions = Object.keys(CategoryData);
 
   // Subcategories for selected category
-  const subCategoryOptions = formData.category
-    ? getSortedCategories(formData.category)
-    : [];
+  // const subCategoryOptions = formData.category
+  //   ? getSortedCategories(formData.category)
+  //   : [];
 
   // Generate PDF receipt with professional design
-  const generatePDF = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 20;
-    const today = new Date();
-    
-    // Company details
-    const gstin = "33CVZPB6682D1Z9"; // Replace with your actual GSTIN
-    
-    // Add logos to the PDF
-    doc.addImage(akTechLogo, 'JPG', margin, 15, 30, 30);
-    doc.addImage(medbookLogo, 'JPG', pageWidth - 50, 15, 30, 30);
+ const generatePDF = () => {
+  const doc = new jsPDF();
+  
+  // Use only built-in fonts to avoid the 'widths' error
+  doc.setFont("helvetica", "normal");
+  
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 20;
+  const today = new Date();
+  
+  // Company details
+  const gstin = "33CVZPB6682D1Z9";
+  
+  // Add logos to the PDF
+  doc.addImage(akTechLogo, 'JPG', margin, 15, 30, 30);
+  doc.addImage(medbookLogo, 'JPG', pageWidth - 50, 15, 30, 30);
 
-    // Add company names below logos
-    doc.setFontSize(14);
-    doc.setTextColor(60, 60, 60);
-    doc.text("Medbook", margin + 5, 50);
-    doc.text("AK Technologies", pageWidth - 35, 50, { align: "center" });
+  // Add company names below logos
+  doc.setFontSize(14);
+  doc.setTextColor(60, 60, 60);
+  doc.text("Medbook", margin + 5, 50);
+  doc.text("AK Technologies", pageWidth - 35, 50, { align: "center" });
 
-    // Add company addresses below names
-    doc.setFontSize(10);
-    doc.text("Sunrise Crystal Complex", pageWidth - 35, 56, { align: "center" });
-    doc.text("Coimbatore, Tamilnadu", pageWidth - 35, 62, { align: "center" });
-    
-    // Add GSTIN
-    doc.text(`GSTIN: ${gstin}`, pageWidth / 2, 70, { align: "center" });
-    
-    // Invoice title
-    doc.setFontSize(20);
-    doc.setTextColor(0, 0, 0);
-    doc.text("INVOICE", pageWidth / 2, 80, { align: "center" });
-    
-    // Invoice details
-    doc.setFontSize(12);
-    doc.setTextColor(100, 100, 100);
-    
-    // Bill To section
-    doc.text("Bill To:", margin, 90);
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    
-    let billToY = 97;
-    if (formData.addInName) {
-      doc.text(formData.addInName, margin, billToY);
-      billToY += 7;
-    }
-    
-    if (formData.contactPerson) {
-      doc.text(`Attn: ${formData.contactPerson}`, margin, billToY);
-      billToY += 7;
-    }
-    
-    if (formData.address1) {
-      doc.text(formData.address1, margin, billToY);
-      billToY += 7;
-    }
-    
-    if (formData.address2) {
-      doc.text(formData.address2, margin, billToY);
-      billToY += 7;
-    }
-    
-    if (formData.district || formData.pincode) {
-      doc.text(`${formData.district || ''} ${formData.pincode ? '- ' + formData.pincode : ''}`, margin, billToY);
-      billToY += 7;
-    }
-    
-    if (formData.mobile) {
-      doc.text(`Mobile: ${formData.mobile}`, margin, billToY);
-      billToY += 7;
-    }
-    
-    if (formData.email) {
-      doc.text(`Email: ${formData.email}`, margin, billToY);
-      billToY += 7;
-    }
-    
-    // Invoice details on right side
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
+  // Add company addresses below names
+  doc.setFontSize(10);
+  doc.text("Sunrise Crystal Complex", pageWidth - 35, 56, { align: "center" });
+  doc.text("Coimbatore, Tamilnadu", pageWidth - 35, 62, { align: "center" });
+  
+  // Add GSTIN
+  doc.text(`GSTIN: ${gstin}`, pageWidth / 2, 70, { align: "center" });
+  
+  // Invoice title
+  doc.setFontSize(20);
+  doc.setTextColor(0, 0, 0);
+  doc.text("INVOICE", pageWidth / 2, 80, { align: "center" });
+  
+  // Invoice details
+  doc.setFontSize(12);
+  doc.setTextColor(100, 100, 100);
+  
+  // Bill To section
+  doc.text("Bill To:", margin, 90);
+  doc.setFontSize(10);
+  doc.setTextColor(0, 0, 0);
+  
+  let billToY = 97;
+  if (formData.addInName) {
+    doc.text(formData.addInName, margin, billToY);
+    billToY += 7;
+  }
+  
+  if (formData.contactPerson) {
+    doc.text(`Attn: ${formData.contactPerson}`, margin, billToY);
+    billToY += 7;
+  }
+  
+  if (formData.address1) {
+    doc.text(formData.address1, margin, billToY);
+    billToY += 7;
+  }
+  
+  if (formData.address2) {
+    doc.text(formData.address2, margin, billToY);
+    billToY += 7;
+  }
+  
+  if (formData.district || formData.pincode) {
+    doc.text(`${formData.district || ''} ${formData.pincode ? '- ' + formData.pincode : ''}`, margin, billToY);
+    billToY += 7;
+  }
+  
+  if (formData.mobile) {
+    doc.text(`Mobile: ${formData.mobile}`, margin, billToY);
+    billToY += 7;
+  }
+  
+  if (formData.email) {
+    doc.text(`Email: ${formData.email}`, margin, billToY);
+    billToY += 7;
+  }
+  
+  // Invoice details on right side
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100);
 
-    console.log("Membership ID:", membershipId);
+  const invoiceNumber = membershipId ? `${membershipId}` : `MB-${today.getTime()}`;
+  doc.text(`Invoice #: ${invoiceNumber}`, pageWidth - margin, 90, { align: "right" });
+  doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth - margin, 97, { align: "right" });
+  
+  // Calculate due date (30 days from now)
+  const dueDate = new Date();
+  dueDate.setDate(today.getDate() + 30);
+  doc.text(`Due Date: ${dueDate.toLocaleDateString()}`, pageWidth - margin, 104, { align: "right" });
+  
+  // Define column positions with proper margins
+  const colDesc = margin + 10;
+  const colQty = pageWidth - 90;
+  const colRate = pageWidth - 60;
+  const colAmt = pageWidth - margin;
 
-    const invoiceNumber = membershipId ? `${membershipId}` : `MB-TEMP-${today.getTime()}`;
-    doc.text(`Invoice #: ${invoiceNumber}`, pageWidth - margin, 90, { align: "right" });
+  // Line separator above header
+  doc.setDrawColor(200, 200, 200);
+  doc.line(margin, 140, pageWidth - margin, 140);
 
-    // doc.text(`Invoice #: MB-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${Math.floor(Math.random() * 1000)}`, pageWidth - margin, 90, { align: "right" });
-    doc.text(`Date: ${today.toLocaleDateString()}`, pageWidth - margin, 97, { align: "right" });
-    
-    // Calculate due date (30 days from now)
-    const dueDate = new Date();
-    dueDate.setDate(today.getDate() + 30);
-    doc.text(`Due Date: ${dueDate.toLocaleDateString()}`, pageWidth - margin, 104, { align: "right" });
-    
-    // Define column positions with proper margins
-    const colDesc = margin + 10;        // Item Description (left)
-    const colQty = pageWidth - 90;      // Qty (center)
-    const colRate = pageWidth - 60;     // Rate (right)
-    const colAmt = pageWidth - margin;  // Amount (right)
+  // Table header background
+  doc.setFillColor(245, 245, 245);
+  doc.rect(margin, 145, pageWidth - (margin * 2), 10, "F");
 
-    // Line separator above header
-    doc.setDrawColor(200, 200, 200);
-    doc.line(margin, 140, pageWidth - margin, 140);
+  // Table header text
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
+  doc.text("Item Description", colDesc, 152);
+  doc.text("Qty", colQty, 152, { align: "center" });
+  doc.text("Rate", colRate, 152, { align: "right" });
+  doc.text("Amount", colAmt, 152, { align: "right" });
 
-    // Table header background
-    doc.setFillColor(245, 245, 245);
-    doc.rect(margin, 145, pageWidth - (margin * 2), 10, "F");
+  // Line under header
+  doc.line(margin, 155, pageWidth - margin, 155);
 
-    // Table header text
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Item Description", colDesc, 152);
-    doc.text("Qty", colQty, 152, { align: "center" });
-    doc.text("Rate", colRate, 152, { align: "right" });
-    doc.text("Amount", colAmt, 152, { align: "right" });
+  // Table rows
+  let yPos = 165;
 
-    // Line under header
-    doc.line(margin, 155, pageWidth - margin, 155);
+  // Package row
+  if (formData.package) {
+    doc.setFontSize(11);
+    doc.text(
+      `${formData.package.charAt(0).toUpperCase() + formData.package.slice(1)} Package`,
+      colDesc, yPos
+    );
+    doc.text("1", colQty, yPos, { align: "center" });
+    doc.text(`Rs.${packagePrices[formData.package].toLocaleString("en-IN")}`, colRate, yPos, { align: "right" });
+    doc.text(`Rs.${packagePrices[formData.package].toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
+    yPos += 8;
+  }
 
-    // Table rows
-    let yPos = 165;
-
-    // Package row
-    if (formData.package) {
-      doc.setFontSize(11);
-      doc.text(
-        `${formData.package.charAt(0).toUpperCase() + formData.package.slice(1)} Package`,
-        colDesc, yPos
-      );
-      doc.text("1", colQty, yPos, { align: "center" });
-      doc.text(`₹${packagePrices[formData.package].toLocaleString("en-IN")}`, colRate, yPos, { align: "right" });
-      doc.text(`₹${packagePrices[formData.package].toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
+  // Add Row Function
+  const addRow = (label, qty, rate) => {
+    if (qty > 0) {
+      doc.text(label, colDesc, yPos);
+      doc.text(qty.toString(), colQty, yPos, { align: "center" });
+      doc.text(`Rs.${rate.toLocaleString("en-IN")}`, colRate, yPos, { align: "right" });
+      doc.text(`Rs.${(qty * rate).toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
       yPos += 8;
     }
+  };
 
-    // Add Row Function
-    const addRow = (label, qty, rate) => {
-      if (qty > 0) {
-        doc.text(label, colDesc, yPos);
-        doc.text(qty.toString(), colQty, yPos, { align: "center" });
-        doc.text(`₹${rate.toLocaleString("en-IN")}`, colRate, yPos, { align: "right" });
-        doc.text(`₹${(qty * rate).toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
-        yPos += 8;
-      }
-    };
+  addRow("Additional Branches", formData.additionalBranch, featurePrices.additionalBranch);
+  addRow("Additional Doctors", formData.additionalDoctor, featurePrices.additionalDoctor);
+  addRow("Banners", formData.banner, featurePrices.banner);
+  addRow("Premium Banners", formData.premiumBanner, featurePrices.premiumBanner);
+  addRow("Videos", formData.video, featurePrices.video);
+  addRow("Premium Videos", formData.premiumVideo, featurePrices.premiumVideo);
 
-    addRow("Additional Branches", formData.additionalBranch, featurePrices.additionalBranch);
-    addRow("Additional Doctors", formData.additionalDoctor, featurePrices.additionalDoctor);
-    addRow("Banners", formData.banner, featurePrices.banner);
-    addRow("Premium Banners", formData.premiumBanner, featurePrices.premiumBanner);
-    addRow("Videos", formData.video, featurePrices.video);
-    addRow("Premium Videos", formData.premiumVideo, featurePrices.premiumVideo);
+  // Line above totals
+  yPos += 5;
+  doc.line(margin, yPos, pageWidth - margin, yPos);
+  yPos += 10;
 
-    // Line above totals
-    yPos += 5;
-    doc.line(margin, yPos, pageWidth - margin, yPos);
-    yPos += 10;
+  // Totals
+  const subtotal = calculateSubtotal();
+  const cgst = subtotal * 0.09;
+  const sgst = subtotal * 0.09;
+  const total = subtotal + cgst + sgst;
 
-    // Totals
-    const subtotal = calculateSubtotal();
-    const gstAmount = subtotal * 0.18;
-    const total = subtotal + gstAmount;
+  doc.setFontSize(12);
+  doc.setTextColor(0, 0, 0);
 
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Sub Total", colRate, yPos, { align: "right" });
-    doc.text(`₹${subtotal.toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
-    yPos += 8;
+  // Subtotal
+  doc.text("Sub Total", colRate, yPos, { align: "right" });
+  doc.text(`Rs.${subtotal.toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
+  yPos += 8;
 
-    doc.text("GST (18%)", colRate, yPos, { align: "right" });
-    doc.text(`₹${gstAmount.toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
-    yPos += 8;
+  // CGST
+  doc.text("CGST (9%)", colRate, yPos, { align: "right" });
+  doc.text(`Rs.${cgst.toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
+  yPos += 8;
 
-    doc.setFontSize(14);
-    doc.setTextColor(0, 100, 0);
-    doc.text("TOTAL", colRate, yPos, { align: "right" });
-    doc.text(`₹${total.toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
-    yPos += 15;
+  // SGST
+  doc.text("SGST (9%)", colRate, yPos, { align: "right" });
+  doc.text(`Rs.${sgst.toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
+  yPos += 8;
 
-    // Payment details
-    doc.setFontSize(11);
-    doc.setTextColor(0, 0, 0);
-    doc.text(`Payment Mode: ${formData.paymentMode}`, margin, yPos);
-    if (formData.transactionId) {
-      doc.text(`Transaction ID: ${formData.transactionId}`, margin, yPos + 7);
-    }
-    if (formData.validFrom) {
-      doc.text(
-        `Validity: ${formData.validFrom} to ${calculateValidTo()} (${formData.validityDays} days)`,
-        pageWidth - margin, yPos, { align: "right" }
-      );
-    }
-    yPos += 20;
-// Force Terms & Conditions to start on page 2
-doc.addPage();
+  // Total
+  doc.setFontSize(14);
+  doc.setTextColor(0, 100, 0);
+  doc.text("TOTAL", colRate, yPos, { align: "right" });
+  doc.text(`Rs.${total.toLocaleString("en-IN")}`, colAmt, yPos, { align: "right" });
+  yPos += 15;
 
-let currentY = margin; // start from top margin
+  // Payment details
+  doc.setFontSize(11);
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Payment Mode: ${formData.paymentMode}`, margin, yPos);
+  if (formData.transactionId) {
+    doc.text(`Transaction ID: ${formData.transactionId}`, margin, yPos + 7);
+  }
+  if (formData.validFrom) {
+    doc.text(
+      `Validity: ${formData.validFrom} to ${calculateValidTo()} (${formData.validityDays} days)`,
+      pageWidth - margin, yPos, { align: "right" }
+    );
+  }
+  yPos += 20;
 
-// Heading (Bold + Dark Color)
-doc.setFontSize(12);
-doc.setFont("helvetica", "bold"); // make it bold
-doc.setTextColor(0, 0, 0); // solid black
-doc.text("Terms & Conditions", margin, currentY);
 
-doc.setFontSize(10);
-doc.setFont("helvetica", "normal"); // reset to normal for body text
-doc.setTextColor(80, 80, 80); // dark gray for body
 
-currentY += 10; // space after heading
+  // ✅ Add system-generated note at the very bottom of page 1
+const noteY = pageHeight - 10; // 10 units above bottom
+doc.setFontSize(9); // small footer text
+doc.setTextColor(120, 120, 120);
+doc.setFont("helvetica", "italic");
 
-// Full Terms text
-const termsText = `
-AK TECHNOLOGIES it is not a part or supported by any of the existing company. It may be clearly understood by those entering into an agreement to list their names in the proposed Mobile App that this Mobile App should not be misunderstood as from any other existing company.
+doc.text(
+  "* This is a system-generated invoice and does not require a signature *",
+  pageWidth / 2,
+  noteY,
+  { align: "center" }
+);
+
+
+  // Force Terms & Conditions to start on page 2
+  doc.addPage();
+
+  let currentY = margin;
+
+  // Heading
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(0, 0, 0);
+  doc.text("Terms & Conditions", margin, currentY);
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(80, 80, 80);
+
+  currentY += 10;
+
+  // Full Terms text
+  const termsText = `AK TECHNOLOGIES it is not a part or supported by any of the existing company. It may be clearly understood by those entering into an agreement to list their names in the proposed Mobile App that this Mobile App should not be misunderstood as from any other existing company.
 
 AK TECHNOLOGIES does not assume responsibility of enforcing licensing requirements or to check for licenses with respect to licensed professions prior to accepting advertising agreements.
 
@@ -1129,52 +1219,47 @@ AK TECHNOLOGIES reserves the unconditional right to amend or alter any or all of
 
 Every signatory of this contract is deemed to have read and understood the terms and conditions before signing this contract and therefore cannot plead ignorance of the said terms and conditions.
 
-All disputes will be subject to Coimbatore Jurisdiction only.
-`;
+All disputes will be subject to Coimbatore Jurisdiction only.`;
 
-// Wrap text inside margins
-const wrappedText = doc.splitTextToSize(termsText, pageWidth - margin * 2);
+  // Wrap text inside margins
+  const wrappedText = doc.splitTextToSize(termsText, pageWidth - margin * 2);
+  const lineHeight = 6;
 
-const lineHeight = 6;
-
-wrappedText.forEach(line => {
-  if (currentY > pageHeight - margin) {
-    doc.addPage();
-    currentY = margin; // reset Y for new page
-  }
-  doc.text(line, margin, currentY);
-  currentY += lineHeight;
-});
-
-
-
-
-    // Executive details if available
-    if (formData.executiveName || formData.executiveId) {
-      yPos += 30;
-      doc.setFontSize(11);
-      doc.setTextColor(100, 100, 100);
-      doc.text("Executive Details", margin, yPos);
-      doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0);
-      
-      if (formData.executiveId) {
-        doc.text(`ID: ${formData.executiveId}`, margin, yPos + 7);
-      }
-      if (formData.executiveName) {
-        doc.text(`Name: ${formData.executiveName}`, margin, yPos + 14);
-      }
-      if (formData.executiveMobile) {
-        doc.text(`Mobile: ${formData.executiveMobile}`, margin, yPos + 21);
-      }
+  wrappedText.forEach(line => {
+    if (currentY > pageHeight - margin) {
+      doc.addPage();
+      currentY = margin;
     }
+    doc.text(line, margin, currentY);
+    currentY += lineHeight;
+  });
 
-    // Save the PDF
-    doc.save(`MedBook_Invoice_${formData.addInName}_${today.getTime()}.pdf`);
+  // Executive details if available
+  if (formData.executiveName || formData.executiveId) {
+    currentY += 30;
+    doc.setFontSize(11);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Executive Details", margin, currentY);
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    
+    if (formData.executiveId) {
+      doc.text(`ID: ${formData.executiveId}`, margin, currentY + 7);
+    }
+    if (formData.executiveName) {
+      doc.text(`Name: ${formData.executiveName}`, margin, currentY + 14);
+    }
+    if (formData.executiveMobile) {
+      doc.text(`Mobile: ${formData.executiveMobile}`, margin, currentY + 21);
+    }
+  }
 
-    const pdfBlob = doc.output("blob"); 
-    return pdfBlob;
-  };
+  // Save the PDF
+  doc.save(`MedBook_Invoice_${formData.addInName}_${today.getTime()}.pdf`);
+
+  const pdfBlob = doc.output("blob"); 
+  return pdfBlob;
+};
 
   // Function to submit form data to API
   const submitToAPI = async () => {
@@ -1281,7 +1366,7 @@ wrappedText.forEach(line => {
   return (
     <div className="container mt-4 mb-5">
       <div className="card shadow-lg p-4">
-        <h2 className="text-center mb-4">Order Form</h2>
+        <h2 className="text-center mb-4">Booking Form</h2>
         
         {/* Success Message */}
         {successMessage && (
@@ -1421,52 +1506,62 @@ wrappedText.forEach(line => {
 
           {/* Category Section */}
           <h5 className="mt-3">Category Selection</h5>
-          <div className="row">
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Category</label>
-              <select
-                className="form-select"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              >
-                <option value="">-- Select Category --</option>
-                {categoryOptions.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Sub Category</label>
-              <select
-                className="form-select"
-                name="subCategory"
-                value={formData.subCategory}
-                onChange={handleChange}
-                disabled={!formData.category}
-              >
-                <option value="">-- Select Sub Category --</option>
-                {subCategoryOptions.map((sub) => (
-                  <option key={sub.id} value={sub.name}>
-                    {sub.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Sub Sub Category</label>
-              <input
-                type="text"
-                className="form-control"
-                name="subSubCategory"
-                value={formData.subSubCategory}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+<div className="row">
+  {/* Category */}
+  <div className="col-md-4 mb-3">
+    <label className="form-label">Category</label>
+    <select
+      className="form-select"
+      name="category"
+      value={formData.category}
+      onChange={handleChange}
+      required
+    >
+      <option value="">-- Select Category --</option>
+  {Object.keys(CategoryData).map((key) => (
+  <option key={key} value={key}>
+    {key.charAt(0).toUpperCase() + key.slice(1)} {/* Capitalize */}
+  </option>
+))}
+
+    </select>
+  </div>
+
+  {/* Subcategory */}
+  <div className="col-md-4 mb-3">
+    <label className="form-label">Sub Category</label>
+    <select
+      className="form-select"
+      name="subCategory"
+      value={formData.subCategory}
+      onChange={handleChange}
+      disabled={!formData.category}
+    >
+      <option value="">-- Select Sub Category --</option>
+      {getSubCategories().map(sub => (
+        <option key={sub.id} value={sub.id}>{sub.name}</option>
+      ))}
+    </select>
+  </div>
+
+  {/* Sub-subcategory */}
+  <div className="col-md-4 mb-3">
+    <label className="form-label">Sub Sub Category</label>
+    <select
+      className="form-select"
+      name="subSubCategory"
+      value={formData.subSubCategory}
+      onChange={handleChange}
+      disabled={!formData.subCategory}
+    >
+      <option value="">-- Select Sub Sub Category --</option>
+      {getSubSubCategories().map(subsub => (
+        <option key={subsub.id} value={subsub.id}>{subsub.name}</option>
+      ))}
+    </select>
+  </div>
+</div>
+
 
           {/* Package Selection */}
           <h5 className="mt-3">Select Package</h5>
@@ -1483,7 +1578,7 @@ wrappedText.forEach(line => {
                   required
                 />
                 <label className="form-check-label text-capitalize">
-                  {pkg} - ₹{packagePrices[pkg]}
+                  {pkg} - Rs.{packagePrices[pkg]}
                 </label>
               </div>
             ))}
@@ -1533,7 +1628,7 @@ wrappedText.forEach(line => {
                 </button>
               </div>
               <div className="col-md-3 d-flex align-items-center">
-                <span>₹{featurePrices[feature]}</span>
+                <span>Rs.{featurePrices[feature]}</span>
               </div>
             </div>
           ))}
@@ -1685,10 +1780,18 @@ wrappedText.forEach(line => {
             </div>
           </div>
 
-          {/* Total */}
-          <div className="alert alert-info mt-3">
-            <h5>Total Amount (Incl. 18% GST): ₹{calculateTotal().toLocaleString('en-IN')}</h5>
-          </div>
+{/* Total */}
+<div className="alert alert-info mt-3">
+  <h5>Base Amount: Rs.{calculateTotal().baseAmount.toLocaleString("en-IN")}</h5>
+  <h6>
+    CGST (9%): Rs.{calculateTotal().cgst.toLocaleString("en-IN")} | 
+    SGST (9%): Rs.{calculateTotal().sgst.toLocaleString("en-IN")}
+  </h6>
+  <hr />
+  <h5>Total Amount: Rs.{calculateTotal().total.toLocaleString("en-IN")}</h5>
+</div>
+
+
 
           <button 
             type="submit" 
