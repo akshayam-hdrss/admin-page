@@ -4,7 +4,6 @@ import './App.css';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Topstars from './pages/Topstars/Topstars';
-import Blogs from './pages/blogs/Blogs';
 import Hospital from './pages/Hospital/HospitalCategory';
 import HospitalDoctors from './pages/Hospital/hospital-B/HospitalDoctors';
 import HospitalInfo from './pages/Hospital/hospital-info/Hospital_info';
@@ -21,7 +20,6 @@ import ServicePage from './pages/Service/Service_page';
 import ServicePage1 from './pages/Service/ServicePage1';
 import ServicePage2 from './pages/Service/ServicePage2';
 import ServicePage3 from './pages/Service/ServicePage3';
-import BlogTopic from './pages/blogs/BlogTopic';
 import CharityList from './pages/Charity/CharityList';
 import PrimecareIcon from './pages/PrimecareIcon/PrimecareIcon';
 import Traditional3 from './pages/traditionaltreatments/Traditional3';
@@ -40,6 +38,7 @@ import QuizData from './pages/Quiz/QuizData';
 import Quizprogress from './pages/Quiz/Quizprogress';
 import Quizresult from './pages/Quiz/Quizresult';
 import EmployeeForm from './Crm_pages/Employes/employes';
+import EmployeeList from './Crm_pages/Employes/EmployeeList';
 import RegisterOrder from './Crm_pages/Register_orders/RegisterOrder';
 
 
@@ -51,8 +50,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/topstars" element={<Topstars />} />
-          {/* <Route path="/blogs" element={<BlogTopic />} />
-          <Route path="/blog/:blogId" element={<Blogs />} /> */}
           <Route path="/blogs" element={<BlogTopics />} />
           <Route path="/blogs/:id" element={<BlogManagement />} />
           <Route path="/Charities" element={<CharityList />} />
@@ -60,6 +57,7 @@ function App() {
           <Route path="/event" element={<Events />} />
           <Route path="/offers" element={<OffersPage />} />
           <Route path="/employeeform" element={<EmployeeForm />} />
+          <Route path="/employeelist" element={<EmployeeList />} />
           <Route path="/registerorder" element={<RegisterOrder />} />
 
           <Route path="/hospital" element={<Hospital />} />

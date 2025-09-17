@@ -5,7 +5,7 @@ const EmployeeForm = () => {
   const [formData, setFormData] = useState({
     employeeNumber: "",
     userName: "",
-    memberName: "",
+    employeeName: "", // ✅ Changed from memberName → employeeName
     fatherName: "",
     doorStreet: "",
     villageArea: "",
@@ -25,41 +25,92 @@ const EmployeeForm = () => {
     employeeRole: "",
   });
 
-  const [accessOptions, setAccessOptions] = useState([
-    "hospital",
-    "doctors",
-    "traditional treatments",
-    "services",
-  ]);
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const accessOptions = ["hospital", "doctors", "traditional treatments", "services"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((p) => ({ ...p, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAccessChange = (e) => {
     const selectedValue = e.target.value;
     if (selectedValue && !formData.employeeAccess.includes(selectedValue)) {
-      setFormData((p) => ({
-        ...p,
-        employeeAccess: [...p.employeeAccess, selectedValue],
+      setFormData((prev) => ({
+        ...prev,
+        employeeAccess: [...prev.employeeAccess, selectedValue],
       }));
     }
     e.target.value = "";
   };
 
   const removeAccess = (accessToRemove) => {
-    setFormData((p) => ({
-      ...p,
-      employeeAccess: p.employeeAccess.filter(
-        (access) => access !== accessToRemove
-      ),
+    setFormData((prev) => ({
+      ...prev,
+      employeeAccess: prev.employeeAccess.filter((a) => a !== accessToRemove),
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setLoading(true);
+    setSuccessMsg("");
+    setErrorMsg("");
+
+    try {
+      const response = await fetch(
+        "https://medbook-backend-1.onrender.com/api/employees",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            age: Number(formData.age),
+            salary: Number(formData.salary),
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccessMsg("✅ Employee added successfully!");
+        setFormData({
+          employeeNumber: "",
+          userName: "",
+          employeeName: "",
+          fatherName: "",
+          doorStreet: "",
+          villageArea: "",
+          district: "",
+          pincode: "",
+          mobileNumber: "",
+          gender: "",
+          age: "",
+          dateOfBirth: "",
+          education: "",
+          designation: "",
+          aadharNo: "",
+          voterId: "",
+          bloodGroup: "",
+          salary: "",
+          employeeAccess: [],
+          employeeRole: "",
+        });
+      } else {
+        setErrorMsg(result?.message || "❌ Failed to add employee.");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      setErrorMsg("❌ Something went wrong. Please try again.");
+    }
+
+    setLoading(false);
   };
 
   const handleBack = () => window.history.back();
@@ -70,6 +121,9 @@ const EmployeeForm = () => {
         &lt; Back
       </button>
       <h2 className="mb-4">Employee Form</h2>
+
+      {successMsg && <div className="alert alert-success">{successMsg}</div>}
+      {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
 
       <form onSubmit={handleSubmit}>
         {/* Basic Details */}
@@ -96,12 +150,12 @@ const EmployeeForm = () => {
             />
           </div>
           <div className="col-md-4 mb-3">
-            <label className="form-label">Member Name</label>
+            <label className="form-label">Employee Name</label>
             <input
               type="text"
               className="form-control"
-              name="memberName"
-              value={formData.memberName}
+              name="employeeName"
+              value={formData.employeeName}
               onChange={handleChange}
             />
           </div>
@@ -251,7 +305,7 @@ const EmployeeForm = () => {
           <div className="col-md-4 mb-3">
             <label className="form-label">Salary</label>
             <input
-              type="text"
+              type="number"
               className="form-control"
               name="salary"
               value={formData.salary}
@@ -303,11 +357,7 @@ const EmployeeForm = () => {
         <h5 className="mt-3">Employee Access</h5>
         <div className="row mb-3">
           <div className="col-md-6">
-            <select
-              className="form-select"
-              onChange={handleAccessChange}
-              defaultValue=""
-            >
+            <select className="form-select" onChange={handleAccessChange} defaultValue="">
               <option value="">Select Access</option>
               {accessOptions.map((opt, i) => (
                 <option key={i} value={opt}>
@@ -318,11 +368,7 @@ const EmployeeForm = () => {
           </div>
           <div className="col-md-6">
             {formData.employeeAccess.map((a, i) => (
-              <span
-                key={i}
-                className="badge bg-secondary me-2 mb-2"
-                style={{ fontSize: "14px" }}
-              >
+              <span key={i} className="badge bg-secondary me-2 mb-2" style={{ fontSize: "14px" }}>
                 {a}{" "}
                 <button
                   type="button"
@@ -347,17 +393,17 @@ const EmployeeForm = () => {
               onChange={handleChange}
             >
               <option value="">Select</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="employee">Employee</option>
+              <option value="Admin">Admin</option>
+              <option value="Manager">Manager</option>
+              <option value="Employee">Employee</option>
             </select>
           </div>
         </div>
 
         {/* Submit Button */}
         <div className="text-end">
-          <button type="submit" className="btn btn-primary px-4">
-            Submit
+          <button type="submit" className="btn btn-primary px-4" disabled={loading}>
+            {loading ? "Submitting..." : "Submit"}
           </button>
         </div>
       </form>
@@ -365,4 +411,4 @@ const EmployeeForm = () => {
   );
 };
 
-export default EmployeeForm;
+export default EmployeeForm;

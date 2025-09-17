@@ -20,6 +20,7 @@ const links = [
   { to: '/booking', label: 'Booking' },
   { to: '/registerorder', label: 'RegisterOrder' },
   { to: '/employeeform', label: 'Employee Form' },
+  { to: '/employeelist', label: 'Employee List' },
 
   {to :'/stages', label:'Quiz Stages'},
   {to :'/userdata', label:'Quiz User Data'},
