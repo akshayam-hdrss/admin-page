@@ -1,0 +1,136 @@
+/* ------------ Base sidebar styling ------------ */
+.sidebar {
+  width: 240px;
+  background-color: #e42323;
+  color: #fff;
+  position: fixed;
+  height: 100%; /* Full height of the screen */
+  padding-top: 20px;
+  transition: transform 0.3s ease;
+  transform: translateX(-240px); /* hidden by default */
+  z-index: 100; /* sit above page content */
+  display: flex;
+  flex-direction: column; /* Stack header and list vertically */
+}
+
+/* Show sidebar when it's open */
+.sidebar.open {
+  transform: translateX(0); /* show sidebar when open */
+}
+
+/* ------------ Header & Links ------------ */
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Make the list take remaining space */
+  overflow-y: auto; /* Enable scroll if content exceeds height */
+  padding-bottom: 50px; /* Give space for footer or bottom part */
+}
+
+.sidebar-link {
+  display: block;
+  padding: 12px 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background-color: #5b5b5b;
+  padding-left: 30px; /* Slight padding animation on hover */
+}
+
+/* ------------ Overlay ------------ */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease; /* Smooth transition for overlay */
+}
+
+/* Show overlay when sidebar is open */
+.sidebar.open + .sidebar-overlay {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ------------ Hamburger button ------------ */
+.sidebar-toggle-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 200; /* above sidebar and overlay */
+  font-size: 24px;
+  border: none;
+  background: #fff; /* white bg for contrast */
+  color: #e42323; /* red icon */
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 4px;
+  display: none !important; /* Ensure it is hidden by default */
+  cursor: pointer;
+}
+
+/* ------------ Responsive breakpoints ------------ */
+
+/* Always show sidebar on tablets and larger */
+@media (min-width: 769px) {
+  .sidebar {
+    transform: translateX(0); 
+  }
+
+  .sidebar-toggle-btn {
+    display: none !important; /* Hide the hamburger button */
+  }
+}
+
+/* Show hamburger button between 576px and 767px */
+@media (min-width: 576px) and (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* You can shrink on mobile if you like */
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Show sidebar when open */
+  }
+
+  .sidebar-link {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  .sidebar-toggle-btn {
+    display: block !important; /* Force display between 576px and 767px */
+  }
+}
+
+/* Only show sidebar-toggle-btn on <576px */
+@media (max-width: 575px) {
+  .sidebar {
+    width: 200px; /* You can shrink on mobile if you like */
+  }
+
+  .sidebar-link {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Open the sidebar when toggled */
+  }
+
+  .sidebar-toggle-btn {
+    display: block !important; /* Show the hamburger button */
+  }
+}

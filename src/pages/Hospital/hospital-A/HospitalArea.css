@@ -1,0 +1,259 @@
+/* Base Reset */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Container */
+.ha-container {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: auto;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Title */
+.ha-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.hospital_info{
+  background-color: #007bff !important;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 7px;
+  width: 60px;
+  cursor: pointer;
+}
+/* Buttons */
+.ha-btn {
+  padding: 0.75rem 1.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.ha-btn-add {
+  background-color: #28a745;
+  color: #fff;
+  display: block;
+  margin: 0 auto 2rem auto;
+}
+
+.ha-btn-add:hover {
+  background-color: #218838;
+}
+
+/* Card Grid */
+.ha-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card */
+.ha-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ha-card:hover {
+  transform: translateY(-6px);
+  transition: 0.3s ease;
+}
+
+/* Card Content */
+.ha-card img {
+  border-radius: 8px;
+  max-height: 160px;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+.ha-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+}
+
+.ha-info {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  margin: 2px 0;
+}
+
+.ha-map-link {
+  margin-top: 8px;
+  color: #007bff;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+/* Actions */
+.ha-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.ha-btn-view {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.ha-btn-view:hover {
+  background-color: #138496;
+}
+
+.ha-btn-edit {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.ha-btn-edit:hover {
+  background-color: #e0a800;
+}
+
+.ha-btn-delete {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.ha-btn-delete:hover {
+  background-color: #c82333;
+}
+
+/* Modal Overlay */
+.ha-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  padding-top: 40px; /* Add space at the top */
+  padding-bottom: 40px; /* Optional: space at the bottom */
+  overflow-y: auto; /* Allow overlay to scroll if needed */
+  z-index: 1000;
+}
+
+/* Form Modal */
+.ha-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 95%;
+  max-width: 500px;
+  max-height: 90vh; /* Limit modal height */
+  overflow-y: auto; /* Make modal content scrollable */
+  box-sizing: border-box;
+}
+
+.ha-modal h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+/* Form Fields */
+.ha-field {
+  margin-bottom: 1rem;
+}
+
+.ha-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.ha-field input {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.ha-field input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Form Buttons */
+.ha-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.ha-btn-save {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.ha-btn-save:hover {
+  background-color: #0056b3;
+}
+
+.ha-btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.ha-btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+/* Back Link */
+.ha-back {
+  display: block;
+  margin-top: 2rem;
+  text-align: center;
+  color: #2980b9;
+  font-size: 1rem;
+}
+
+.ha-back:hover {
+  color: #21618c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ha-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ha-btn {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ha-list {
+    grid-template-columns: 1fr;
+  }
+
+  .ha-btn {
+    width: 100%;
+  }
+
+  .ha-actions {
+    flex-direction: column;
+  }
+}

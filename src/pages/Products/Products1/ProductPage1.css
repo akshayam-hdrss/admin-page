@@ -1,0 +1,352 @@
+/* ================== MAIN CONTAINER ================== */
+.product-page {
+  padding: 2rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  border-radius: 10px;
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+}
+
+/* ================== HEADER ================== */
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  text-align: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.product-header h1 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  position: relative;
+  width: 100%;
+}
+
+.product-header h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #2980b9;
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+/* ================== BUTTONS ================== */
+.product-btn-add,
+.product-btn-delete-all {
+  padding: 0.8rem 1.4rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.product-btn-add {
+  background: #28a745;
+}
+
+.product-btn-add:hover {
+  background: #218838;
+}
+
+.product-btn-delete-all {
+  background: #dc3545;
+}
+
+.product-btn-delete-all:hover {
+  background: #c82333;
+}
+
+/* ================== PRODUCT LIST ================== */
+.product-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+}
+
+.product-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.product-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-details h3 {
+  font-size: 18px !important;
+  font-weight: 600;
+  text-align: center;
+}
+
+.product-images {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.product-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: #f1f1f1;
+}
+
+/* ================== ACTION BUTTONS ================== */
+.product-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.product-btn-edit,
+.product-btn-delete {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.product-btn-edit {
+  background-color: #17a2b8;
+}
+
+.product-btn-edit:hover {
+  background-color: #138496;
+}
+
+.product-btn-delete {
+  background-color: #dc3545;
+}
+
+.product-btn-delete:hover {
+  background-color: #c82333;
+}
+
+/* ================== MODAL OVERLAY ================== */
+.product-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================== FORM CONTAINER ================== */
+.product-form-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.35s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.product-form-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ================== FORM INPUTS ================== */
+.product-form-container form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.product-form-container input[type="text"],
+.product-form-container input[type="number"] {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.product-form-container input[type="text"]:focus,
+.product-form-container input[type="number"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* ================== IMAGE UPLOAD ================== */
+.product-image-upload {
+  grid-column: span 2;
+}
+
+.product-image-upload input[type="file"] {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.image-preview {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+}
+
+/* ================== FORM ACTIONS ================== */
+.product-form-actions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.product-btn-save,
+.product-btn-cancel {
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.product-btn-save {
+  background-color: #007bff;
+}
+
+.product-btn-save:hover {
+  background-color: #0056b3;
+}
+
+.product-btn-cancel {
+  background-color: #6c757d;
+}
+
+.product-btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+/* ================== RESPONSIVE DESIGN ================== */
+@media (max-width: 768px) {
+  .product-form-container form {
+    grid-template-columns: 1fr;
+  }
+
+  .product-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .product-btn-save,
+  .product-btn-cancel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .product-page {
+    padding: 1rem;
+  }
+
+  .product-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .product-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .product-header button {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .product-form-container {
+    padding: 1.5rem;
+  }
+}
+
+/* Scroll inside modal body */
+.modal-body,
+.product-form-overlay {
+  max-height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #999 transparent;
+}

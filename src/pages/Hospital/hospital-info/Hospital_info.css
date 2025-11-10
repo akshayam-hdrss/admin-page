@@ -1,0 +1,193 @@
+/* ===== Container ===== */
+.hospital-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+  font-family: "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+
+/* ===== Title ===== */
+.hospital-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Buttons ===== */
+.hospital-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0.3rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.hospital-btn-add {
+  background: #3498db;
+  color: white;
+  display: block;
+  margin: 0 auto 1.5rem;
+}
+.hospital-btn-add:hover {
+  background: #2980b9;
+}
+
+.hospital-btn-edit {
+  background: #f39c12;
+  color: white;
+}
+.hospital-btn-edit:hover {
+  background: #d68910;
+}
+
+.hospital-btn-delete {
+  background: #e74c3c;
+  color: white;
+}
+.hospital-btn-delete:hover {
+  background: #c0392b;
+}
+
+.hospital-btn-save {
+  background: #27ae60;
+  color: white;
+}
+.hospital-btn-save:hover {
+  background: #1e8449;
+}
+
+.hospital-btn-cancel {
+  background: #7f8c8d;
+  color: white;
+}
+.hospital-btn-cancel:hover {
+  background: #606a6d;
+}
+
+/* ===== Hospital Cards ===== */
+.hospital-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s;
+}
+.hospital-card:hover {
+  transform: translateY(-3px);
+}
+
+.hospital-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.hospital-card p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #2c3e50;
+}
+
+.hospital-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+/* ===== Modal Overlay ===== */
+.hospital-modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+/* ===== Modal ===== */
+.hospital-modal {
+  background: #fff;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.hospital-modal h2 {
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  font-size: 1.4rem;
+}
+
+.hospital-modal h3 {
+  margin: 1rem 0 0.5rem;
+  color: #34495e;
+  font-size: 1.1rem;
+}
+
+/* ===== Form ===== */
+.hospital-form label {
+  display: block;
+  margin: 0.6rem 0 0.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.hospital-form input,
+.hospital-form textarea {
+  width: 100%;
+  padding: 0.55rem;
+  border: 1px solid #ccd1d1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.hospital-form input:focus,
+.hospital-form textarea:focus {
+  border-color: #3498db;
+}
+
+.hospital-form textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.hospital-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.2rem;
+  gap: 0.6rem;
+}
+
+/* ===== Image Preview ===== */
+.hospital-image-preview {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  margin-top: 0.6rem;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+/* ===== Animation ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}

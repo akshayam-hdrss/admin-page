@@ -1,0 +1,25 @@
+.ad-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-width: 400px;
+}
+.ads-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.ad-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 200px;
+}
+.ad-card img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+.ad-card button {
+  margin-right: 5px;
+}
