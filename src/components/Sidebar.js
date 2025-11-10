@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 
 const links = [
   { to: "/", label: "Dashboard" },
+  {to: "/assignroles", label: "Assign Roles" },
   { to: "/primecareicon", label: "Primecare Icon" },
   { to: "/topstars", label: "Topstars" },
   { to: "/blogs", label: "Blogs" },
