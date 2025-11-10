@@ -56,7 +56,7 @@ export default function AssignRoles() {
 
     try {
       setLoading(true);
-      await axios.put("http://localhost:5000/api/user/role", payload);
+      await axios.put("https://medbook-backend-1.onrender.com/api/user/role", payload);
       setSuccess(`✅ Role "${role}" successfully assigned to ${userData.name}`);
 
       // ✅ After successful update, refresh user data automatically
