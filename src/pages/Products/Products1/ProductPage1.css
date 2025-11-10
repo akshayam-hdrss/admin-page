@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /* Container */
-=======
-/* ================== MAIN CONTAINER ================== */
->>>>>>> main
 .product-page {
   padding: 2rem 1rem;
   max-width: 960px;
@@ -12,22 +8,13 @@
   color: #333;
 }
 
-<<<<<<< HEAD
 /* Header */
-=======
-/* ================== HEADER ================== */
->>>>>>> main
 .product-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
   text-align: center;
-<<<<<<< HEAD
-=======
-  flex-wrap: wrap;
-  gap: 1rem;
->>>>>>> main
 }
 
 .product-header h1 {
@@ -37,10 +24,6 @@
   text-transform: uppercase;
   margin-bottom: 1rem;
   position: relative;
-<<<<<<< HEAD
-=======
-  width: 100%;
->>>>>>> main
 }
 
 .product-header h1::after {
@@ -53,7 +36,6 @@
   border-radius: 2px;
 }
 
-<<<<<<< HEAD
 /* Buttons */
 .product-btn-add {
   padding: 0.8rem 1.4rem;
@@ -62,15 +44,6 @@
   background: #28a745;
   color: white;
   margin-right: 10px;
-=======
-/* ================== BUTTONS ================== */
-.product-btn-add,
-.product-btn-delete-all {
-  padding: 0.8rem 1.4rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  color: white;
->>>>>>> main
   text-transform: uppercase;
   font-weight: 500;
   border: none;
@@ -78,19 +51,11 @@
   transition: all 0.3s ease;
 }
 
-<<<<<<< HEAD
-=======
-.product-btn-add {
-  background: #28a745;
-}
-
->>>>>>> main
 .product-btn-add:hover {
   background: #218838;
 }
 
 .product-btn-delete-all {
-<<<<<<< HEAD
   padding: 0.8rem 1.4rem;
   font-size: 1rem;
   border-radius: 8px;
@@ -101,20 +66,13 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-=======
-  background: #dc3545;
->>>>>>> main
 }
 
 .product-btn-delete-all:hover {
   background: #c82333;
 }
 
-<<<<<<< HEAD
 /* Product List */
-=======
-/* ================== PRODUCT LIST ================== */
->>>>>>> main
 .product-list {
   list-style: none;
   display: grid;
@@ -168,11 +126,7 @@
   background-color: #f1f1f1;
 }
 
-<<<<<<< HEAD
 /* Actions */
-=======
-/* ================== ACTION BUTTONS ================== */
->>>>>>> main
 .product-actions {
   display: flex;
   justify-content: center;
@@ -180,7 +134,6 @@
   margin-top: 1rem;
 }
 
-<<<<<<< HEAD
 .product-btn-edit {
   padding: 0.5rem 1rem;
   font-size: 1rem;
@@ -192,29 +145,11 @@
   transition: all 0.3s ease;
 }
 
-=======
-.product-btn-edit,
-.product-btn-delete {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: all 0.3s ease;
-}
-
-.product-btn-edit {
-  background-color: #17a2b8;
-}
-
->>>>>>> main
 .product-btn-edit:hover {
   background-color: #138496;
 }
 
 .product-btn-delete {
-<<<<<<< HEAD
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border-radius: 8px;
@@ -223,20 +158,13 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-=======
-  background-color: #dc3545;
->>>>>>> main
 }
 
 .product-btn-delete:hover {
   background-color: #c82333;
 }
 
-<<<<<<< HEAD
 /* Modal Form */
-=======
-/* ================== MODAL OVERLAY ================== */
->>>>>>> main
 .product-form-overlay {
   position: fixed;
   top: 0;
@@ -248,7 +176,6 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-<<<<<<< HEAD
 }
 
 .product-form-container {
@@ -263,98 +190,26 @@
 .product-form-container h2 {
   font-size: 2rem;
   margin-bottom: 2rem;
-=======
-  padding: 1rem;
-  overflow-y: auto;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ================== FORM CONTAINER ================== */
-.product-form-container {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 700px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  animation: slideUp 0.35s ease;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(40px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.product-form-container h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
->>>>>>> main
   color: #2c3e50;
   font-weight: 700;
   text-align: center;
 }
 
-<<<<<<< HEAD
 .product-form-container input[type="text"] {
-=======
-/* ================== FORM INPUTS ================== */
-.product-form-container form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 1.5rem;
-}
-
-.product-form-container input[type="text"],
-.product-form-container input[type="number"] {
->>>>>>> main
   width: 100%;
   padding: 0.9rem;
   font-size: 1rem;
   border: 1px solid #ccc;
-<<<<<<< HEAD
   border-radius: 5px;
   transition: all 0.3s ease;
   margin-bottom: 1.2rem;
 }
 
 .product-form-container input[type="text"]:focus {
-=======
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.product-form-container input[type="text"]:focus,
-.product-form-container input[type="number"]:focus {
->>>>>>> main
   border-color: #007bff;
   outline: none;
 }
 
-<<<<<<< HEAD
-=======
-/* ================== IMAGE UPLOAD ================== */
-.product-image-upload {
-  grid-column: span 2;
-}
-
->>>>>>> main
 .product-image-upload input[type="file"] {
   margin-bottom: 1rem;
   font-size: 1rem;
@@ -362,7 +217,6 @@
 
 .image-preview {
   width: 100%;
-<<<<<<< HEAD
   max-height: 250px;
   object-fit: cover;
   margin-bottom: 1rem;
@@ -371,25 +225,12 @@
 
 /* Form Buttons */
 .product-form-actions {
-=======
-  max-height: 220px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-}
-
-/* ================== FORM ACTIONS ================== */
-.product-form-actions {
-  grid-column: span 2;
->>>>>>> main
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 1.5rem;
 }
 
-<<<<<<< HEAD
 .product-btn-save {
   padding: 0.9rem 1.5rem;
   font-size: 1rem;
@@ -399,21 +240,6 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-=======
-.product-btn-save,
-.product-btn-cancel {
-  padding: 0.9rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-}
-
-.product-btn-save {
-  background-color: #007bff;
->>>>>>> main
 }
 
 .product-btn-save:hover {
@@ -421,7 +247,6 @@
 }
 
 .product-btn-cancel {
-<<<<<<< HEAD
   padding: 0.9rem 1.5rem;
   font-size: 1rem;
   border-radius: 8px;
@@ -430,36 +255,16 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-=======
-  background-color: #6c757d;
->>>>>>> main
 }
 
 .product-btn-cancel:hover {
   background-color: #5a6268;
 }
 
-<<<<<<< HEAD
 /* Responsive */
 @media (max-width: 900px) {
   .product-list {
     grid-template-columns: 1fr 1fr;
-=======
-/* ================== RESPONSIVE DESIGN ================== */
-@media (max-width: 768px) {
-  .product-form-container form {
-    grid-template-columns: 1fr;
-  }
-
-  .product-form-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .product-btn-save,
-  .product-btn-cancel {
-    width: 100%;
->>>>>>> main
   }
 }
 
@@ -475,13 +280,8 @@
   }
 
   .product-image {
-<<<<<<< HEAD
     width: 60px;
     height: 60px;
-=======
-    width: 100%;
-    height: auto;
->>>>>>> main
   }
 
   .product-actions {
@@ -493,26 +293,10 @@
     width: 100%;
     margin-top: 10px;
   }
-<<<<<<< HEAD
 }
 
 
 .modal-body {
   max-height: 70vh;
   overflow-y: auto;
-=======
-
-  .product-form-container {
-    padding: 1.5rem;
-  }
-}
-
-/* Scroll inside modal body */
-.modal-body,
-.product-form-overlay {
-  max-height: 100vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #999 transparent;
->>>>>>> main
 }

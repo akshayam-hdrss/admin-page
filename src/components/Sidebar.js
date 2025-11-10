@@ -1,33 +1,29 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import './Sidebar.css';
-import { Button } from 'react-bootstrap';
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+import "./Sidebar.css";
+import { Button } from "react-bootstrap";
 
 const links = [
-  { to: '/', label: 'Dashboard' },
-<<<<<<< HEAD
-=======
-  { to: '/assignroles', label: 'Assign Roles' },
->>>>>>> main
-  { to: '/primecareicon', label: 'Primecare Icon' },
-  { to: '/topstars', label: 'Topstars' },
-  { to: '/blogs', label: 'Blogs' },
-  { to: '/hospital', label: 'Hospital' },
-  { to: '/doctor', label: 'Doctor' },
-  { to: '/traditional', label: 'Traditional Treatments' },
-  { to: '/product', label: 'Product' },
-  { to: '/service', label: 'Service' },
-  { to: '/charities', label: 'Charities' },
-  { to: '/event', label: 'Events' },
-  { to: '/offers', label: 'Offers' },
+  { to: "/", label: "Dashboard" },
+  { to: "/primecareicon", label: "Primecare Icon" },
+  { to: "/topstars", label: "Topstars" },
+  { to: "/blogs", label: "Blogs" },
+  { to: "/hospital", label: "Hospital" },
+  { to: "/doctor", label: "Doctor" },
+  { to: "/traditional", label: "Traditional Treatments" },
+  { to: "/product", label: "Product" },
+  { to: "/service", label: "Service" },
+  { to: "/charities", label: "Charities" },
+  { to: "/event", label: "Events" },
+  { to: "/offers", label: "Offers" },
 
-  { to: '/booking', label: 'Booking' },
-  { to: '/registerorder', label: 'RegisterOrder' },
-  { to: '/employeeform', label: 'Employee Form' },
-  { to: '/employeelist', label: 'Employee List' },
+  { to: "/booking", label: "Booking" },
+  { to: "/registerorder", label: "RegisterOrder" },
+  { to: "/employeeform", label: "Employee Form" },
+  { to: "/employeelist", label: "Employee List" },
 
-  {to :'/stages', label:'Quiz Stages'},
-  {to :'/userdata', label:'Quiz User Data'},
+  { to: "/stages", label: "Quiz Stages" },
+  { to: "/userdata", label: "Quiz User Data" },
 ];
 
 export default function Sidebar() {
@@ -47,7 +43,7 @@ export default function Sidebar() {
       </Button>
 
       {/* Sidebar navigation */}
-      <nav className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <nav className={`sidebar ${isOpen ? "open" : ""}`}>
         <div className="sidebar-header">
           <h2 className="sidebar-title">MEDBOOK</h2>
         </div>
@@ -58,7 +54,7 @@ export default function Sidebar() {
               <NavLink
                 to={link.to}
                 className={({ isActive }) =>
-                  isActive ? 'sidebar-link active' : 'sidebar-link'
+                  isActive ? "sidebar-link active" : "sidebar-link"
                 }
                 end
               >
@@ -74,4 +70,3 @@ export default function Sidebar() {
     </>
   );
 }
-

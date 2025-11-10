@@ -33,10 +33,6 @@ import ProductTypePage0 from './pages/Products/Products0/ProductPage0';
 import ServicePage0 from './pages/Service/ServicePage0';
 import Booking from './pages/Booking/Booking';
 import Quiz from './pages/Quiz/Quiz';
-<<<<<<< HEAD
-=======
-import AssginRoles from './Crm_pages/Assign_roles/AssignRoles';
->>>>>>> main
 import Stages from './pages/Quiz/Stages';
 import QuizData from './pages/Quiz/QuizData';
 import Quizprogress from './pages/Quiz/Quizprogress';
@@ -53,10 +49,6 @@ function App() {
       <div className="content">
         <Routes>
           <Route path="/" element={<Dashboard />} />
-<<<<<<< HEAD
-=======
-          <Route path="/assignroles" element={<AssginRoles />} />
->>>>>>> main
           <Route path="/topstars" element={<Topstars />} />
           <Route path="/blogs" element={<BlogTopics />} />
           <Route path="/blogs/:id" element={<BlogManagement />} />
