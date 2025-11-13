@@ -5,15 +5,29 @@ import {
   updateAvailableProduct,
   deleteAvailableProduct,
   deleteAllAvailableProducts,
-  uploadImage
-} from "../../../api/api"; // ✅ imported from api.js
+  uploadImage,
+} from "../../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ProductPage1.css";
 
 export default function ProductPage1() {
   const [products, setProducts] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", imageUrl: "", order_no: "" });
+  const [form, setForm] = useState({
+    name: "",
+    imageUrl: "",
+    order_no: "",
+    contact_name: "",
+    pincode: "",
+    location: "",
+    phoneNumber: "",
+    whatsappNumber: "",
+    experience: "",
+    addressLine1: "",
+    addressLine2: "",
+    district: "",
+    mapLink: "",
+  });
   const [imagePreview, setImagePreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -22,7 +36,7 @@ export default function ProductPage1() {
   const { productTypeId } = useParams();
 
   useEffect(() => {
-    fetchProducts(productTypeId);
+    fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
@@ -30,7 +44,7 @@ export default function ProductPage1() {
       const res = await getAvailableProducts(productTypeId);
       let data = res.data.resultData || [];
 
-      // 🔑 Sort: numbers first (ascending), nulls at the end
+      // Sort: numbers first (ascending), nulls at the end
       data = data.sort((a, b) => {
         if (a.order_no == null && b.order_no == null) return 0;
         if (a.order_no == null) return 1;
@@ -75,7 +89,7 @@ export default function ProductPage1() {
     try {
       const payload = {
         ...form,
-        order_no: form.order_no === "" ? null : parseInt(form.order_no, 10), // ✅ null if empty
+        order_no: form.order_no === "" ? null : parseInt(form.order_no, 10),
         availableProductTypeId: parseInt(productTypeId, 10),
       };
 
@@ -93,7 +107,21 @@ export default function ProductPage1() {
   };
 
   const resetForm = () => {
-    setForm({ name: "", imageUrl: "", order_no: "" });
+    setForm({
+      name: "",
+      imageUrl: "",
+      order_no: "",
+      contact_name: "",
+      pincode: "",
+      location: "",
+      phoneNumber: "",
+      whatsappNumber: "",
+      experience: "",
+      addressLine1: "",
+      addressLine2: "",
+      district: "",
+      mapLink: "",
+    });
     setImagePreview(null);
     setIsEditing(false);
     setEditId(null);
@@ -104,7 +132,17 @@ export default function ProductPage1() {
     setForm({
       name: item.name,
       imageUrl: item.imageUrl,
-      order_no: item.order_no ?? "" // ✅ show blank in input if null
+      order_no: item.order_no ?? "",
+      contact_name: item.contact_name || "",
+      pincode: item.pincode || "",
+      location: item.location || "",
+      phoneNumber: item.phoneNumber || "",
+      whatsappNumber: item.whatsappNumber || "",
+      experience: item.experience || "",
+      addressLine1: item.addressLine1 || "",
+      addressLine2: item.addressLine2 || "",
+      district: item.district || "",
+      mapLink: item.mapLink || "",
     });
     setImagePreview(item.imageUrl);
     setEditId(item.id);
@@ -171,6 +209,77 @@ export default function ProductPage1() {
                 placeholder="Enter order number (optional)"
               />
 
+              <input
+                type="text"
+                name="contact_name"
+                value={form.contact_name}
+                onChange={handleInputChange}
+                placeholder="Enter contact name"
+              />
+              <input
+                type="text"
+                name="phoneNumber"
+                value={form.phoneNumber}
+                onChange={handleInputChange}
+                placeholder="Enter phone number"
+              />
+              <input
+                type="text"
+                name="whatsappNumber"
+                value={form.whatsappNumber}
+                onChange={handleInputChange}
+                placeholder="Enter WhatsApp number"
+              />
+              <input
+                type="text"
+                name="experience"
+                value={form.experience}
+                onChange={handleInputChange}
+                placeholder="Enter experience"
+              />
+              <input
+                type="text"
+                name="addressLine1"
+                value={form.addressLine1}
+                onChange={handleInputChange}
+                placeholder="Enter address line 1"
+              />
+              <input
+                type="text"
+                name="addressLine2"
+                value={form.addressLine2}
+                onChange={handleInputChange}
+                placeholder="Enter address line 2"
+              />
+              <input
+                type="text"
+                name="district"
+                value={form.district}
+                onChange={handleInputChange}
+                placeholder="Enter district"
+              />
+              <input
+                type="text"
+                name="location"
+                value={form.location}
+                onChange={handleInputChange}
+                placeholder="Enter location"
+              />
+              <input
+                type="text"
+                name="pincode"
+                value={form.pincode}
+                onChange={handleInputChange}
+                placeholder="Enter pincode"
+              />
+              <input
+                type="text"
+                name="mapLink"
+                value={form.mapLink}
+                onChange={handleInputChange}
+                placeholder="Enter map link (optional)"
+              />
+
               <div className="product-image-upload">
                 <input type="file" accept="image/*" onChange={handleFileChange} />
               </div>
@@ -201,23 +310,18 @@ export default function ProductPage1() {
             <div className="product-card" onClick={() => handleCategoryClick(item.id)}>
               {item.imageUrl && (
                 <div className="product-images">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    className="product-image"
-                  />
+                  <img src={item.imageUrl} alt={item.name} className="product-image" />
                 </div>
               )}
               <div className="product-details">
                 <h3>{item.name}</h3>
-                <p>Order No: {item.order_no ?? "null"}</p> {/* ✅ show order_no */}
+                <p>Order No: {item.order_no ?? "null"}</p>
+                {item.location && <p>📍 {item.location}</p>}
+                {item.phoneNumber && <p>📞 {item.phoneNumber}</p>}
               </div>
             </div>
             <div className="product-actions">
-              <button
-                className="product-btn-edit"
-                onClick={() => handleEdit(item)}
-              >
+              <button className="product-btn-edit" onClick={() => handleEdit(item)}>
                 Edit
               </button>
               <button
